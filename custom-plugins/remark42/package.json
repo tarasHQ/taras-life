@@ -1,0 +1,36 @@
+{
+	"name": "quartz-local-remark42",
+	"version": "0.1.0",
+	"private": true,
+	"description": "Local, opt-in Remark42 integration with stable thread identity and Quartz SPA support.",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./components": "./dist/index.js",
+		"./identity": "./dist/identity.js",
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"build": "node build.mjs",
+		"typecheck": "tsc --project tsconfig.json",
+		"test": "npm run typecheck && npm run build && node --test test/shell.test.mjs test/identity.test.mjs test/runtime.test.mjs"
+	},
+	"quartz": {
+		"name": "remark42",
+		"displayName": "Remark42",
+		"description": "Asynchronous comments for explicitly identified content pages.",
+		"version": "0.1.0",
+		"quartzVersion": ">=5.0.0",
+		"category": "component",
+		"defaultEnabled": false,
+		"components": {
+			"Remark42": {
+				"name": "remark42",
+				"displayName": "Remark42",
+				"description": "Remark42 widget for notes with an explicit comment-id.",
+				"version": "0.1.0",
+				"quartzVersion": ">=5.0.0"
+			}
+		}
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"printWidth": 120,
+	"quoteProps": "as-needed",
+	"trailingComma": "all",
+	"useTabs": true,
+	"bracketSameLine": true,
+	"tabWidth": 4,
+	"semi": false,
+	"endOfLine": "lf",
+	"overrides": [
+		{
+			"files": "*.canvas",
+			"options": {
+				"parser": "json"
+			}
+		},
+		{
+			"files": "*.base",
+			"options": {
+				"parser": "yaml"
+			}
+		}
+	]
+}

@@ -1,0 +1,18 @@
+public
+node_modules/
+dist/
+build/
+coverage/
+data/
+.quartz-cache
+
+pnpm-lock.yaml
+*.min.js
+*.min.css
+
+# Verbatim captured third-party code — reformatting it would make it drift from upstream.
+custom-plugins/remark42/fixtures/
+
+docs/
+**/.md/
+*.md

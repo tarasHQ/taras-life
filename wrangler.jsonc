@@ -1,0 +1,33 @@
+{
+	"name": "taras-life",
+	"compatibility_date": "2026-10-17",
+	"workers_dev": false, // hide the ugly name-containing URL
+	"preview_urls": true, // still needed for the preview system
+
+	"assets": {
+		"directory": "./public",
+	},
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true,
+			"persist": true,
+		},
+	},
+	"routes": [
+		// Production (you already have this via the dashboard)
+		{
+			"pattern": "taras.life",
+			"custom_domain": true,
+		},
+		// Previews only
+		{
+			"pattern": "dev.taras.life",
+			"custom_domain": true,
+			"previews_enabled": true,
+			"enabled": false, // important: production traffic stays away
+		},
+	],
+
+	"previews": {}, // required (can be empty)
+}

@@ -1,0 +1,61 @@
+{
+	// ================================================================
+	// Editor & Indentation
+	// ================================================================
+	"editor.tabSize": 4,
+	"editor.insertSpaces": false, // use tabs instead of spaces for indentation
+	"editor.detectIndentation": false, // disable auto-detection of indentation to enforce consistent tab usage
+
+	"js/ts.tsdk.path": "node_modules/typescript/lib", // enforce using project's version of TypeScript
+	// enforce relative imports for autocompletion
+	// without it might default to absolute imports which can cause issues or break uniformity in the codebase
+	"js/ts.preferences.importModuleSpecifier": "relative",
+
+	// ================================================================
+	// Prettier & Formatting
+	// ================================================================
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"prettier.requireConfig": true,
+
+	// ================================================================
+	// File Explorer & Sorting (DEV_RULES)
+	// ================================================================
+	"explorer.sortOrderLexicographicOptions": "upper", // Sort files with grouping and sorting uppercase letters first
+
+	// ================================================================
+	// Explore & Search Exclusions
+	// ================================================================
+	"files.exclude": {
+		"node_modules": true,
+		"**/node_modules": true,
+		"data/*.sqlite": true
+	},
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/dist": true,
+		"data": true
+	},
+
+	// ================================================================
+	// Obsidian Vault Integration
+	// ================================================================
+	// On RMB "Open in External app" for canvas/md files inside obsidian's symlinked folder __obsidian__
+	"openInExternalApp.openMapper": [
+		{
+			"extensionName": ["md", "canvas"],
+			"apps": [
+				{
+					"title": "Open in Obsidian Vault",
+					"shellCommand": "\"${workspaceFolder}/.vscode/scripts/open-in-obsidian.cmd\" \"${file}\""
+				}
+			]
+		}
+	],
+	"workbench.editor.centeredLayout": true,
+	"[markdown]": {
+		"editor.wordWrap": "wordWrapColumn",
+		"editor.wordWrapColumn": 100,
+		"editor.rulers": [100]
+	}
+}

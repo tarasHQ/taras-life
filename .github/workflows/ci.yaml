@@ -1,0 +1,52 @@
+# Validate the website and dependency updates without deploying or using secrets.
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    build-and-test:
+        name: Build and test
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - name: Check out source
+              uses: actions/checkout@v7
+              with:
+                  # Git-based content dates need the same full history as Cloudflare builds.
+                  fetch-depth: 0
+                  persist-credentials: false
+
+            - name: Set up Node
+              uses: actions/setup-node@v7
+              with:
+                  node-version-file: .node-version
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            # The npm prebuild hook installs plugins and compiles local plugin output.
+            # Tests import that output, so build before running checks and tests.
+            - name: Build website
+              run: npm run build
+
+            - name: Check types and formatting
+              run: npm run check
+
+            # The root tsconfig does not include the local plugin's source files.
+            - name: Check Remark42 types
+              run: npm --prefix custom-plugins/remark42 run typecheck
+
+            - name: Run tests
+              run: npm test
