@@ -10,13 +10,8 @@
 	"workers_dev": false,
 	"preview_urls": false,
 
-	// Read by Cloudflare Workers Builds (the dashboard CI) as its build step.
-	// Quartz's created-modified-date plugin uses @napi-rs/simple-git, so it needs real
-	// git history for accurate `modified` dates; Workers Builds checks out a shallow
-	// clone, hence the unshallow. `|| true` matters: on an already-complete clone
-	// `git fetch --unshallow` exits non-zero, which would abort the build.
 	"build": {
-		"command": "git fetch --unshallow || true; npm run build",
+		"command": "npm run build",
 	},
 
 	// Quartz emits the site into ./public (gitignored — treated as disposable output).
