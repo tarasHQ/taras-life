@@ -71,6 +71,7 @@
 		"@quartz-community/latex": "^1.0.0",
 		"@quartz-community/note-properties": "^1.0.0",
 		"@quartz-community/obsidian-flavored-markdown": "^1.0.0",
+		"@quartz-community/obsidian-plugin-excalidraw": "^1.0.0",
 		"@quartz-community/og-image": "^1.0.0",
 		"@quartz-community/ox-hugo": "^1.0.0",
 		"@quartz-community/page-title": "^1.0.0",
@@ -134,5 +135,9 @@
 		"prettier": "^3.9.10",
 		"tsx": "^4.23.15",
 		"typescript": "^5.9.3"
+	},
+	"allowScripts": {
+		"esbuild@0.28.2": true,
+		"@parcel/watcher@2.6.0": true
 	}
 }

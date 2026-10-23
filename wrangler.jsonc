@@ -3,7 +3,9 @@
 	"compatibility_date": "2026-10-17",
 	"workers_dev": false, // hide the ugly name-containing URL
 	"preview_urls": true, // still needed for the preview system
-
+	"build": {
+		"command": "git fetch --unshallow || true; npm run build",
+	},
 	"assets": {
 		"directory": "./public",
 	},
