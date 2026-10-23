@@ -398,6 +398,41 @@ function buildInstalledPlugin(pluginDir: string, name: string, verbose?: boolean
 	}
 }
 
+/**
+ * CUSTOM EDIT BY TARAS.
+ * Link a local plugin directory into the plugin cache.
+ *
+ * Symlink on windows needs elevated rights. This fix creates junction instead,
+ * which passes requirements of the code and doesn't need elevation.
+ *
+ * Mirrors `symlinkOrCopySync()` in `quartz/cli/helpers.js`. The loader duplicates it
+ * instead of importing it, to keep the plugin layer free of CLI dependencies.
+ */
+function linkLocalPlugin(target: string, linkPath: string): void {
+	try {
+		fs.symlinkSync(target, linkPath, "dir")
+		return
+	} catch (err: unknown) {
+		const code = (err as NodeJS.ErrnoException).code
+		// A concurrent build created the link first; nothing left to do.
+		if (code === "EEXIST") return
+		// Only Windows EPERM is recoverable; every other failure is genuine.
+		if (code !== "EPERM" || process.platform !== "win32") throw err
+	}
+
+	try {
+		// Junction targets must be absolute. `parsePluginSource()` already resolves
+		// local sources, so `target` is safe to pass through as-is.
+		fs.symlinkSync(target, linkPath, "junction")
+	} catch {
+		console.warn(
+			styleText("yellow", `⚠`),
+			`Could not link ${path.basename(linkPath)}; copied the directory instead.`,
+		)
+		fs.cpSync(target, linkPath, { recursive: true })
+	}
+}
+
 interface PluginInstallResult {
 	pluginDir: string
 	nativeDeps: Map<string, string>
@@ -454,7 +489,7 @@ export async function installPlugin(
 			console.log(styleText("cyan", `→`), `Linking ${spec.name} from ${spec.repo}...`)
 		}
 
-		fs.symlinkSync(spec.repo, pluginDir, "dir")
+		linkLocalPlugin(spec.repo, pluginDir)
 
 		if (options.verbose) {
 			console.log(styleText("green", `✓`), `Linked ${spec.name}`)
