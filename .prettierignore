@@ -1,10 +1,11 @@
-public
+public/
 node_modules/
 dist/
 build/
 coverage/
 data/
-.quartz-cache
+.quartz-cache/
+.quartz/
 
 pnpm-lock.yaml
 *.min.js
