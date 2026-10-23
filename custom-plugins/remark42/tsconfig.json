@@ -2,7 +2,15 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"noEmit": true,
-		"incremental": false
+		"incremental": false,
+		// TEMPORARY (Phase 0, see custom-plugins/README.md): this project still pulls
+		// Quartz source in via src/index.tsx, and quartz/util/resources.tsx imports the
+		// Node builtin "crypto". @types/node is a root devDependency here, not a plugin
+		// dependency, so name it and its location explicitly instead of relying on the
+		// compiler discovering ancestor node_modules/@types on its own.
+		// Remove once the plugin imports types from @quartz-community/types (Phase 1).
+		"types": ["node"],
+		"typeRoots": ["../../node_modules/@types"]
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx"],
 	"exclude": ["dist", "node_modules"]
