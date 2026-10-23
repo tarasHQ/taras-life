@@ -14,6 +14,8 @@ pnpm-lock.yaml
 # Verbatim captured third-party code — reformatting it would make it drift from upstream.
 custom-plugins/remark42/fixtures/
 
-docs/
-**/.md/
+# To not interfere with obsidian or other .md files
 *.md
+*.mdx
+
+docs/

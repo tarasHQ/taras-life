@@ -1,0 +1,4 @@
+# Generated locally; keep the maintained source separate from build output.
+/dist/
+/node_modules/
+/tsconfig.tsbuildinfo
