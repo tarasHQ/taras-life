@@ -54,3 +54,15 @@ reports green. Check with
 - **Phase 3.** Declaration output plus the `types` field.
 
 Plugin-specific commands live in `remark42/README.md`.
+
+--- 
+
+Near this file is also outdated `./PLAN.md`. The reason for its existence is to know more information about how "bad implementation" of the plugin was executed.
+
+The same logic applie for `./REMARK42.md` which is kinda too plan/reflection/whatever.
+
+Both files should NOT be edited. And are safe to be deleted once current plan above will be executed.
+--- 
+
+Additional TODOs at rewrite:
+- Change comment-id to simply id, so maybe it can be used by other things as well. 
