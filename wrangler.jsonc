@@ -1,35 +1,42 @@
 {
+	// Editor autocompletion + validation. Requires `wrangler` in devDependencies
+	// (`npm i -D wrangler`) — otherwise the path is dead and this line does nothing.
+	"$schema": "./node_modules/wrangler/config-schema.json",
+
 	"name": "taras-life",
-	"compatibility_date": "2026-10-17",
-	"workers_dev": false, // hide the ugly name-containing URL
-	"preview_urls": true, // still needed for the preview system
+	"compatibility_date": "2026-10-23",
+
+	// No `taras-life.<account>.workers.dev` URL, and no per-version preview URLs.
+	"workers_dev": false,
+	"preview_urls": false,
+
+	// Read by Cloudflare Workers Builds (the dashboard CI) as its build step.
+	// Quartz's created-modified-date plugin uses @napi-rs/simple-git, so it needs real
+	// git history for accurate `modified` dates; Workers Builds checks out a shallow
+	// clone, hence the unshallow. `|| true` matters: on an already-complete clone
+	// `git fetch --unshallow` exits non-zero, which would abort the build.
 	"build": {
 		"command": "git fetch --unshallow || true; npm run build",
 	},
+
+	// Quartz emits the site into ./public (gitignored — treated as disposable output).
 	"assets": {
 		"directory": "./public",
 	},
+
 	"observability": {
+		"enabled": true,
 		"logs": {
-			"enabled": true,
 			"invocation_logs": true,
-			"persist": true,
 		},
 	},
+
+	// Production route only. `custom_domain: true` has Cloudflare manage the DNS record
+	// and certificate for taras.life, so there is no separate CNAME step.
 	"routes": [
-		// Production (you already have this via the dashboard)
 		{
 			"pattern": "taras.life",
 			"custom_domain": true,
 		},
-		// Previews only
-		{
-			"pattern": "dev.taras.life",
-			"custom_domain": true,
-			"previews_enabled": true,
-			"enabled": false, // important: production traffic stays away
-		},
 	],
-
-	"previews": {}, // required (can be empty)
 }
