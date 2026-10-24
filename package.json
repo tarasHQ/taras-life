@@ -39,7 +39,6 @@
 	"dependencies": {
 		"@clack/prompts": "^1.8.0",
 		"@floating-ui/dom": "^1.7.4",
-		"@myriaddreamin/rehype-typst": "^0.7.0",
 		"@napi-rs/simple-git": "1.2.0",
 		"@quartz-community/alias-redirects": "^1.0.0",
 		"@quartz-community/article-title": "^1.0.0",
@@ -70,6 +69,7 @@
 		"@quartz-community/syntax-highlighting": "^1.0.1",
 		"@quartz-community/table-of-contents": "^1.0.0",
 		"@quartz-community/unlisted-pages": "^1.0.0",
+		"@quartz-community/utils": "^1.0.1",
 		"@quartz-themes/core": "^2.0.0",
 		"@quartz-themes/default": "^1.0.1",
 		"ansi-truncate": "^1.4.0",
@@ -105,7 +105,6 @@
 	},
 	"devDependencies": {
 		"@quartz-community/types": "^1.0.0",
-		"@quartz-community/utils": "^1.0.1",
 		"@types/hast": "^3.0.4",
 		"@types/mdast": "^4.0.4",
 		"@types/node": "^26.6.5",
