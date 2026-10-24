@@ -10,9 +10,7 @@
 	"workers_dev": false,
 	"preview_urls": false,
 
-	"build": {
-		"command": "npm run build",
-	},
+	// no "build" : { "command": "fetch shallow and/or npm run build, etc." }, because it's set in the UI for SSOT
 
 	// Quartz emits the site into ./public (gitignored — treated as disposable output).
 	"assets": {
