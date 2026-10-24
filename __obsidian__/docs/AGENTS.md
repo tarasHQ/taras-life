@@ -1,20 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# What I Want to have in agents
 Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - Content lives in `content/`, Quartz engine in `quartz/`, config in `quartz.config.yaml`, deployment via `wrangler.jsonc`.
 
@@ -56,8 +40,8 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 ## 9. Knowledge & Planning 
 
 ### 9.1 Location & File structure
-- __obsidian__/ follder in the root of the project should contain all plans/reflections
-- __obsidian__/phases/999/ folder structure separates plans and reflections by phase number
+- `__obsidian__/` follder in the root of the project should contain all plans/reflections
+- `__obsidian__/phases/999/` folder structure separates plans and reflections by phase number
 - Name format for plan .md files: `DD-MM-YYYY - NAME.md` (e.g., `22-09-2026 - CHAT_VIEW.md`).
 ### 9.2 Flow of the planning
 - First, discuss with the high level structure of the plan. When it's locked, write a skeleton that consists of X steps to achieve the goal of the plan.
@@ -71,16 +55,14 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - It must remain low-churn and free of ephemeral implementation noise.
 ### 10.2 What Belongs Here
 - High-level system philosophy and product vision.
-- Key tech stack choices, runtime requirements, and OS prerequisites.
-- Monorepo package topology and package boundaries.
-- High-level domain concepts (Workspace, Project, Task, Branch, Message, Response, Tool Use).
-- Architectural invariants (server authority, sync protocol, worker execution boundaries, auth models).
+- Key tech stack choices, runtime requirements, etc..
+- High-level concepts.
+- Architectural invariants .
 - Codebase navigation rules (README.md conventions and docs/ exploration).
 ### 10.3 What Does NOT Belong Here
-- Low-level coding style rules, JSDoc formatting, and React hook rules (these belong in `DEV_RULES.md`).
+- Low-level coding style rules, JSDoc formatting, etc.
 - File-by-file refactor notes, changelogs, and temporary migration diaries.
 - Sprint task checklists, implementation roadmaps, and step-by-step feature guides.
-- Detailed database schemas, exhaustive SQL queries, or individual function signatures (code and local READMEs are self-documenting).
 - Fleeting bug workarounds or transient environment hacks.
 ### 10.4 Update Protocol
 - Update this document only when a change alters system invariants, introduces new packages, modifies communication transports, or changes core architectural boundaries.

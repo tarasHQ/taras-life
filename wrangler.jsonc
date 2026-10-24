@@ -17,6 +17,7 @@
 	// Quartz emits the site into ./public (gitignored — treated as disposable output).
 	"assets": {
 		"directory": "./public",
+		"not_found_handling": "404-page",
 	},
 
 	"observability": {

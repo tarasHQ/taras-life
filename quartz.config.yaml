@@ -4,13 +4,10 @@ configuration:
     pageTitleSuffix: ""
     enableSPA: true
     enablePopovers: true
-    analytics:
-        provider: plausible
+    analytics: null
     locale: en-US
     baseUrl: taras.life
     ignorePatterns:
-        - private
-        - templates
         - .obsidian
     theme:
         fontOrigin: googleFonts

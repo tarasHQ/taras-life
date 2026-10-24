@@ -12,6 +12,15 @@
 await cJS(c => c.RenderReflectionHelpers.renderColumns(dv, this.container));
 ```
 
+## Future Phases
+1. Styling
+	- Fonts https://quartz.jzhao.xyz/plugins/fonts
+2. Skeleton
+3. Optimization
+	1. Webp script before push to have optimized images. 
+
 ## Phases
 
 ### Phase 001 - UNTITLED_PHASE [open](./phases/001/_plan_001.md)
+
+
