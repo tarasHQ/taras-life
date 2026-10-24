@@ -46,10 +46,8 @@
 - `npm test` - root suites under `quartz/**/*.test.ts` (components, plugin loader, pageTypes, util)
 - `npm --prefix custom-plugins/remark42 test` - typecheck + build + `node --test` on `shell/identity/runtime` fixtures
 
-## Deploy
-
-- `npx wrangler deploy` - publish `public/` as Cloudflare Workers static assets to the `taras.life` route (`wrangler.jsonc`; its build command is `npm run build`, so `prebuild` plugin install + site build run during deploy)
-- no `deploy` npm script exists - wrangler is invoked directly
+## Wrangler
+- installed but not used for any commands nor configured to do so. Used only for schema autocomplete/valudation in `wrangler.jsonc`
 
 ## Git
 

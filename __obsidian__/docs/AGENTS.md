@@ -1,26 +1,119 @@
+## Overview
 
 Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
-- Content lives in `content/`, Quartz engine in `quartz/`, config in `quartz.config.yaml`, deployment via `wrangler.jsonc`.
+
+| Layer              | Technology                                                             | Lives in                          |
+| ------------------ | ---------------------------------------------------------------------- | --------------------------------- |
+| Site generator     | Quartz v5 — **vendored source tree**, not a dependency                 | `quartz/`                         |
+| Content            | Obsidian plugin syncs vault with repo's `content/`                     | `content/`                        |
+| Config surface     | YAML plugin + layout config, bridged into the build                    | `quartz.config.yaml`, `quartz.ts` |
+| Rendering          | Preact components, rendered to string at build time (no hydration)     | `quartz/components/`              |
+| Content pipeline   | unified → remark (mdast) → rehype (hast) → JSX                         | `quartz/processors/`              |
+| Styling / bundling | SCSS compiled with esbuild + Lightning CSS                             | `quartz/styles/`                  |
+| Hosting            | Cloudflare Workers, **assets-only** (no `main`, no bindings)           | `wrangler.jsonc`                  |
+| Delivery           | Cloudflare **Workers Builds** on push → `npm run build` → `public/`    | `wrangler.jsonc`                  |
+| Comments           | Self-hosted Remark42 (external LXC) via a local Quartz plugin          | `custom-plugins/remark42/`        |
+| Analytics          | Cloudflare Web Analytics, injected **at the edge** by a dashboard rule | ⚠️ outside this repo              |
+| Runtime            | Node ≥ 22, npm ≥ 10.9.2, ESM + TypeScript                              | `package.json`                    |
 
 ## 0. SSOT of links to additional project's .md files
 
 - ##### Instructions
     - It's crucial to adhere to conditions of reading to avoid unnecessary context bloat.
     - Links are relative to `AGENTS.md`, path from repo's root would be `__obsidian__/docs/AGENTS.md`
-- ##### [PLANNING.md](C:\Users\Taras\Documents\obsidian-vault\_static\projects\PLANNING.md)
-    - to be read only during planning phase. [[../../../../_static/projects/PLANNING|internal link for the user]], llm shouldn't use it.
-- ##### ./docs/DEV_RULES.md
+- ##### [PLANNING.md](file:///C:/Users/Taras/Documents/obsidian-vault/_static/projects/PLANNING.md)
+    - to be read only during planning phase. [[../../../../_static/projects/PLANNING|internal link for the user]], llm shouldn't use neither link or proposed paths.
+- ##### [DEV_RULES.md](./DEV_RULES.md)
     - to be read only before writing the code, there's no information that is helpful during planning phase.
-- ##### ./DEV_COMMANDS.md
+- ##### [DEV_COMMANDS.md](./DEV_COMMANDS.md)
     - to be read only if LLM tinkers with tasks/commands/scripts
-- ##### ./PHILOSOPHY.md
-    - never read, it's too abstract for 99% of tasks at hand.
-- ##### ../README.md
-    - neve read, it's vault-related decisions that is rarely needed in an LLM task
+
+## 1. Tech Stack / Key Libraries, Plugins, Services
+
+**Runtime & toolchain**
+
+| Layer | Technology | Notes |
+|---|---|---|
+| Runtime | Node.js ≥ 22, ESM (`"type": "module"`) | declared in `engines`; Workers Builds must satisfy it |
+| Language | TypeScript | typechecked by `tsc --noEmit`, but **never compiled by tsc** — esbuild emits JS |
+| Package manager | npm ≥ 10.9.2, committed `package-lock.json` | CI installs with `npm ci`; lockfile drift fails the build |
+| Bundler | esbuild (+ `esbuild-sass-plugin`) | bundles page JS and the local plugin's browser script |
+| CSS toolchain | SCSS → Lightning CSS | compiled and minified at build time |
+| Quality gates | Prettier, `tsx --test`, `tsc --noEmit` | `npm run check`, `npm test` |
+| Deploy CLI | `wrangler` (devDependency) | local preview/deploy; CI path is Workers Builds |
+
+**Content & generation**
+
+| Layer | Technology | Notes |
+|---|---|---|
+| Authoring | Markdown + YAML frontmatter, written in Obsidian | lives in `content/` |
+| Generator | Quartz v5 — **vendored source**, not a dependency | `quartz/`; upgrading is a merge |
+| Site config | YAML plugin + layout config | `quartz.config.yaml` is SSOT for enabled plugins |
+| Content pipeline | unified → remark (mdast) → rehype (hast) → JSX | all customisation enters as plugins/transformers |
+| SSR | Preact + `preact-render-to-string` | output is static HTML — there is no hydration |
+| Client runtime | Preact islands, SPA nav via `micromorph` | never re-render or call `window.location` manually |
+| Markdown dialect | Obsidian-flavored + GitHub-flavored | wikilinks, callouts, tags, block refs, Mermaid, GFM tables |
+| Code | Shiki (`rehype-pretty-code`) | build time only; no math engine — the LaTeX plugin was removed |
+| Search | FlexSearch | index built at compile time, queried in-browser |
+| Images | `sharp` | resizing and OG image generation |
+| Fonts | Google Fonts origin, CDN-cached | theme config |
+
+**Delivery**
+
+| Layer            | Technology                                                    | Notes                                                   |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------- |
+| Build trigger    | Cloudflare **Workers Builds** on push                         | runs `build.command` from `wrangler.jsonc`              |
+| Build output     | `public/` static files                                        | gitignored, disposable                                  |
+| Hosting          | Cloudflare Workers **static assets** — no `main`, no bindings | nothing executes at the edge                            |
+| Edge / DNS / TLS | Cloudflare, custom domain `taras.life`                        | cert and DNS record dashboard-managed                   |
+| Analytics        | Cloudflare Web Analytics, injected by a domain rule           | ⚠️ not in this repo; RUM disabled for the remark42 host |
 
 
-## 2. Tech Stack & Key Libraries
+### Remark42 Comments
+- #### Plugin
+	- `custom-plugins/remark42/`
+- #### Service
+	- Self hosted as standalone binary on LXC. Accessed to internet through cloudflare tunnel at caddy + local reroute. 
+		- caddy rewires some headers too.
+	- Configuration `/etc/remark42.env`, 
+		- `/etc/systemd/system/remark42.service`; runs as `nobody:nogroup`, `WorkingDirectory=/var/www/remark42`.
+		- `/var/www/remark42/var` - boltdb directory
+	- Done as `systemd` service
+	- Backups. Handled by `proxmox` daily/weekly `vzdumps` with `rsync` offsite
+	- Health - `UptimeRobot`, pings both taras.life and `https://comments.taras.life/api/v1/ping`
+		- comments live under blog domain, not infra. 
+	- Tied to the `id` in frontmatter. No id - no comments. 
+	- (crucial for free worker on cloudflare) web analytics injects beacon.js into remark42 oauth icons, which breaks them. Workaround is to use domain rule configurations to disable `RUM` when host == the public host of the remark42
+	- `oauth` apps, for now, only google and gmail
+	- admin is identified by github account internal remark42 id
+	- no smtp/telegram/others
 
+### Removed plugins
+
+| Plugin | Why removed |
+| --- | --- |
+| `citations` | No academic citations authored; citation parsing ran over every note for nothing. |
+| `ox-hugo` | Org-mode / Hugo export syntax; never authored here. |
+| `roam` | Roam Research syntax (`{{[[TODO]]}}`, `{{embed}}`); never authored here. |
+| `explicit-publish` | Nothing is filtered on site — the Obsidian sync layer decides what ships. |
+| `stacked-pages` | Sliding-pane link navigation; not wanted. |
+| `tag-list` | No tags in use. |
+| `tag-page` | No tags in use; also drops `/tags/*` generation. |
+| `folder-page` | No folder landing pages planned; `/subfolder/` now 404s instead of listing. |
+| `canvas-page` | JSON Canvas unused — Excalidraw is preferred for drawings. |
+| `graph` | Unused; loaded `d3@7` + `pixi.js@8` from jsDelivr on every page load, before any container check. |
+| `latex` | No math; 11 MB plugin bundle (+19 MB sourcemap) parsed per build, plus a KaTeX CDN stylesheet and `copy-tex` script on every page. |
+| `encrypted-pages` | No password-gated notes; added a client-side decrypt hook + CSS site-wide. |
+| `reader-mode` | Site content is deliberately concise; toggle + CSS on every page for nothing. |
+| `cname` | GitHub Pages artifact; hosting is Cloudflare Workers static assets. |
+| `comments` | Giscus superseded by self-hosted Remark42 (entry was already `enabled: false`). |
+| `remove-draft` | No drafts authored; filtering is the sync layer's job. |
+
+All of the above declared an empty `quartz.dependencies` array, so each removal is a pure `quartz.config.yaml` + `package.json` change with no cross-plugin fallout. To restore one: `npm i @quartz-community/<name>` and re-add its `plugins:` block.
+
+NOTE: `@quartz-community/note-properties` must NEVER be removed — it is the frontmatter parser (`remarkFrontmatter` + `gray-matter` → `file.data.frontmatter`), despite its docs describing it as a properties panel.
+
+---
 
 
 (from other project's agents file)
@@ -72,20 +165,3 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 
 
 
-
-## Remark42
-Comments.
-1. Self hosted as standalone binary on LXC. Accessed to internet through cloudflare tunnel at caddy + local reroute. 
-	- caddy rewires some headers too.
-2. Configuration `/etc/remark42.env`, 
-	- `/etc/systemd/system/remark42.service`; runs as `nobody:nogroup`, `WorkingDirectory=/var/www/remark42`.
-	- `/var/www/remark42/var` - boltdb dir
-3. Done as systemd service
-4. Backups. Handled by proxmox daily/weekly vzdumps with rsync offsite
-5. Health - UptimeRobot, pings both taras.life and `https://comments.taras.life/api/v1/ping`
-	- comments live under blog domain, not infra. 
-6. Tied to the id in frontmatter. No id - no comments. 
-7. (crucial for free worker on cloudflare) web analytics injects beacon.js into remark42 oauth icons, which breaks them. Workaround is to use rule configuration to disable RUM when host == the public host of the remark42
-8. oauth apps, for now, only google and gmail
-9. admin is identified by github account internal remark42 id
-10. no smtp/telegram/others

@@ -88,23 +88,9 @@ plugins:
     - source: "@quartz-community/description"
       enabled: true
       order: 70
-    - source: "@quartz-community/latex"
-      enabled: true
-      options:
-          renderEngine: katex
-      order: 80
-    - source: "@quartz-community/citations"
-      enabled: false
-      order: 85
     - source: "@quartz-community/hard-line-breaks"
       enabled: true
       order: 90
-    - source: "@quartz-community/ox-hugo"
-      enabled: false
-      order: 91
-    - source: "@quartz-community/roam"
-      enabled: false
-      order: 92
     - source: "@quartz-community/quartz-fonts"
       enabled: true
     - source: "@quartz-themes/core"
@@ -112,27 +98,10 @@ plugins:
       options:
           theme: default
           mode: both
-    - source: "@quartz-community/remove-draft"
-      enabled: true
-    - source: "@quartz-community/explicit-publish"
-      enabled: false
     - source: "@quartz-community/unlisted-pages"
       enabled: true
       options: {}
       order: 45
-    - source: "@quartz-community/encrypted-pages"
-      enabled: true
-      options:
-          iterations: 600000
-          passwordField: password
-          unlistWhenEncrypted: false
-          outputPath: static/encryptedContentIndex.json
-    - source: "@quartz-community/stacked-pages"
-      enabled: false
-      layout:
-          position: afterBody
-          priority: 50
-          display: all
     - source: "@quartz-community/alias-redirects"
       enabled: true
     - source: "@quartz-community/content-index"
@@ -144,26 +113,13 @@ plugins:
       enabled: true
     - source: "@quartz-community/og-image"
       enabled: true
-    - source: "@quartz-community/cname"
-      enabled: true
-    - source: "@quartz-community/canvas-page"
-      enabled: true
     - source: "@quartz-community/content-page"
-      enabled: true
-    - source: "@quartz-community/folder-page"
-      enabled: true
-    - source: "@quartz-community/tag-page"
       enabled: true
     - source: "@quartz-community/explorer"
       enabled: true
       layout:
           position: left
           priority: 50
-    - source: "@quartz-community/graph"
-      enabled: true
-      layout:
-          position: right
-          priority: 10
     - source: "@quartz-community/search"
       enabled: true
       layout:
@@ -187,11 +143,6 @@ plugins:
       layout:
           position: beforeBody
           priority: 20
-    - source: "@quartz-community/tag-list"
-      enabled: false
-      layout:
-          position: beforeBody
-          priority: 30
     - source: "@quartz-community/page-title"
       enabled: true
       layout:
@@ -203,26 +154,12 @@ plugins:
           position: left
           priority: 30
           group: toolbar
-    - source: "@quartz-community/reader-mode"
-      enabled: true
-      layout:
-          position: left
-          priority: 35
-          group: toolbar
     - source: "@quartz-community/breadcrumbs"
       enabled: true
       layout:
           position: beforeBody
           priority: 5
           condition: not-index
-    - source: "@quartz-community/comments"
-      enabled: false
-      options:
-          provider: giscus
-          options: {}
-      layout:
-          position: afterBody
-          priority: 10
     - source: ./custom-plugins/remark42
       enabled: true
       options:
@@ -294,21 +231,6 @@ layout:
                 left: []
                 right: []
         content: {}
-        folder:
-            exclude:
-                - reader-mode
-                - remark42
-            positions:
-                right: []
-        tag:
-            exclude:
-                - reader-mode
-                - remark42
-            positions:
-                right: []
-        canvas:
-            exclude:
-                - remark42
         bases:
             exclude:
                 - remark42
