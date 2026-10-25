@@ -22,6 +22,8 @@ My current idea is to build a "sense of belonging" by sharing my life publicly a
 
 Proper readme for the repository will be done later, when I'll have a more or less complete big picture of it. 
 
+[AGENTS.md](./__obsidian__/docs/AGENTS.md) - is kinda entry point to the repo though. I write it for myself and LLMs. 
+
 ---
 
 ## Quartz Sponsors

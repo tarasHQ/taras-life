@@ -20,9 +20,12 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 
 - ##### Instructions
     - It's crucial to adhere to conditions of reading to avoid unnecessary context bloat.
-    - Links are relative to `AGENTS.md`, path from repo's root would be `__obsidian__/docs/AGENTS.md`
+    - Links of attached docs below are relative to `AGENTS.md`, path from repo's root would be `__obsidian__/docs/AGENTS.md`. Rule applies only to those few docs below, so they're repository-agnostic.
+    - **Two link formats below mean two different things:**
+        - `[NAME](file:///C:/...)` — an **absolute OS path** for the LLM. Strip the `file:///` prefix and read the remaining path (e.g. `C:/Users/.../NAME.md`) directly with the read tool. These files live in the Obsidian vault, outside the repo, but on the same machine and readable.
+        - `[[...]]` — an **Obsidian internal link, for the user only** (clickable when the repo folder is opened/symlinked inside Obsidian). The LLM must never follow or resolve it.
 - ##### [PLANNING.md](file:///C:/Users/Taras/Documents/obsidian-vault/_static/projects/PLANNING.md)
-    - to be read only during planning phase or implementation of the steps. [[../../../../_static/projects/PLANNING|internal link for the user]], llm shouldn't use neither link or proposed paths.
+    - to be read only during planning phase or implementation of the steps. [[../../../../_static/projects/PLANNING|internal link for the user]] — user-only, LLM ignores it.
 - ##### [DEV_RULES.md](./DEV_RULES.md)
     - to be read only before writing the code, there's no information that is helpful during planning phase.
 - ##### [DEV_COMMANDS.md](./DEV_COMMANDS.md)
@@ -39,6 +42,7 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - **Bundler**: esbuild (+ `esbuild-sass-plugin`). Notes: bundles page JS and the local plugin's browser script.
 - **CSS toolchain**: SCSS → Lightning CSS. Notes: compiled and minified at build time.
 - **Quality gates**: Prettier, `tsx --test`, `tsc --noEmit`. Notes: `npm run check`, `npm test`.
+- **Git hooks**: lefthook. Notes: `pre-push` runs types→format→tests→build fast-fail-first; `pre-commit` README-review ported but disabled (`skip: true` in `lefthook.yml`). Wired by root `prepare` → `lefthook install`; bypass with `LEFTHOOK=0`.
 
 **Content & generation**
 - **Authoring**: Markdown + YAML frontmatter, written in Obsidian. Notes: lives in `content/` (not vault). 
@@ -63,7 +67,6 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 
 ### 01.2. Remark42 Comments
 - #### Plugin `custom-plugins/remark42/`
-	- 
 	- **Content binding**: a post is commentable only if it carries an `id` in frontmatter — no `id`, no comments.
 	- **Analytics caveat** (crucial on the free Cloudflare Worker plan): edge-injected web analytics ships `beacon.js` into Remark42's OAuth icons and breaks them; the workaround is a domain rule that disables `RUM` when the host equals Remark42's public host.
 - #### Service

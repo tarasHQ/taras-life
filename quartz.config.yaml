@@ -162,10 +162,6 @@ plugins:
           condition: not-index
     - source: ./custom-plugins/remark42
       enabled: true
-      options:
-          host: https://comments.taras.life
-          siteId: taras-life
-          threadBaseUrl: https://taras.life/comments
       layout:
           position: afterBody
           priority: 20

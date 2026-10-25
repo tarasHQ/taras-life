@@ -3,31 +3,31 @@ var remark42_browser_default = '"use strict";(()=>{console.debug("[remark42] sca
 
 // src/index.tsx
 import { jsx, jsxs } from "preact/jsx-runtime";
-var Remark42 = (options) => {
-  if (!options) {
-    throw new Error("[Remark42] Missing options block in quartz.config.yaml");
+var Remark42 = (opts) => {
+  if (opts !== void 0) {
+    throw new Error(
+      "[Remark42] The plugin is not configurable via YAML options \u2014 configuration is hardcoded in custom-plugins/remark42/src/index.tsx; edit it and rebuild the plugin."
+    );
   }
-  const { host, siteId, threadBaseUrl } = options;
   const Component = ({ fileData }) => {
     const frontmatter = fileData.frontmatter;
     if (!frontmatter || frontmatter.comments === false) return null;
     const commentId = frontmatter["comment-id"];
     if (typeof commentId !== "string" || commentId.length === 0) return null;
-    const threadUrl = `${threadBaseUrl}/${commentId}`;
+    const remarkConfig = {
+      host: "https://comments.taras.life",
+      site_id: "taras-life",
+      url: `https://taras.life/comments/${commentId}`,
+      no_footer: true,
+      custom_properties: {},
+      // filled at step 08 (visual polish)
+      page_title: frontmatter.title ?? fileData.slug ?? "Comments"
+    };
     return /* @__PURE__ */ jsxs("section", { class: "remark42-comments", "aria-label": "Comments", children: [
       /* @__PURE__ */ jsx("h2", { children: "Comments" }),
-      /* @__PURE__ */ jsx(
-        "div",
-        {
-          id: "remark42",
-          "data-comment-id": commentId,
-          "data-remark42-host": host,
-          "data-remark42-site-id": siteId,
-          "data-remark42-url": threadUrl,
-          "data-remark42-title": frontmatter.title ?? fileData.slug ?? "Comments",
-          children: /* @__PURE__ */ jsx("p", { role: "status", children: "Loading comments\u2026" })
-        }
-      )
+      /* @__PURE__ */ jsx("script", { dangerouslySetInnerHTML: { __html: `var remark_config = ${JSON.stringify(remarkConfig)}` } }),
+      /* @__PURE__ */ jsx("div", { id: "remark42", children: /* @__PURE__ */ jsx("p", { role: "status", children: "Loading comments\u2026" }) }),
+      /* @__PURE__ */ jsx("script", { type: "module", src: `${remarkConfig.host}/web/embed.mjs` })
     ] });
   };
   Component.afterDOMLoaded = remark42_browser_default;
