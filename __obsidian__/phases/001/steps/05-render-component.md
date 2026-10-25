@@ -1,58 +1,29 @@
 ---
-status: waiting
-state: high-level
-reviewedAtStep: "01"
+status: implemented
+state: condensed
+reviewedAtStep: "05"
 ---
 
 [← PLAN](../_plan_001.md)
 
 ## Description
-Rewrites the build-time half of the plugin as a small Preact component that renders one comments container for opted-in notes and supplies the browser bootstrap as a string. TypeScript/TSX source is compiled by the explicit package build; Quartz imports the committed JavaScript output.
+Locked the build-time markup contract. Most of the render already existed from steps 02–04 (package pipeline, docs-verbatim `remark_config` block, identity); this step fixed the four markup decisions the discussion had reserved, documented the contract as the interface step 06 may rely on, and verified the built output.
 
-## High-Level
+## Record
+**Locked markup contract (recorded in `src/index.tsx` header JSDoc):**
+- Container `id="remark42"` — **forced, not preferred**: the fixture shows the loader's `createInstance` hardcodes `document.getElementById("remark42")` and takes no element argument, so any other id would break every (re)mount, SPA included. This killed discussion option (b) ("own attribute + SPA API"): its premises were false — the import-time auto-run throws without `#remark42`.
+- `script#remark42-config` on the inline `remark_config` block — the step-06 SPA re-read selector (inline scripts don't re-execute after micromorph patches the body). User decision: id over a data attribute.
+- `Loading comments…` paragraph **stays** (user decision: informational). Transient by design — the loader removes every non-iframe container child once the widget reports `inited`.
+- `embed.mjs` module tag stays docs-verbatim and **eager**; reconciling its import-time auto-bootstrap with D5 viewport gating is step 06's problem — recorded as a tension, not solved here. Consequence already live: opted-in pages fetch the widget on full page loads until step 06 gates it.
+- CSS unchanged: the minimal `.remark42-comments { width: 100%; margin-top: 1rem; }` rule; full styling is step 08.
 
-### Intended outcome
-- For an opted-in content page: exactly one container element carrying the thread URL. For every other page: nothing at all — not an empty wrapper.
-- A clear split between what is fixed per site (host, site id, footer, properties — baked into the shared script at build time) and what varies per page (the thread URL — carried in the DOM). This split is what makes one shared script correct site-wide.
-- The container's markup is a documented contract: element type, attributes, and what the runtime may assume about it.
-- The package entry and component exports resolve to compiled `dist/` JavaScript. JSX/TSX is supported through the package build; native Node TypeScript loading is not used.
+**Markup diff:** exactly one attribute — `id="remark42-config"` added to the inline config script tag; contract documented in header JSDoc plus two brief JSX comments.
 
-### Local invariants
-- No `displayName` — the community type does not have it — and no `head`/`content` usage.
-- Render is pure: no `window`, no timers, no side effects, no reads outside the passed props.
-- All markup uses Preact VNodes, preferably JSX/TSX following the documented component examples; `h()` is also valid. No string concatenation of HTML.
-- The runtime must not depend on markup details that this step does not promise.
+**Verified (all green):** `npm run build:plugins` (regenerated committed `dist/`), `npm run check` + `npm test`, `npx quartz build` with built-page inspection: `remark42-shell-test.html` — one section, single `script#remark42-config` with the docs-verbatim config, `url` intact (`https://taras.life/comments/remark42-shell-test`), paragraph present, module tag present; every other HTML page — zero remark42 traces; CSS emission unchanged (one hashed component stylesheet site-wide); `dist/index.js` confirmed carrying the new markup.
 
-### Should NOT be done in this step
-- Any browser logic: gating, loading, theme, errors (step 06).
-- Typography, spacing or visual polish (step 08).
-- Option parsing or validation (step 03).
-- Identity rules (step 04).
+**Step-06 deviation:** the eager `embed.mjs` module tag was removed from the markup at step 06 — it fetched Remark42 on every page load, violating D5; the browser runtime is now the sole loader via gated dynamic `import()`. The contract line about the tag is obsolete; the tag no longer exists.
 
-## Discussion & Reflections
+**Handoffs:** step 06 — owns the runtime against this contract: re-reads `script#remark42-config`'s text on SPA nav, honours absent-id → no container, owns the eager-module-tag/D5 gating tension, owns `theme`/`components` reserved keys; step 08 — `custom_properties` fill, `min-height` question, full styling.
 
-1. **Container identity.** The captured module looks up `document.getElementById("remark42")` and reuses an existing iframe it finds there.
-   - (a) Give the container `id="remark42"` — works with the module's own auto-bootstrap and iframe reuse, but hardcodes a third-party id into our markup.
-   - (b) Use our own attribute and only the SPA API — clean, provided the module's import-time auto-run is a no-op without `#remark42`.
-   - (c) Both id and attribute — belt and braces, slight duplication.
-   - **Recommend (b)** once the auto-run is confirmed harmless, otherwise (a).
-
-2. **What travels in the DOM.**
-   - (a) Thread URL only; all site config baked into the shared script — smallest HTML, but changing site config means touching the component.
-   - (b) Full config in data attributes — flexible, duplicates config on every page.
-   - (c) One JSON blob attribute — flexible, unreadable in DevTools.
-   - **Recommend (a).**
-
-3. **Placeholder markup inside the container.**
-   - (a) Nothing — the frame appears when it appears.
-   - (b) "Loading comments…" text — honest, but flashes and shifts layout.
-   - (c) A fixed-height skeleton — no shift, but the height is a guess.
-   - **Recommend (a)**, adding a `min-height` only if step 08 shows a real shift.
-
-4. **Does this step ship any CSS at all?**
-   - (a) None — everything in step 08.
-   - (b) A hard minimum (separation from the last paragraph) so the widget is never glued to the text.
-   - (c) The full look now.
-   - **Recommend (b)**, expanded in step 08.
-
-_Reflection:_ (optional — compact notes from the user)
+---
+*Condensed at Completion Run #2: discussion option trails and task checklist removed; locked contract, verification evidence and handoffs retained above.*

@@ -72,7 +72,7 @@ await build({
 
 /** Verify the browser script actually embedded and no node builtins leaked in. */
 const emitted = await readFile(join(outDir, "index.js"), "utf8")
-if (!emitted.includes("scaffold bootstrap loaded")) {
+if (!emitted.includes("loading the embed module")) {
 	throw new Error("[remark42] build.mjs: the browser script did not embed into dist/index.js")
 }
 if (/\bnode:[a-z]/.test(emitted)) {

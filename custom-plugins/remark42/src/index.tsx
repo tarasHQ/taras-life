@@ -11,8 +11,25 @@
  * micromorph patches the body.
  *
  * Identity validation and thread-URL derivation live in `./thread-identity` (step
- * 04); final markup polish is step 05; the runtime (SPA lifecycle, theme, error
- * handling) is step 06.
+ * 04); the runtime (SPA lifecycle, theme, error handling) is step 06.
+ *
+ * Markup contract (locked at step 05 — what the step-06 runtime may assume):
+ * - `<section class="remark42-comments">` wraps everything and renders only on
+ *   opted-in pages (frontmatter `id` present, no `comments: false`).
+ * - `div#remark42` — the id is forced by Remark42's loader: `createInstance`
+ *   hardcodes `document.getElementById("remark42")` and takes no element
+ *   argument, so any other id would break every (re)mount, SPA included.
+ * - `script#remark42-config` — the inline `var remark_config` block carries a
+ *   stable id so the runtime can re-read the fresh config text after SPA
+ *   navigation (inline scripts do not re-execute once micromorph patches body).
+ * - The container's `Loading comments…` paragraph is informational; the loader
+ *   removes every non-iframe container child once the widget reports `inited`,
+ *   so the paragraph is transient by design.
+ * - There is deliberately NO `embed.mjs` script tag in this markup. The docs'
+ *   eager module tag would fetch Remark42 on every page load, violating D5
+ *   (zero traffic until the container nears the viewport); the browser runtime
+ *   in `./browser.ts` is the sole loader — it dynamic-`import()`s the module
+ *   once the gate fires. (Step-05 deviation, recorded in the step-06 record.)
  *
  * The component factory deliberately accepts no options and throws if Quartz ever
  * supplies any — configuration is code, so an options block in `quartz.config.yaml`
@@ -95,11 +112,21 @@ export const Remark42: QuartzComponentConstructor<Record<string, unknown> | unde
 		return (
 			<section class="remark42-comments" aria-label="Comments">
 				<h2>Comments</h2>
-				<script dangerouslySetInnerHTML={{ __html: `var remark_config = ${JSON.stringify(remarkConfig)}` }} />
+				{/* Stable id per the markup contract: the step-06 runtime re-reads this
+				    block's text on SPA navigation, because inline scripts do not
+				    re-execute after micromorph patches the body. */}
+				<script
+					id="remark42-config"
+					dangerouslySetInnerHTML={{ __html: `var remark_config = ${JSON.stringify(remarkConfig)}` }}
+				/>
+				{/* Id forced by the loader (see the markup contract in the header). The
+				    paragraph is informational; the loader clears non-iframe children
+				    once the widget reports `inited`. */}
 				<div id="remark42">
 					<p role="status">Loading comments…</p>
 				</div>
-				<script type="module" src={`${remarkConfig.host}/web/embed.mjs`} />
+				{/* No embed.mjs tag here — the browser runtime loades the module behind the
+				    viewport gate (see the markup contract in the header). */}
 			</section>
 		)
 	}
