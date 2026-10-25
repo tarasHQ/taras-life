@@ -36,17 +36,18 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            # The npm prebuild hook installs plugins and compiles local plugin output.
-            # Tests import that output, so build before running checks and tests.
-            - name: Build website
-              run: npm run build
+            # No prebuild hook: the committed dist/ ships the plugin. Nothing here
+            # compiles the plugin — npm ci installs it as a workspace dependency.
 
+            # check = plugin typecheck + import guards + dist/ freshness + prettier;
+            # test = root test suite. Both are fast and fail before the slower build.
             - name: Check types and formatting
               run: npm run check
 
-            # The root tsconfig does not include the local plugin's source files.
-            - name: Check Remark42 types
-              run: npm --prefix custom-plugins/remark42 run typecheck
-
             - name: Run tests
               run: npm test
+
+            # The clean-checkout proof: npm ci + a plain site build must load and
+            # render the committed plugin output without ever compiling the plugin.
+            - name: Build website
+              run: npm run build

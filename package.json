@@ -2,6 +2,9 @@
 	"name": "@jackyzha0/quartz",
 	"description": "🌱 publish your digital garden and notes as a website",
 	"private": true,
+	"workspaces": [
+		"custom-plugins/remark42"
+	],
 	"version": "5.0.0",
 	"type": "module",
 	"author": "jackyzha0 <j.zhao2k19@gmail.com>",
@@ -13,13 +16,15 @@
 	},
 	"scripts": {
 		"quartz": "./quartz/bootstrap-cli.mjs",
-		"check": "tsc --noEmit && npx prettier . --check",
 		"format": "npx prettier . --write",
+		"check:types": "tsc --noEmit && npm run check --workspace quartz-local-remark42",
+		"check:format": "npx prettier . --check",
+		"plugin:fresh": "npm run verify:dist --workspace quartz-local-remark42",
+		"check": "npm run check:types && npm run check:format && npm run plugin:fresh",
+		"build:plugins": "npm run build --workspaces --if-present",
+		"build": "npm run plugin:fresh && npx quartz build",
 		"test": "tsx --test",
-		"profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1",
-		"build:local-plugins": "npm --prefix custom-plugins/remark42 run build",
-		"prebuild": "npx quartz plugin install && npm run build:local-plugins",
-		"build": "npx quartz build"
+		"profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1"
 	},
 	"engines": {
 		"npm": ">=10.9.2",

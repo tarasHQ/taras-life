@@ -20,6 +20,10 @@ My current idea is to build a "sense of belonging" by sharing my life publicly a
 
 ---
 
+Proper readme for the repository will be done later, when I'll have a more or less complete big picture of it. 
+
+---
+
 ## Quartz Sponsors
 
 <p align="center">

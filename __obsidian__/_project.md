@@ -21,6 +21,6 @@ await cJS(c => c.RenderReflectionHelpers.renderColumns(dv, this.container));
 
 ## Phases
 
-### Phase 001 - UNTITLED_PHASE [open](./phases/001/_plan_001.md)
+### Phase 001 - Remark42 plugin rewrite [open](./phases/001/_plan_001.md)
 
 

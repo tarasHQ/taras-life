@@ -1,52 +1,84 @@
-// Reuse the host's esbuild: compile the browser lifecycle as text for Quartz,
-// then bundle the server-side component and independently testable helpers.
+/**
+ * Plugin build script — compiles the committed `dist/` output (decision D1).
+ *
+ * Two passes:
+ *   1. `src/browser.ts`  → minified IIFE text, kept in memory (the browser bootstrap).
+ *   2. `src/index.tsx`   → the node-side ESM entry Quartz loads, with a virtual module
+ *      `remark42:browser` resolved to the pass-1 text as a string literal.
+ *
+ * The output directory can be overridden (argv[1] after script path, or env
+ * `REMARK42_BUILD_OUT`) so `verify:dist` can build into a temp directory without
+ * touching the working tree. esbuild is deterministic here, which is what makes the
+ * freshness gate meaningful.
+ *
+ * Usage: `node build.mjs [outDir]`
+ */
 import { build } from "esbuild"
-import { dirname } from "node:path"
+import { mkdir, readFile, writeFile } from "node:fs/promises"
+import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
-const root = dirname(fileURLToPath(import.meta.url))
-const browser = await build({
-	absWorkingDir: root,
+const pluginRoot = dirname(fileURLToPath(import.meta.url))
+const outDir = process.argv[2] ?? process.env.REMARK42_BUILD_OUT ?? join(pluginRoot, "dist")
+
+// === Pass 1: browser bootstrap ====================================
+
+/** Bundle the bootstrap into minified IIFE text; it ships as a string, not a file. */
+const browserResult = await build({
+	absWorkingDir: pluginRoot,
 	entryPoints: ["src/browser.ts"],
 	bundle: true,
-	write: false,
 	platform: "browser",
 	format: "iife",
-	target: "es2020",
 	minify: true,
+	write: false,
 })
-const browserScript = browser.outputFiles[0].text
+const browserScript = browserResult.outputFiles[0].text
+
+// === Pass 2: node-side plugin entry ===============================
+
+/** Resolves the virtual `remark42:browser` specifier to the pass-1 script text. */
+const virtualBrowserModule = {
+	name: "remark42-browser-virtual",
+	setup(build) {
+		build.onResolve({ filter: /^remark42:browser$/ }, (args) => ({
+			path: args.path,
+			namespace: "remark42-browser",
+		}))
+		build.onLoad({ filter: /.*/, namespace: "remark42-browser" }, () => ({
+			// JSON.stringify produces a valid, fully escaped JS string literal.
+			contents: `export default ${JSON.stringify(browserScript)}`,
+			loader: "js",
+		}))
+	},
+}
 
 await build({
-	absWorkingDir: root,
-	entryPoints: {
-		index: "src/index.tsx",
-		identity: "src/identity.ts",
-		runtime: "src/runtime.ts",
-	},
-	outdir: "dist",
+	absWorkingDir: pluginRoot,
+	entryPoints: ["src/index.tsx"],
+	outfile: join(outDir, "index.js"),
 	bundle: true,
-	packages: "external",
 	platform: "node",
 	format: "esm",
-	target: "es2022",
+	// Keep preact (and everything else) external: the host supplies it at runtime,
+	// and the single-copy guarantee is enforced by verify:dist, not by bundling.
+	packages: "external",
 	jsx: "automatic",
 	jsxImportSource: "preact",
-	logLevel: "info",
-	plugins: [
-		{
-			name: "remark42-browser-script",
-			// Keep browser code out of Node execution: Quartz needs it as a resource string.
-			setup(build) {
-				build.onResolve({ filter: /^remark42:browser$/ }, () => ({
-					path: "remark42:browser",
-					namespace: "remark42-browser-script",
-				}))
-				build.onLoad({ filter: /.*/, namespace: "remark42-browser-script" }, () => ({
-					contents: `export default ${JSON.stringify(browserScript)}`,
-					loader: "js",
-				}))
-			},
-		},
-	],
+	plugins: [virtualBrowserModule],
 })
+
+// === Post-build assertions ========================================
+
+/** Verify the browser script actually embedded and no node builtins leaked in. */
+const emitted = await readFile(join(outDir, "index.js"), "utf8")
+if (!emitted.includes("scaffold bootstrap loaded")) {
+	throw new Error("[remark42] build.mjs: the browser script did not embed into dist/index.js")
+}
+if (/\bnode:[a-z]/.test(emitted)) {
+	throw new Error("[remark42] build.mjs: dist/index.js contains a node: import")
+}
+
+await mkdir(outDir, { recursive: true })
+await writeFile(join(outDir, "index.js"), emitted)
+console.log(`[remark42] built dist/ (${outDir})`)

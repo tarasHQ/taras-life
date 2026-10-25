@@ -1,52 +1,46 @@
-// Build the opt-in container and let Quartz distribute one shared browser bootstrap.
-// No credentials or live comment content are included in the generated HTML.
-import type { QuartzComponent, QuartzComponentConstructor } from "../../../quartz/components/types"
+/**
+ * Remark42 plugin entry — the build-time component registered with Quartz as `remark42`.
+ *
+ * This is the step-02 scaffold: it reproduces the currently deployed DOM contract
+ * byte-for-byte so generated HTML does not change while the rewrite is in flight.
+ * Deliberately minimal — no option validation (step 03), no identity rules (step 04),
+ * no final markup (step 05). The browser runtime is a placeholder (step 06 owns it).
+ */
+import type { QuartzComponent, QuartzComponentConstructor } from "@quartz-community/types"
 import browserScript from "remark42:browser"
-import { findDuplicateCommentIds, getCommentId, getThreadUrl, normalizePublicUrl } from "./identity"
-import type { CommentPage } from "./identity"
 
-export interface Remark42Options {
+/** Plugin options as declared in `quartz.config.yaml`. Validated in step 03, not here. */
+export type Remark42Options = {
 	host: string
 	siteId: string
 	threadBaseUrl: string
 }
 
-/** Validate public settings once, rather than allowing a broken runtime URL fallback. */
-function resolveOptions(options?: Remark42Options): Remark42Options {
-	if (!options || typeof options.siteId !== "string" || !options.siteId.trim()) {
-		throw new Error("[Remark42] Configure host, siteId, and threadBaseUrl in quartz.config.yaml")
-	}
-	return {
-		host: normalizePublicUrl(options.host, "host"),
-		siteId: options.siteId.trim(),
-		threadBaseUrl: normalizePublicUrl(options.threadBaseUrl, "threadBaseUrl"),
-	}
-}
+// === Exported Components ==========================================
 
-/** Stamp containers at build time; moving a note must not change its comment thread. */
+/**
+ * Builds the comments container component.
+ *
+ * Renders nothing for pages without an explicit `comment-id` or with `comments: false`,
+ * so only opted-in notes pay for the markup.
+ */
 export const Remark42: QuartzComponentConstructor<Remark42Options | undefined> = (options) => {
-	const settings = resolveOptions(options)
-	let checkedFiles: readonly CommentPage[] | undefined
+	// Presence guard only — this satisfies the `undefined` branch of the constructor type.
+	// Real options validation (defaults, fail-the-build semantics) lands in step 03.
+	if (!options) {
+		throw new Error("[Remark42] Missing options block in quartz.config.yaml")
+	}
+	const { host, siteId, threadBaseUrl } = options
 
-	const Component: QuartzComponent = ({ fileData, allFiles }) => {
-		// Quartz shares allFiles across renders and replaces it on a rebuild. Scan once
-		// per array, avoiding both repeated warnings and stale cross-build ID caches.
-		const pages = allFiles as CommentPage[] | undefined
-		if (pages && pages !== checkedFiles) {
-			checkedFiles = pages
-			for (const duplicate of findDuplicateCommentIds(pages)) {
-				console.warn(
-					`[Remark42] Duplicate comment-id ${JSON.stringify(duplicate.id)} in ${duplicate.pages.join(", ")}. ` +
-						"These notes will share one thread; assign unique IDs if that is not intended.",
-				)
-			}
-		}
+	const Component: QuartzComponent = ({ fileData }) => {
+		const frontmatter = fileData.frontmatter
+		if (!frontmatter || frontmatter.comments === false) return null
 
-		const frontmatter = fileData.frontmatter as Record<string, unknown> | undefined
-		if (frontmatter?.comments === false) return null
-		const commentId = getCommentId(frontmatter?.["comment-id"])
-		const threadUrl = getThreadUrl(commentId, settings.threadBaseUrl)
-		if (!threadUrl) return null
+		// Identity is read raw at this stage; step 04 owns validation and normalisation.
+		const commentId = frontmatter["comment-id"]
+		if (typeof commentId !== "string" || commentId.length === 0) return null
+
+		const threadUrl = `${threadBaseUrl}/${commentId}`
 
 		return (
 			<section class="remark42-comments" aria-label="Comments">
@@ -54,17 +48,16 @@ export const Remark42: QuartzComponentConstructor<Remark42Options | undefined> =
 				<div
 					id="remark42"
 					data-comment-id={commentId}
-					data-remark42-host={settings.host}
-					data-remark42-site-id={settings.siteId}
+					data-remark42-host={host}
+					data-remark42-site-id={siteId}
 					data-remark42-url={threadUrl}
-					data-remark42-title={frontmatter?.title ?? fileData.slug ?? "Comments"}>
+					data-remark42-title={frontmatter.title ?? fileData.slug ?? "Comments"}>
 					<p role="status">Loading comments…</p>
 				</div>
 			</section>
 		)
 	}
 
-	Component.displayName = "Remark42"
 	Component.afterDOMLoaded = browserScript
 	Component.css = ".remark42-comments { width: 100%; margin-top: 1rem; }"
 	return Component
