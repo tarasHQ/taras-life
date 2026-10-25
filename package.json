@@ -22,6 +22,7 @@
 		"plugin:fresh": "npm run verify:dist --workspace quartz-local-remark42",
 		"check": "npm run check:types && npm run check:format && npm run plugin:fresh",
 		"build:plugins": "npm run build --workspaces --if-present",
+		"prepare": "lefthook install",
 		"build": "npm run plugin:fresh && npx quartz build",
 		"test": "tsx --test",
 		"profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1"

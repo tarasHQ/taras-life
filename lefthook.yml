@@ -1,9 +1,10 @@
 # =====================================================================
 # Git hooks — managed by lefthook (https://lefthook.dev)
 #
-# Shims are written into .git/hooks/ by `lefthook install`, which runs
-# automatically on `npm install` via the lefthook package's postinstall.
-# A fresh clone therefore gets working hooks from `npm ci` alone.
+# Hooks are wired into .git/hooks/ by the root `prepare` script
+# (`lefthook install`), which npm runs automatically after every root
+# `npm install`/`npm ci`. A fresh clone therefore gets working hooks
+# from the install alone — no manual step, for you or anyone else.
 #
 # Bypass everything for an emergency push:  LEFTHOOK=0 git push
 # =====================================================================
