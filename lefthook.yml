@@ -1,0 +1,38 @@
+# =====================================================================
+# Git hooks — managed by lefthook (https://lefthook.dev)
+#
+# Shims are written into .git/hooks/ by `lefthook install`, which runs
+# automatically on `npm install` via the lefthook package's postinstall.
+# A fresh clone therefore gets working hooks from `npm ci` alone.
+#
+# Bypass everything for an emergency push:  LEFTHOOK=0 git push
+# =====================================================================
+
+# ── Gate before pushing ──────────────────────────────────────────────
+# Runs the same quality gates CI runs, on the dev machine first so a
+# broken commit never reaches `main` and burns a Workers Builds deploy.
+# Composition note: `build` already includes `plugin:fresh` (the
+# verify-dist freshness gate), so `check` is NOT run whole here — that
+# would run verify-dist twice. Gates listed fast-fail first; build is
+# last (slowest: full site generation). Sequential, not parallel, on
+# purpose.
+pre-push:
+    commands:
+        gates:
+            run: npm run check:types && npm run check:format && npm test && npm run build
+
+# ── README review on commit ──────────────────────────────────────────
+# Ported from the Axon repo: opens module READMEs affected by staged
+# code changes in VS Code for review, auto-stages edits made during the
+# review, and aborts if unrelated READMEs were modified outside the set.
+#
+# DISABLED while the repo is being restructured — to enable after the
+# dust settles, delete the `skip: true` line below.
+pre-commit:
+    commands:
+        readme-review:
+            # Fires only when staged files match code paths; pure content/
+            # or __obsidian__/ commits skip the review window entirely.
+            glob: "{quartz/**,custom-plugins/**,quartz.config.yaml,quartz.ts,docs/**,*.json,*.yaml,*.yml,*.mjs,*.ts,*.tsx}"
+            skip: true
+            run: node .lefthook/warnChangedReadmes.mjs

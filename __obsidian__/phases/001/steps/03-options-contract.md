@@ -36,6 +36,7 @@ Defines the only way the site is allowed to configure the plugin, and makes misc
    - (b) Throw at module import time — earliest possible, but some loader paths catch import errors.
    - (c) Throw inside the component factory, which runs while the layout is built — likely uncaught, but later.
    - **Recommend:** break one option on purpose, observe all three, then keep the earliest throw that really aborts `quartz build`. Report back if none does.
+   - User input: I need to fail loud and hard here. If plugin has issues - it should fail early so it doesn't moves broken into the deployment.
 
 2. **Where defaults live.**
    - (a) Manifest `defaultOptions` only — SSOT, but the plugin breaks if a default is missing there.
@@ -43,16 +44,18 @@ Defines the only way the site is allowed to configure the plugin, and makes misc
    - (c) Both — two places to keep in sync.
    - **Recommend (a)**, plus a startup assertion that every curated key has a default.
 
-3. **Typo detection inside the passthrough.**
+1. **Typo detection inside the passthrough.**
    - (a) Accept anything — flexible, typos are silently ignored by Remark42.
    - (b) Warn on passthrough keys that resemble curated ones.
    - (c) Maintain an allowlist of documented Remark42 keys and warn on anything outside it — safer, but rots as Remark42 evolves.
    - **Recommend (b).**
+   - User input - c seems to be safer. if it evolves - it breaks and can be fixed in minutes. Also we curate only those that are used, which is not much. 
 
-4. **Is `threadBaseUrl` an option at all?**
+1. **Is `threadBaseUrl` an option at all?**
    - (a) Explicit option — portable, and the frozen-URL invariant is visible.
    - (b) Derived from the site's `baseUrl` — less config, couples the plugin to site identity.
    - (c) No option, always the current site URL — breaks the frozen-URL invariant if the domain ever changes.
    - **Recommend (a).**
+   - I'm not sure what this is. We need to discuss it and its consequences.
 
 _Reflection:_ (optional — compact notes from the user)
