@@ -102,18 +102,18 @@ _Reflection:_ (optional — compact notes from the user)
 
 ### 01 - Gated loader authoring in browser.ts
 - [x] Replace the step-02 placeholder in `src/browser.ts` with the real runtime; keep the file a **hard no-op without `#remark42`**: no observer, no timer, no network, no subscriptions beyond the module-level ones.
-- [ ] Config is read **only from the DOM**: locate `script#remark42-config`, parse the `remark_config` object out of its text content; take `host` and all integration values from the parsed object — the bootstrap hardcodes nothing (site-wide config is baked into markup at build time, D2′).
-- [ ] Gate per container with an `IntersectionObserver` (`rootMargin` ≈ `"600px"`); create the observer **only after** a container is confirmed present; disconnect once fired.
-- [ ] On first approach: dynamic `import()` of `${host}/web/embed.mjs` with the URL built in a **variable**, so esbuild's pass-1 bundling cannot resolve it — verify the emitted IIFE keeps a runtime `import(...)`.
-- [ ] After the first import, subsequent mounts go through the persisted `window.REMARK42.createInstance(config)` handle; guard against a double-import while the first is in flight.
-- [ ] Types: no `any`; module globals typed via a local `type` (no `interface`), `import type` only; explicit return types on exported functions.
+- [x] Config is read **only from the DOM**: locate `script#remark42-config`, parse the `remark_config` object out of its text content; take `host` and all integration values from the parsed object — the bootstrap hardcodes nothing (site-wide config is baked into markup at build time, D2′).
+- [x] Gate per container with an `IntersectionObserver` (`rootMargin` ≈ `"600px"`); create the observer **only after** a container is confirmed present; disconnect once fired.
+- [x] On first approach: dynamic `import()` of `${host}/web/embed.mjs` with the URL built in a **variable**, so esbuild's pass-1 bundling cannot resolve it — verify the emitted IIFE keeps a runtime `import(...)`.
+- [x] After the first import, subsequent mounts go through the persisted `window.REMARK42.createInstance(config)` handle; guard against a double-import while the first is in flight.
+- [x] Types: no `any`; module globals typed via a local `type` (no `interface`), `import type` only; explicit return types on exported functions.
 
 ### 02 - SPA lifecycle wiring
 - [x] Register exactly once, at module top level, on `document`: `nav`, `prenav`, `themechange` (all confirmed dispatched on `document`; `themechange` by `@quartz-community/darkmode`).
-- [ ] On `prenav`: destroy the live instance (`window.REMARK42.destroy()`) so the iframe, listeners and MutationObserver die before micromorph patches the body; tolerate "nothing mounted yet".
-- [ ] On `nav` (fires on first load too, after component scripts): re-read container + fresh config. No container (absent-`id` page) → ensure destroyed, stay a no-op. Container present → arm the observer; if the module is already loaded, mount via `createInstance` immediately (no import, no wait for the viewport — the reader navigated here deliberately).
-- [ ] Use `window.addCleanup` for per-nav teardown as belt-and-braces, but never depend on it for correctness (no-op when SPA is off; the full page load is the cleanup then).
-- [ ] Rapid navigation: mounting is idempotent — an in-flight mount for a superseded page must not leak a second instance; every mount is preceded by a destroy of the previous one.
+- [x] On `prenav`: destroy the live instance (`window.REMARK42.destroy()`) so the iframe, listeners and MutationObserver die before micromorph patches the body; tolerate "nothing mounted yet".
+- [x] On `nav` (fires on first load too, after component scripts): re-read container + fresh config. No container (absent-`id` page) → ensure destroyed, stay a no-op. Container present → arm the viewport gate; **every** mount is gated (the original "module cached → mount immediately" branch was falsified by live testing — deviation 5).
+- [x] Use `window.addCleanup` for per-nav teardown as belt-and-braces, but never depend on it for correctness (no-op when SPA is off; the full page load is the cleanup then).
+- [x] Rapid navigation: mounting is idempotent — an in-flight mount for a superseded page must not leak a second instance; every mount is preceded by a destroy of the previous one.
 
 ### 03 - Theme handoff
 - [x] At each mount, read `document.documentElement.getAttribute("saved-theme")` (`"light" | "dark"`) and apply it to the freshly mounted instance via `window.REMARK42.changeTheme(theme)`.
@@ -137,7 +137,7 @@ _Reflection:_ (optional — compact notes from the user)
 
 ### 07 - Manual browser verification (live, against the real host)
 
-> **Caught implementation deviations (tasks 01–06):** (1) theme handoff is implemented as `theme` injection into the config copy *before* mounting, not a post-mount `changeTheme` call — same locked outcome, strictly better mechanism (iframe is created with the correct `colorScheme`/query param; no light flash on a dark site); `changeTheme` remains in use for live `themechange` events. (2) The reveal-success signal is the MutationObserver variant, not message filtering. (3) The gate observer stays armed through its initial `isIntersecting: false` callback (IO always fires once up front with current state — disconnecting there would have broken the gate entirely). (4) A `REMARK42::ready` fallback covers the module's deferred auto-run (import during parse → `DOMContentLoaded` → handles not yet on the global at adopt time).
+> **Caught implementation deviations (tasks 01–06):** (1) theme handoff is implemented as `theme` injection into the config copy *before* mounting, not a post-mount `changeTheme` call — same locked outcome, strictly better mechanism (iframe is created with the correct `colorScheme`/query param; no light flash on a dark site); `changeTheme` remains in use for live `themechange` events. (2) The reveal-success signal is the MutationObserver variant, not message filtering. (3) The gate observer stays armed through its initial `isIntersecting: false` callback (IO always fires once up front with current state — disconnecting there would have broken the gate entirely). (4) A `REMARK42::ready` fallback covers the module's deferred auto-run (import during parse → `DOMContentLoaded` → handles not yet on the global at adopt time). (5) Found by live testing: the "module cached → mount immediately on nav" branch was removed — **every** mount now waits on the viewport gate, because each mount's iframe fetches iframe.html + thread data, the expensive per-mount traffic D5 protects; the original branch fired that traffic right after any SPA navigation.
 - [ ] Full page load on an opted-in post, DevTools network open: **zero** `comments.taras.life` traffic until the container is ~600px from viewport, then exactly one `embed.mjs` request and the iframe fetch.
 - [ ] No-container pages (absent `id`, 404, bases, excalidraw): zero observers/timers/network — no remark42 traces in DevTools.
 - [ ] SPA navigation post → post: widget remounts with the new thread's URL/title (check the iframe `src` query params); post → non-post: instance destroyed; back/forward correct.

@@ -92,12 +92,9 @@ class Remark42Runtime {
 			// No comments on this route (absent `id`, 404, bases, excalidraw) — stay a no-op.
 			return
 		}
-		if (this.load) {
-			// Module already downloaded: the reader navigated here deliberately, so
-			// mount immediately instead of waiting on the viewport gate.
-			void this.mount(container, config)
-			return
-		}
+		// Every mount waits on the viewport gate, module cached or not: the module
+		// download is a one-time cost, but each mount fetches iframe.html and the
+		// thread data — that per-mount traffic is what D5 protects.
 		this.armGate(container, config)
 	}
 
@@ -169,9 +166,11 @@ class Remark42Runtime {
 	}
 
 	/**
-	 * Arms the viewport gate for a container whose module is not loaded yet.
-	 * The observer is created only here — a container is confirmed present —
-	 * and disconnected after its first meaningful callback.
+	 * Arms the viewport gate for a container. Applies to every mount — cached
+	 * module included — because the iframe's per-mount fetches (iframe.html,
+	 * thread data) are the traffic D5 gates. The observer is created only here
+	 * — a container is confirmed present — and disconnected once it fires the
+	 * mount.
 	 */
 	private armGate(container: HTMLElement, config: RemarkConfig): void {
 		this.gateObserver = new IntersectionObserver(
