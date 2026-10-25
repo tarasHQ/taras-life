@@ -62,4 +62,5 @@ use `custom_properties` for anything new.
 yeah, to notify admin in the first place. HUGE. Because there's hundreds of pages, if user comments - hard to see where the comment happened. But with these notifications - it may help start discussion.
 
 #### telegram channel for notifications would be nice as well
-not only for you, people can join too and follow discussion.
+- not only for you, people can join too and follow discussions around the site (if there will be any)
+- you can add concise link somewhere on top of the comments section to that channel.

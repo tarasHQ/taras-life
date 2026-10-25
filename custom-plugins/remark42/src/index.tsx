@@ -10,8 +10,9 @@
  * script block on SPA navigation, because inline scripts do not re-execute after
  * micromorph patches the body.
  *
- * Identity rules are step 04; final markup polish is step 05; the runtime (SPA
- * lifecycle, theme, error handling) is step 06.
+ * Identity validation and thread-URL derivation live in `./thread-identity` (step
+ * 04); final markup polish is step 05; the runtime (SPA lifecycle, theme, error
+ * handling) is step 06.
  *
  * The component factory deliberately accepts no options and throws if Quartz ever
  * supplies any — configuration is code, so an options block in `quartz.config.yaml`
@@ -19,14 +20,27 @@
  */
 import type { QuartzComponent, QuartzComponentConstructor } from "@quartz-community/types"
 import browserScript from "remark42:browser"
+import { buildThreadUrl, checkThreadId, formatThreadIdIssues, scanThreadIdIssues } from "./thread-identity"
+
+// === Local Constants ===============================================
+
+/**
+ * Frozen thread base — the URL namespace every comment thread lives under.
+ * Remark42 keys threads by the page URL handed to the widget, so changing this
+ * value silently orphans the entire comment history (D4). Treat any change as a
+ * deliberate thread-migration event, never a casual edit.
+ */
+const THREAD_BASE_URL = "https://taras.life/comments"
 
 // === Exported Components ===========================================
 
 /**
  * Builds the comments container component.
  *
- * Renders nothing for pages without an explicit `comment-id` or with `comments: false`,
- * so only opted-in notes pay for the markup.
+ * Renders nothing for pages without an explicit `id` or with `comments: false`,
+ * so only opted-in notes pay for the markup. Any present `id` is validated by
+ * `thread-identity.ts`: an invalid or duplicated id aborts the build, naming the
+ * offending note — a silently stranded note is the failure mode this prevents.
  *
  * Hardcoded configuration — the SSOT. Edit the literals below, then rebuild the
  * plugin per the D1 workflow (explicit `npm run build` in this package, commit the
@@ -34,10 +48,10 @@ import browserScript from "remark42:browser"
  * - `host` / `site_id` — public host and site identifier of the self-hosted
  *   Remark42 instance (LXC, Cloudflare Tunnel → Caddy); `site_id` must match `SITE`
  *   in `/etc/remark42.env` on the host.
- * - thread URL base — frozen. Threads are keyed by the page URL handed to the
- *   widget (`url` param → Remark42's storage key), so changing it silently orphans
- *   the entire comment history. Treat any change as a D4-level event and migrate
- *   threads deliberately.
+ * - `THREAD_BASE_URL` below — frozen. Threads are keyed by the page URL handed to
+ *   the widget (`url` param → Remark42's storage key), so changing it silently
+ *   orphans the entire comment history. Treat any change as a D4-level event and
+ *   migrate threads deliberately.
  * - `url` and `page_title` are per-page derivations, not configuration.
  * - `theme` and `components` are reserved for step 06 (theme synchronization,
  *   embed-only loading contract); loader-control fields (`__colors__`, `styles`,
@@ -52,18 +66,27 @@ export const Remark42: QuartzComponentConstructor<Record<string, unknown> | unde
 		)
 	}
 
-	const Component: QuartzComponent = ({ fileData }) => {
+	const Component: QuartzComponent = ({ fileData, allFiles }) => {
 		const frontmatter = fileData.frontmatter
 		if (!frontmatter || frontmatter.comments === false) return null
 
-		// Identity is read raw at this stage; step 04 owns validation and normalisation.
-		const commentId = frontmatter["comment-id"]
-		if (typeof commentId !== "string" || commentId.length === 0) return null
+		// Fail loud on every identity violation across the published set in a single
+		// aggregated throw. Re-scanned per render rather than cached: module-level
+		// state is forbidden under the concurrent build-time rendering rule, and the
+		// first throw ends the build anyway. A page carrying a bad id renders itself,
+		// so its own scan is guaranteed to flag it.
+		const issues = scanThreadIdIssues(allFiles ?? [])
+		if (issues.length > 0) throw new Error(formatThreadIdIssues(issues))
+
+		const check = checkThreadId(frontmatter["id"])
+		// Absent id → no container. An invalid own id cannot reach this line: the
+		// scan above already threw for it, since this page is part of allFiles.
+		if (check.kind !== "valid") return null
 
 		const remarkConfig = {
 			host: "https://comments.taras.life",
 			site_id: "taras-life",
-			url: `https://taras.life/comments/${commentId}`,
+			url: buildThreadUrl(check.id, THREAD_BASE_URL),
 			no_footer: true,
 			custom_properties: {}, // filled at step 08 (visual polish)
 			page_title: frontmatter.title ?? fileData.slug ?? "Comments",

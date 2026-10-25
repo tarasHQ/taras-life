@@ -129,8 +129,18 @@ await cJS(c => c.PlanStepsList.renderSteps(dv, this.container));
 - **steps**
 	- takes lots of time to re-explore all stuff I did while I was writing initial step contents. So each step should have "comprehensive exploration" section where LLM leaves links/notes/tips about how to research everything on the topic quickly. without many loops of back and forth. 
 	- Discussion and reflection - should have brief template as well, kinda like I had with kilo code. Autoregressive. Recommended choice. Explain in simple words. Also - I should add rule to automatically add at the end user input point. like `- USER INPUT: ` so I can type right away the answer
+- **tasks**
+	- completion flow doesn't go as separate block. it's just another task at the end like `### 99 - completion flow`, so LLM won't repeat it.
 - **artifacts**
 	- maybe it makes more sense for llm to write its output into .md files? Like I'm repeating the same thing right now. First task was exploring 10 minutes about how quartz proposes to write plugins, and now, in a new task, I'm wasting another 5-10 minutes on the same damn issue. 
+- **planning.md**
+	- too vague. implementation starts without discussion. llm dumps everything at once. no granularity or control. It's just a mess. Too vague for sure. You shouldn't have single bullet list for that. Each block should be separate, each point should be properly described. You need to have "completion conditions" on each block/loop to have clear stops.
+		- **IMPORTANT**. Like it's not a joke, there must be **routine** to this, if it's different every time - you're getting overwhelmed.
+		- Like that planning block must be hyper important and be the center of gravity for the whole task. 
+		- Like it should have its own section in agents, to clarify its importance. 
+	- **TLDR** - you lack routine in this. Process is chaotic and unpredictable. That's adds a lot of friction.
 ### What's good
 - having SSOT on shared decisions/invariants/nuances/etc.
 	- like with the notion that we now have remark42-old folder, I don't have to mention it in each step. SSOT for everything. Good. 
+- Condensation logic - definitely good. 
+- **Routine** - routine is super good. When you manage to have it - it reduces complexity and feeling overwhelmed by A LOT.

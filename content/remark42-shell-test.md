@@ -1,6 +1,6 @@
 ---
 title: Remark42 integration test
-comment-id: "remark42-shell-test"
+id: "remark42-shell-test"
 ---
 
 This temporary page tests the real Remark42 widget below an ordinary content note.
