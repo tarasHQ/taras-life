@@ -220,12 +220,7 @@ layout:
             gap: 0.5rem
     byPageType:
         "404":
-            exclude:
-                - remark42
-            positions:
-                beforeBody: []
-                left: []
-                right: []
+            template: default
         content: {}
         bases:
             exclude:

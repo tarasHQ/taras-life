@@ -16,7 +16,9 @@ export const NotFoundPageType: QuartzPageTypePlugin = () => ({
 			slug,
 			text: notFound,
 			description: notFound,
-			frontmatter: { title: notFound, tags: [] },
+			// Fixed code-owned identity so the remark42 component renders here: every
+			// missing URL serves this same page, so the thread is one shared "404" thread.
+			frontmatter: { title: notFound, tags: [], id: "404" },
 		})
 
 		return [
