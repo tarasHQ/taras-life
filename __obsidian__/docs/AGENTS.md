@@ -70,7 +70,7 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 	- **Content binding**: a post is commentable only if it carries an `id` in frontmatter — no `id`, no comments.
 	- **Analytics caveat** (crucial on the free Cloudflare Worker plan): edge-injected web analytics ships `beacon.js` into Remark42's OAuth icons and breaks them; the workaround is a domain rule that disables `RUM` when the host equals Remark42's public host.
 - #### Service
-	- **Topology**: a standalone binary self-hosted on an LXC container, exposed to the internet through a Cloudflare Tunnel that arrives at Caddy; Caddy also rewires some headers, then reroutes locally.
+	- **Topology**: a standalone binary hosted on another server. 
 	- **Process**: runs as a `systemd` service under `nobody:nogroup`, with `WorkingDirectory=/var/www/remark42`.
 		- Unit: `/etc/systemd/system/remark42.service`
 		- Config: `/etc/remark42.env`
