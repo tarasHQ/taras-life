@@ -66,10 +66,10 @@ export default {
 			lastFewNotes: ({ count }) => `Last ${count} notes`,
 		},
 		error: {
-			title: "Not Found",
+			title: "404",
 			notFound:
-				"This page doesn't exist. If you got here through a link, please, leave a comment with that link — or describe where you came from — so I can fix it.",
-			home: "Return to Homepage",
+				"This page doesn't exist. If you got here through a link, please, leave a comment with that link - or describe where you came from - so I can fix it.",
+			home: "",
 		},
 		folderContent: {
 			folder: "Folder",
