@@ -60,7 +60,7 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - **Fonts**: fully self-hosted woff2 in `quartz/static/fonts/`. 
 
 **Delivery**
-- **Build trigger**: Cloudflare **Workers Builds** on push. Notes: runs `build.command` from `wrangler.jsonc`.
+- **Build trigger**: Cloudflare **Workers Builds** on push. 
 - **Build output**: `public/` static files. Notes: gitignored, disposable.
 - **Hosting**: Cloudflare Workers **static assets** — no `main`, no bindings. Notes: nothing executes at the edge.
 - **Edge / DNS / TLS**: Cloudflare, custom domain `taras.life`. Notes: cert and DNS record dashboard-managed.

@@ -3,14 +3,11 @@
 Font files served for this site. Committed to the repo — builds are hermetic,
 no network fetch at build or runtime, fully OFL-compliant (see `OFL.txt`).
 
-## Inventory
+## IMPORTANT
+- Fonts are cached, configured in _headers file. Font's name doesn't change if I replace it with
+  other version, which means that caching won't fetch new version. 
 
-| Family | Role | Subsets | Weights |
-| --- | --- | --- | --- |
-| Atkinson Hyperlegible Next | body (latin/latin-ext) | latin, latin-ext | 400, 800 (+italics) |
-| Source Sans Pro | body cyrillic (aliased under Atkinson) | cyrillic | 400, 700 (+italics) |
-| JetBrains Mono | code | latin, latin-ext, cyrillic | 400, 800 (+italics) |
-| Playfair Display | headers | latin, latin-ext, cyrillic | 400, 800 (+italics) |
+## Nuances
 
 - Cyrillic-ext subsets were fetched for JetBrains Mono and Playfair but
   **deleted** as unnecessary; re-fetch if content ever needs them.

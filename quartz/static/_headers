@@ -1,6 +1,7 @@
 # Cloudflare Workers static assets - custom response headers.
-# Copied verbatim to public/_headers by the Static emitter; parsed by Cloudflare,
-# never served as an asset. Docs: developers.cloudflare.com/workers/static-assets/headers/
+# Copied verbatim to the OUTPUT ROOT (public/_headers) by the Static emitter
+# (see the CUSTOM EDITS note there); parsed by Cloudflare, never served as an
+# asset. Docs: developers.cloudflare.com/workers/static-assets/headers/
 #
 # Dev Comment: 
 # - cached file's content gets hashed and first 8 bits of hash go into file name's suffix.
