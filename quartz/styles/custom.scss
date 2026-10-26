@@ -33,20 +33,12 @@ $unicode-cyrillic: "U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116";
 /// Emit one @font-face rule. Paths are site-root-absolute (site is served from
 /// the domain root on Cloudflare Workers, so /static/fonts resolves on every
 /// page, including the root-level 404).
-///
-/// font-display: block — deliberate choice. `swap` paints fallback text at
-/// first paint and swaps when the font applies — a visible jump on every cold
-/// load (measured: preloads already start font fetches in parallel with the
-/// stylesheet, so fetch latency is not the bottleneck). `block` renders text
-/// invisible during the (preloaded, ~12–25 KB, same-origin → tens of ms) load
-/// window, then paints once with the real font: no fallback glyphs ever, no
-/// mid-page swap. Worst case on a very slow connection: blank text up to 3s.
 @mixin face($family, $file, $weight, $style, $range) {
 	@font-face {
 		font-family: $family;
 		font-style: $style;
 		font-weight: $weight;
-		font-display: block;
+		font-display: swap;
 		src: url("/static/fonts/#{$file}.woff2") format("woff2");
 		unicode-range: #{$range};
 	}
