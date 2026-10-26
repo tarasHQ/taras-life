@@ -11,6 +11,7 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - **Hosting**: Cloudflare Workers, **assets-only** (no `main`, no bindings). Lives in: `wrangler.jsonc`.
 - **Delivery**: Cloudflare **Workers Builds** on push → `npm run build` → `public/`. Lives in: `wrangler.jsonc`. NO PREVIEWS enabled. 
 - **Comments**: Self-hosted Remark42 (external LXC) via a local Quartz plugin. Lives in: `custom-plugins/remark42/`.
+- **CI**: GitHub Actions on PRs and `main` — `npm ci`, `npm run check`, `npm test`, `npm run build`. Lives in: `.github/workflows/ci.yaml`. Notes: doubles as the clean-checkout proof that the site build consumes committed plugin output without compiling it.
 - **Analytics**: Cloudflare Web Analytics, injected **at the edge** by a dashboard rule. Lives: ⚠️ outside this repo.
 - **Runtime**: Node ≥ 22, npm ≥ 10.9.2, ESM + TypeScript. Lives in: `package.json`.
 
@@ -67,7 +68,10 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 
 ### 01.2. Remark42 Comments
 - #### Plugin `custom-plugins/remark42/`
-	- **Content binding**: a post is commentable only if it carries an `id` in frontmatter — no `id`, no comments.
+	- **Content binding**: a post is commentable only if it carries an `id` in frontmatter — no `id`, no comments; `comments: false` is the explicit opt-out. Thread URL is frozen as `https://taras.life/comments/<id>` — changing it orphans every thread.
+	- **Packaging**: TS/TSX source compiled by `build.mjs` into a committed `dist/` which is what site generation consumes. Site builds never compile the plugin; after editing plugin source run `npm run build:plugins` and commit `dist/` (freshness is enforced by `verify:dist` inside `npm run check`).
+	- **Validation split**: the build-time component validates only its own page's `id` and aborts the build on an invalid one (O(1) per page); duplicate ids and `comments` contradictions are caught by the manual audit `npm run check:comments` (`scripts/comments-identity-audit.mjs`, shares rules with `src/thread-identity.ts`). The audit is not wired into `check`, hooks or CI.
+	- **Verification policy**: the plugin ships no test suite; browser runtime behaviour is verified manually against the live widget.
 	- **Analytics caveat** (crucial on the free Cloudflare Worker plan): edge-injected web analytics ships `beacon.js` into Remark42's OAuth icons and breaks them; the workaround is a domain rule that disables `RUM` when the host equals Remark42's public host.
 - #### Service
 	- **Topology**: a standalone binary hosted on another server. 

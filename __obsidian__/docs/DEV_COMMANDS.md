@@ -1,7 +1,7 @@
 # Core Commands
 
 - `npm ci` - install exact dependency tree from `package-lock.json`
-- `npm run build` - build the site into `public/`; the `prebuild` lifecycle hook runs first (installs plugins + builds the local remark42 plugin)
+- `npm run build` - build the site into `public/`; consumes the plugin's committed `dist/` and never compiles it
 - `npm test` - run the TypeScript suites through Node's test runner (`tsx --test`)
 - `npx quartz <cmd>` - run any CLI command directly; `npx quartz --help` lists every command, `npx quartz <cmd> --help` lists its flags
 
@@ -33,7 +33,8 @@
 - `npx quartz plugin config <name> [--set key=value]` - read or write a single plugin option
 - `npx quartz plugin prune [--dry-run]` - drop installed plugins no longer referenced in config
 - `npx quartz plugin restore|update|check|resolve` - deprecated hidden aliases mapping to `install --clean|--latest|--latest --dry-run|--from-config`
-- `npm run build:local-plugins` - build `custom-plugins/remark42` (runs inside `prebuild`)
+- `npm run build:plugins` - build `custom-plugins/remark42` (explicit, workspace-aware; required after editing plugin source, before committing)
+- `npm run check:comments` - manual audit of comment identity and built comment markup; not part of `check`, hooks or CI
 
 ## Typecheck & Format
 
@@ -43,8 +44,7 @@
 
 ## Tests
 
-- `npm test` - root suites under `quartz/**/*.test.ts` (components, plugin loader, pageTypes, util)
-- `npm --prefix custom-plugins/remark42 test` - typecheck + build + `node --test` on `shell/identity/runtime` fixtures
+- `npm test` - root suites under `quartz/**/*.test.ts` (components, plugin loader, pageTypes, util); the remark42 plugin ships no test suite
 
 ## Wrangler
 - installed but not used for any commands nor configured to do so. Used only for schema autocomplete/valudation in `wrangler.jsonc`

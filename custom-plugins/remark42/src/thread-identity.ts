@@ -1,33 +1,54 @@
 /**
- * Thread identity — validation of the frontmatter `id` key and derivation of the
- * Remark42 thread URL (phase 001, decision D4).
+ * Thread identity — the frozen thread namespace, validation of the frontmatter
+ * `id` key, and derivation of the Remark42 thread URL (phase 001, decision D4).
  *
  * Identity is content-owned data: the `id` key names the comment thread, and the
  * component trims and encodes its value but never rewrites it and never falls back
  * to the page URL (a fallback would orphan every existing comment on the next
  * rename). The thread URL format is frozen:
- * `${threadBaseUrl}/${encodeURIComponent(id)}`.
+ * `${THREAD_BASE_URL}/${encodeURIComponent(id)}`.
  *
  * Policy, all answered here:
  * - an absent `id`, or a page opted out via `comments: false`, is simply not
  *   commentable — never an error, and the opted-out id is inert (unvalidated,
  *   excluded from duplicate detection);
  * - a present `id` that is not a string, is empty/whitespace-only, is a dot
- *   segment, or is outside `[a-z0-9-]+` is an issue for the aggregated build
- *   failure — silent misconfiguration used to strand notes without comments;
+ *   segment, or is outside `[a-z0-9-]+` is an issue — silent misconfiguration
+ *   used to strand notes without comments;
  * - two commentable pages sharing one `id` is an issue, because two notes would
- *   silently mix into one comment thread.
+ *   silently mix into one comment thread;
+ * - `comments` that is not a boolean, or an `id` on an opted-out page, is a
+ *   contradiction in the author's intent.
+ *
+ * Consumers differ by when the check runs:
+ * - the build-time component validates ONLY its own page's `id` and aborts the
+ *   build on an invalid one — O(1) per page, so a large site pays nothing;
+ * - cross-page checks (`scanThreadIdIssues`, `findOptOutIssues`) run in the
+ *   manual `npm run check:comments` audit, never during a build.
+ *
+ * This module is pure — no DOM, no Node builtins — so both consumers can import
+ * it: the plugin entry after esbuild bundles it, and the audit script under tsx.
  */
 
 // === Local Constants ===============================================
 
-/** Allowed id charset, locked at step 04. No length rule — generation is tooling. */
+/** Allowed id charset. No length rule — generation is tooling. */
 const ID_PATTERN = /^[a-z0-9-]+$/
+
+// === Exported Constants ============================================
+
+/**
+ * Frozen thread base — the URL namespace every comment thread lives under.
+ * Remark42 keys threads by the page URL handed to the widget, so changing this
+ * value silently orphans the entire comment history (D4). Treat any change as a
+ * deliberate thread-migration event, never a casual edit.
+ */
+export const THREAD_BASE_URL = "https://taras.life/comments"
 
 // === Exported Types ================================================
 
 /**
- * Minimal structural view of a page the identity scan needs. Host-provided page
+ * Minimal structural view of a page the identity checks need. Host-provided page
  * data is untrusted boundary input, so every field is `unknown` and narrowed by
  * runtime checks — never by assertions.
  */
@@ -40,7 +61,7 @@ export type CommentablePage = {
 /** Classification of one page's `id` frontmatter value. */
 export type ThreadIdCheck = { kind: "absent" } | { kind: "valid"; id: string } | { kind: "invalid"; problem: string }
 
-/** One identity violation, ready for the aggregated build-failure message. */
+/** One identity violation, ready for an aggregated failure or audit report. */
 export type ThreadIdIssue = {
 	pages: string[]
 	problem: string
@@ -71,9 +92,9 @@ export function buildThreadUrl(id: string, threadBaseUrl: string): string {
 }
 
 /**
- * Collect every identity violation over the published page set: invalid ids and
- * duplicate id groups. Results are sorted deterministically, because the build is
- * concurrent and the failure text must not depend on render order.
+ * Collect every `id` violation over the published page set: invalid ids and
+ * duplicate id groups. Results are sorted deterministically, because the page set
+ * is unordered and the report must not depend on filesystem enumeration order.
  */
 export function scanThreadIdIssues(pages: readonly CommentablePage[]): ThreadIdIssue[] {
 	const issues: ThreadIdIssue[] = []
@@ -109,10 +130,41 @@ export function scanThreadIdIssues(pages: readonly CommentablePage[]): ThreadIdI
 	return issues.sort(compareIssues)
 }
 
-/** Format all identity issues into one aggregated build-failure message. */
-export function formatThreadIdIssues(issues: readonly ThreadIdIssue[]): string {
-	const lines = issues.map((issue) => `- ${issue.pages.join(", ")}: ${issue.problem}`)
-	return `[Remark42] Comment identity errors — fix the frontmatter \`id\` key:\n${lines.join("\n")}`
+/**
+ * Collect contradictions between the two comment keys: a `comments` value that is
+ * not a boolean (a quoted YAML `"false"` renders comments anyway, because the
+ * component compares strictly against `false`), and an `id` that is set while the
+ * page is opted out — one of the two keys is a leftover the author did not mean.
+ * Audit-only: the build never inspects more than the current page.
+ */
+export function findOptOutIssues(pages: readonly CommentablePage[]): ThreadIdIssue[] {
+	const issues: ThreadIdIssue[] = []
+
+	for (const page of pages) {
+		const frontmatter = asRecord(page.frontmatter)
+		if (!frontmatter || !("comments" in frontmatter)) continue
+
+		const source = describeSource(page)
+		const comments = frontmatter["comments"]
+		if (typeof comments !== "boolean") {
+			issues.push({
+				pages: [source],
+				problem: `comments must be a boolean, got ${describe(comments)} — a quoted value is ignored by the component`,
+			})
+			continue
+		}
+		if (comments !== false) continue
+
+		const check = checkThreadId(frontmatter["id"])
+		if (check.kind !== "absent") {
+			issues.push({
+				pages: [source],
+				problem: "id is set while comments: false opts the page out — remove one of the two keys",
+			})
+		}
+	}
+
+	return issues.sort(compareIssues)
 }
 
 // === Local Functions ===============================================
@@ -135,7 +187,7 @@ function describeSource(page: CommentablePage): string {
 	return name ?? "unknown page"
 }
 
-/** Describe a non-string id value's type for the invalid-id problem text. */
+/** Describe a non-string value's type for problem text. */
 function describe(value: unknown): string {
 	if (value === null) return "null"
 	if (Array.isArray(value)) return "array"

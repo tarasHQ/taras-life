@@ -3,6 +3,7 @@ var remark42_browser_default = '"use strict";(()=>{var u="remark42",h="remark42-
 
 // src/thread-identity.ts
 var ID_PATTERN = /^[a-z0-9-]+$/;
+var THREAD_BASE_URL = "https://taras.life/comments";
 function checkThreadId(value) {
   if (value === void 0) return { kind: "absent" };
   if (typeof value !== "string") {
@@ -21,81 +22,36 @@ function checkThreadId(value) {
 function buildThreadUrl(id, threadBaseUrl) {
   return `${threadBaseUrl}/${encodeURIComponent(id)}`;
 }
-function scanThreadIdIssues(pages) {
-  const issues = [];
-  const pagesById = /* @__PURE__ */ new Map();
-  for (const page of pages) {
-    const frontmatter = asRecord(page.frontmatter);
-    if (!frontmatter || frontmatter["comments"] === false) continue;
-    const check = checkThreadId(frontmatter["id"]);
-    if (check.kind === "absent") continue;
-    const source = describeSource(page);
-    if (check.kind === "invalid") {
-      issues.push({ pages: [source], problem: check.problem });
-      continue;
-    }
-    const sources = pagesById.get(check.id) ?? /* @__PURE__ */ new Set();
-    sources.add(source);
-    pagesById.set(check.id, sources);
-  }
-  for (const [id, sources] of pagesById) {
-    if (sources.size > 1) {
-      issues.push({
-        pages: [...sources],
-        problem: `duplicate id ${JSON.stringify(id)} \u2014 these pages would silently share one comment thread`
-      });
-    }
-  }
-  return issues.sort(compareIssues);
-}
-function formatThreadIdIssues(issues) {
-  const lines = issues.map((issue) => `- ${issue.pages.join(", ")}: ${issue.problem}`);
-  return `[Remark42] Comment identity errors \u2014 fix the frontmatter \`id\` key:
-${lines.join("\n")}`;
-}
-function asRecord(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value) ? value : void 0;
-}
-function describeSource(page) {
-  const name = typeof page.relativePath === "string" ? page.relativePath : typeof page.slug === "string" ? page.slug : void 0;
-  return name ?? "unknown page";
-}
 function describe(value) {
   if (value === null) return "null";
   if (Array.isArray(value)) return "array";
   return typeof value;
 }
-function compareIssues(a, b) {
-  const aSource = a.pages.join(", ");
-  const bSource = b.pages.join(", ");
-  if (aSource !== bSource) return aSource < bSource ? -1 : 1;
-  return a.problem < b.problem ? -1 : a.problem > b.problem ? 1 : 0;
-}
 
 // src/index.tsx
 import { jsx, jsxs } from "preact/jsx-runtime";
-var THREAD_BASE_URL = "https://taras.life/comments";
 var Remark42 = (opts) => {
   if (opts !== void 0) {
     throw new Error(
       "[Remark42] The plugin is not configurable via YAML options \u2014 configuration is hardcoded in custom-plugins/remark42/src/index.tsx; edit it and rebuild the plugin."
     );
   }
-  const Component = ({ fileData, allFiles }) => {
-    const frontmatter = fileData.frontmatter;
-    if (!frontmatter || frontmatter.comments === false) return null;
-    const issues = scanThreadIdIssues(allFiles ?? []);
-    if (issues.length > 0) throw new Error(formatThreadIdIssues(issues));
+  const Component = ({ fileData }) => {
+    const frontmatter = asRecord(fileData.frontmatter);
+    if (!frontmatter || frontmatter["comments"] === false) return null;
     const check = checkThreadId(frontmatter["id"]);
-    if (check.kind !== "valid") return null;
+    if (check.kind === "absent") return null;
+    if (check.kind === "invalid") {
+      throw new Error(`[Remark42] ${describePage(fileData)}: ${check.problem}`);
+    }
     const remarkConfig = {
       host: "https://comments.taras.life",
       site_id: "taras-life",
       url: buildThreadUrl(check.id, THREAD_BASE_URL),
       no_footer: true,
       custom_properties: {},
-      // filled at step 08 (visual polish)
-      page_title: frontmatter.title ?? fileData.slug ?? "Comments"
+      // filled at visual polish
+      page_title: asTitle(frontmatter["title"]) ?? asString(fileData.slug) ?? "Comments"
     };
     return /* @__PURE__ */ jsxs("section", { class: "remark42-comments", "aria-label": "Comments", children: [
       /* @__PURE__ */ jsx("h2", { children: "Comments" }),
@@ -113,6 +69,18 @@ var Remark42 = (opts) => {
   Component.css = ".remark42-comments { width: 100%; margin-top: 1rem; }";
   return Component;
 };
+function asRecord(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value) ? value : void 0;
+}
+function asString(value) {
+  return typeof value === "string" && value.length > 0 ? value : void 0;
+}
+function asTitle(value) {
+  return asString(typeof value === "string" ? value.trim() : void 0);
+}
+function describePage(fileData) {
+  return asString(fileData["relativePath"]) ?? asString(fileData["slug"]) ?? "unknown page";
+}
 export {
   Remark42
 };

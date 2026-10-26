@@ -67,8 +67,7 @@ export default {
 		},
 		error: {
 			title: "404",
-			notFound:
-				"This page doesn't exist. If you got here through a link, please, leave a comment with that link - or describe where you came from - so I can fix it.",
+			notFound: `This page doesn't exist. If you got here through a link, please, leave a comment with that link - or describe where you came from - so I can fix it. The comments section is the same one for all broken links or non-existent pages`,
 			home: "",
 		},
 		folderContent: {
