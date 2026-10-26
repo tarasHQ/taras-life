@@ -57,7 +57,7 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - **Code**: `Shiki (rehype-pretty-code)`. Notes: build time only; no math engine — the LaTeX plugin was removed.
 - **Search**: `FlexSearch`. Notes: index built at compile time, queried in-browser.
 - **Images**: `sharp`. Notes: resizing and OG image generation.
-- **Fonts**: Google Fonts origin, CDN-cached. Notes: theme config.
+- **Fonts**: fully self-hosted woff2 in `quartz/static/fonts/`. 
 
 **Delivery**
 - **Build trigger**: Cloudflare **Workers Builds** on push. Notes: runs `build.command` from `wrangler.jsonc`.
