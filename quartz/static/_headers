@@ -1,0 +1,49 @@
+# Cloudflare Workers static assets - custom response headers.
+# Copied verbatim to public/_headers by the Static emitter; parsed by Cloudflare,
+# never served as an asset. Docs: developers.cloudflare.com/workers/static-assets/headers/
+#
+# Dev Comment: 
+# - cached file's content gets hashed and first 8 bits of hash go into file name's suffix.
+# - fonts have static name, so I must be careful if I'll replace those with same-name files. 
+# - weekly cache is just to be on the safe side, still infinitely more than no caching. 
+#
+# Rules:
+# - Single splat (*) per pattern, greedy. Duplicate headers from OVERLAPPING
+#   rules get joined with commas, so patterns below are deliberately
+#   non-overlapping.
+# - HTML (pages, 404.html) gets NO rule on purpose: the assets-layer default is
+#   already `Cache-Control: public, max-age=0, must-revalidate` + ETag, which is
+#   exactly the desired behavior for HTML (fresh deploys picked up immediately,
+#   304 revalidation on repeat visits).
+# - Hashed filenames below are content-addressed (name never repeats for
+#   different content), so `immutable` is safe and eliminates revalidation
+#   round-trips on repeat visits.
+# - CAVEAT for stable-named files: if a font's CONTENT is replaced under the
+#   same filename (e.g. re-fetching a face), browsers keep the stale copy until
+#   max-age expires
+# Note for LLM
+
+/index-*.css
+  Cache-Control: public, max-age=604800, immutable
+
+/component-*.css
+  Cache-Control: public, max-age=604800, immutable
+
+/prescript-*.js
+  Cache-Control: public, max-age=604800, immutable
+
+/postscript-*.js
+  Cache-Control: public, max-age=604800, immutable
+
+/static/scripts/*
+  Cache-Control: public, max-age=604800, immutable
+
+# Extracted plugin CSS/JS resources (resource-style-<hash>.css,
+# resource-before/after-<hash>.js) - content-hashed, immutable.
+/static/resource-*
+  Cache-Control: public, max-age=604800, immutable
+
+# Fonts have STABLE filenames, so duration is the only safety margin against
+# same-name content replacement. Capped at 7 days per user decision.
+/static/fonts/*
+  Cache-Control: public, max-age=604800, immutable
