@@ -30,36 +30,11 @@ export default (() => {
 		const coreStylesheet = css[0]?.content
 		const coreScript = js.find((r) => r.loadTime === "beforeDOMReady" && r.contentType === "external")
 
-		// Self-hosted fonts (quartz/static/fonts/, @font-face in quartz/styles/custom.scss):
-		// without preload, woff2 fetches only start after the CSS is parsed and layout
-		// discovers text using the font, so `font-display: swap` flashes fallback text
-		// on cold cache. Preloading the faces used on every page starts those fetches at
-		// HTML parse time, in parallel with the stylesheet. Keep this list MINIMAL —
-		// preloading unused files earns Lighthouse warnings. Filenames must match files
-		// committed in quartz/static/fonts/ and documented in its README.md.
-		// crossorigin is REQUIRED: font fetches are CORS-mode, so the preload without it
-		// would never match the CSS-initiated request (double download).
-		const fontPreloads = [
-			"atkinson-hyperlegible-next-latin-400-normal.woff2",
-			"playfair-display-latin-400-normal.woff2",
-			"jetbrains-mono-latin-400-normal.woff2",
-		]
-
 		return (
 			<head>
 				<title>{title}</title>
 				<meta charSet="utf-8" />
 				{coreStylesheet && <link rel="preload" href={coreStylesheet} as="style" />}
-				{fontPreloads.map((file) => (
-					<link
-						key={file}
-						rel="preload"
-						href={`/static/fonts/${file}`}
-						as="font"
-						type="font/woff2"
-						crossOrigin="anonymous"
-					/>
-				))}
 				{coreScript && coreScript.contentType === "external" && (
 					<link rel="preload" href={coreScript.src} as="script" />
 				)}
