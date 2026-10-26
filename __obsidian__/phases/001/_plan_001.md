@@ -116,6 +116,7 @@ await cJS(c => c.PlanStepsList.renderSteps(dv, this.container));
 - **Planning flow is bad**
 	- You dumped lots of text at once. That was the issue. It just overwhelmed you. Then you don't follow it. And now you're paying the price because you don't know jack shit about this.
 		- and you did this in the wrong state of mind, which made you not-read or forget most of the things. 
+	- you also need to decide before committing the phase, whether you need a separate branch for that.
 - **other**
 	- js html dataview block - use icons for showing state of the step (full/high-level/condensed)
 		- ○ ◎ ◉ or 🟢🔵🟡
