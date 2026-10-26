@@ -57,10 +57,10 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - **Code**: `Shiki (rehype-pretty-code)`. Notes: build time only; no math engine — the LaTeX plugin was removed.
 - **Search**: `FlexSearch`. Notes: index built at compile time, queried in-browser.
 - **Images**: `sharp`. Notes: resizing and OG image generation.
-- **Fonts**: Google Fonts origin, CDN-cached. Notes: theme config.
+- **Fonts**: fully self-hosted woff2 in `quartz/static/fonts/`. 
 
 **Delivery**
-- **Build trigger**: Cloudflare **Workers Builds** on push. Notes: runs `build.command` from `wrangler.jsonc`.
+- **Build trigger**: Cloudflare **Workers Builds** on push. 
 - **Build output**: `public/` static files. Notes: gitignored, disposable.
 - **Hosting**: Cloudflare Workers **static assets** — no `main`, no bindings. Notes: nothing executes at the edge.
 - **Edge / DNS / TLS**: Cloudflare, custom domain `taras.life`. Notes: cert and DNS record dashboard-managed.

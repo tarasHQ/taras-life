@@ -13,7 +13,11 @@ export const Static: QuartzEmitterPlugin = () => ({
 		await fs.promises.mkdir(outputStaticPath, { recursive: true })
 		for (const fp of fps) {
 			const src = joinSegments(staticPath, fp) as FilePath
-			const dest = joinSegments(outputStaticPath, fp) as FilePath
+			// CUSTOM EDITS: Cloudflare Workers parses _headers (and _redirects) only
+			// from the output root, not from served subdirectories. Emit these at
+			// the root so they are parsed but never served as assets.
+			const isCloudflareConfigFile = fp === "_headers" || fp === "_redirects"
+			const dest = joinSegments(isCloudflareConfigFile ? argv.output : outputStaticPath, fp) as FilePath
 			await fs.promises.mkdir(dirname(dest), { recursive: true })
 			await fs.promises.copyFile(src, dest)
 			yield dest

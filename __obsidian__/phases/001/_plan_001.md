@@ -1,6 +1,7 @@
 ---
 ctime: 2026-10-24 17:08
-isIntegrated: false
+status: implemented
+isIntegrated: true
 ---
 
 [← Project](../../_project.md)
@@ -116,6 +117,7 @@ await cJS(c => c.PlanStepsList.renderSteps(dv, this.container));
 - **Planning flow is bad**
 	- You dumped lots of text at once. That was the issue. It just overwhelmed you. Then you don't follow it. And now you're paying the price because you don't know jack shit about this.
 		- and you did this in the wrong state of mind, which made you not-read or forget most of the things. 
+	- you also need to decide before committing the phase, whether you need a separate branch for that.
 - **other**
 	- js html dataview block - use icons for showing state of the step (full/high-level/condensed)
 		- ○ ◎ ◉ or 🟢🔵🟡
@@ -128,10 +130,12 @@ await cJS(c => c.PlanStepsList.renderSteps(dv, this.container));
 	- Issue with high-level block. As a user it was hard to write initial thing. It should be kind prompt-like. Not like decisions/invariants. Just give the user free form. 
 	- For llm's high level though - it gets big really quickly. 
 	- High level - must contain links block, with related links, so I don't have to re-type them each time in each new task.
+	- same as with steps - `status` and `state`? 
 - **rendered list of steps** 
 	- completed step should be much more dimmed
 	- We need some minimal borders around both table and list.
 - **steps**
+	- I need additional status for canceled/discarded steps (like for tests, when I decided to not do it, or for 08, when I decided to do it in another phase)
 	- takes lots of time to re-explore all stuff I did while I was writing initial step contents. So each step should have "comprehensive exploration" section where LLM leaves links/notes/tips about how to research everything on the topic quickly. without many loops of back and forth. 
 	- Discussion and reflection - should have brief template as well, kinda like I had with kilo code. Autoregressive. Recommended choice. Explain in simple words. Also - I should add rule to automatically add at the end user input point. like `- USER INPUT: ` so I can type right away the answer
 	- On each step. High level template. **DO WE ACTUALLY NEED IT?**, like with tests right now. I just got overfocused on that. I don't actually need them. 
@@ -150,6 +154,9 @@ await cJS(c => c.PlanStepsList.renderSteps(dv, this.container));
 		- Like that planning block must be hyper important and be the center of gravity for the whole task. 
 		- Like it should have its own section in agents, to clarify its importance. 
 	- **TLDR** - you lack routine in this. Process is chaotic and unpredictable. That's adds a lot of friction.
+- `_project.md`
+	- needs some automatic fetching I recon. 
+	- but the issue is with LLMs getting understanding of this stuff... 
 ### What's good
 - having SSOT on shared decisions/invariants/nuances/etc.
 	- like with the notion that we now have remark42-old folder, I don't have to mention it in each step. SSOT for everything. Good. 

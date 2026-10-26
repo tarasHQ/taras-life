@@ -30,11 +30,28 @@ export default (() => {
 		const coreStylesheet = css[0]?.content
 		const coreScript = js.find((r) => r.loadTime === "beforeDOMReady" && r.contentType === "external")
 
+		// CUSTOM EDIT: added preloading of fonts.
+		const fontPreloads = [
+			"atkinson-hyperlegible-next-latin-400-normal.woff2",
+			"playfair-display-latin-400-normal.woff2",
+			"jetbrains-mono-latin-400-normal.woff2",
+		]
+
 		return (
 			<head>
 				<title>{title}</title>
 				<meta charSet="utf-8" />
 				{coreStylesheet && <link rel="preload" href={coreStylesheet} as="style" />}
+				{fontPreloads.map((file) => (
+					<link
+						key={file}
+						rel="preload"
+						href={`/static/fonts/${file}`}
+						as="font"
+						type="font/woff2"
+						crossOrigin="anonymous"
+					/>
+				))}
 				{coreScript && coreScript.contentType === "external" && (
 					<link rel="preload" href={coreScript.src} as="script" />
 				)}
@@ -92,16 +109,7 @@ export default (() => {
 					if (typeof resource === "function") {
 						return resource(fileData)
 					} else {
-						// Head nodes lacking data-persist are removed and re-added by the
-						// SPA router (see spa.inline.ts) on every navigation, which destroys
-						// and re-creates @font-face rules from external stylesheets and makes
-						// fonts flash. Persist font stylesheets so loaded fonts survive SPA nav.
-						const props = (resource as any)?.props ?? {}
-						const isFontStylesheet =
-							props.rel === "stylesheet" &&
-							typeof props.href === "string" &&
-							props.href.includes("quartz-fonts.css")
-						return isFontStylesheet ? <link rel="stylesheet" href={props.href} data-persist /> : resource
+						return resource
 					}
 				})}
 			</head>

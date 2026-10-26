@@ -1,5 +1,5 @@
 ---
-status: waiting
+status: implemented
 state: high-level
 reviewedAtStep: ""
 ---
@@ -8,6 +8,9 @@ reviewedAtStep: ""
 
 ## Description
 Makes the comments area look native to the site from the outside — container spacing and borders, font and theme handoff through `custom_properties` — within the hard limit that the widget itself runs in a cross-origin iframe. This is the last step, done only once everything else is locked.
+
+> [!note] Skipped
+> Moved out of phase 001 by user decision. Kept as recorded future work — the "Deeper restyling" section below is the backlog material for whenever this is picked up.
 
 ## High-Level
 

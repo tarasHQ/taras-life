@@ -9,10 +9,10 @@ configuration:
     baseUrl: taras.life
     ignorePatterns:
         - .obsidian
-    # Fonts are loaded exclusively by the @quartz-community/quartz-fonts plugin
-    # (fontOrigin: selfHosted). "local" here means: built-in pipeline loads no
-    # font files and emits no Google Fonts links; typography below only defines
-    # the CSS variable family names that the plugin's @font-face rules resolve.
+    # Fonts are fully self-hosted: @font-face rules live in quartz/styles/custom.scss
+    # and woff2 files ship from quartz/static/fonts/ (copied by the Static emitter).
+    # "local" means the built-in pipeline loads nothing; typography below only
+    # defines the CSS variable family names that custom.scss @font-face rules resolve.
     theme:
         fontOrigin: local
         cdnCaching: false
@@ -95,29 +95,8 @@ plugins:
     - source: "@quartz-community/hard-line-breaks"
       enabled: true
       order: 90
-    - source: "@quartz-community/quartz-fonts"
-      enabled: true
-      # Sole font pipeline. selfHosted downloads woff2 at build time into
-      # static/fonts/ and emits @font-face with absolute URLs (needs baseUrl,
-      # already set). useThemeFonts: false bypasses the quartz-themes registry
-      # so resolution is deterministic from the explicit options below.
-      options:
-          useThemeFonts: false
-          fontOrigin: selfHosted
-          header:
-              name: Playfair Display
-              weights: [400, 800]
-              includeItalic: true
-          body:
-              name: Atkinson Hyperlegible Next
-              weights: [400, 800]
-              includeItalic: true
-          code:
-              name: JetBrains Mono
-              weights: [400, 800]
-              includeItalic: true
     - source: "@quartz-themes/core"
-      enabled: true
+      enabled: false
       options:
           theme: default
           mode: both
