@@ -6,11 +6,12 @@
 	"name": "taras-life",
 	"compatibility_date": "2026-10-23",
 
-	// No `taras-life.<account>.workers.dev` URL, and no per-version preview URLs.
+	// No `taras-life.<account>.workers.dev` URL.
 	"workers_dev": false,
-	"preview_urls": false,
 
-	// no "build" : { "command": "fetch shallow and/or npm run build, etc." }, because it's set in the UI for SSOT
+	"preview_urls": true,
+	"previews": {},
+	// no "build " : { "command": "fetch shallow and/or npm run build, etc." }, because it's set in the UI for SSOT
 
 	// Quartz emits the site into ./public (gitignored — treated as disposable output).
 	"assets": {

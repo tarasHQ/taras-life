@@ -92,7 +92,16 @@ export default (() => {
 					if (typeof resource === "function") {
 						return resource(fileData)
 					} else {
-						return resource
+						// Head nodes lacking data-persist are removed and re-added by the
+						// SPA router (see spa.inline.ts) on every navigation, which destroys
+						// and re-creates @font-face rules from external stylesheets and makes
+						// fonts flash. Persist font stylesheets so loaded fonts survive SPA nav.
+						const props = (resource as any)?.props ?? {}
+						const isFontStylesheet =
+							props.rel === "stylesheet" &&
+							typeof props.href === "string" &&
+							props.href.includes("quartz-fonts.css")
+						return isFontStylesheet ? <link rel="stylesheet" href={props.href} data-persist /> : resource
 					}
 				})}
 			</head>
