@@ -1,5 +1,28 @@
 # Remark42 README
 
+1. Frontmatter - those that have a valid `a-z,0-9,-` id and either don't have `comments` or it's `true` 
+	- if id is not valid - build fails loudly. So those rare mistakes won't accumulate.
+2. Valid id? - injects into notes's html section wrapper, script and div with id `remark42`. 
+	- Script is needed to avoid calling server on pages without comments (at all or in view), despite recommended suggestion from docs to attach `embed.mjs` on every page.
+3. Deployed - scripts handles theming/config but also loading based on viewport. If comments few hundred px away - it won't load them. So no unnecessary server traffic. But when user interested in comments - they'll get loaded as he scrolls to that section. 
+
+- `npm run build:plugins` to compile plugins
+- `npm run check:comments` - duplication, `comments`/`id` frontmatter contradictions and spot check on generated html. Manual script to not increase time on each build for no good reason.
+
+- Configuration is hardcoded in in `src/index.tsx`. Nothing in `quartz.config.yaml` to avoid bloat of parsing/validation/etc.
+- Threads are keyed by `https://taras.life/comments/<id>` changing `THREAD_BASE_URL` or `id` values silently orphans the entire comment history
+- 404 page carries "universal" comments thread for reporting broken links.
+
+
+
+
+
+
+
+
+
+
+
 
 
 ---
@@ -7,8 +30,14 @@
 RAW Features Below
 
 ---
+### Code
+- Check logic can be integrated into build. With caching allFiles to speed it up. But that needs separate building flows, so that check won't re-run on GH or CF, so it's not worth to do right now. 
+
 
 ### Frontend 
+Anything besides `custom_properties` is PIA. 
+So don't go beyond there. 
+
 
 #### Themes & Fonts
 ##### Excerpt from docs

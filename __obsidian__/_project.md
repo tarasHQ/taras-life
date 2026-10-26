@@ -21,6 +21,8 @@ await cJS(c => c.RenderReflectionHelpers.renderColumns(dv, this.container));
 
 ## Phases
 
-### Phase 001 - Remark42 plugin rewrite [open](./phases/001/_plan_001.md)
+### Phase 001 - Remark42 plugin rewrite [done](./phases/001/_plan_001.md)
+
+Remark42 plugin rewritten from scratch as a self-contained compiled package (`custom-plugins/remark42/`), shipped and documented. Deferred to future work: visual polish (see `steps/08-visual-polish.md`) and README backlog ideas (server config, OAuth, notifications).
 
 

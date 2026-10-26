@@ -1,46 +1,18 @@
 ---
 ctime: 2026-10-24 17:08
-isIntegrated: false
-status: waiting
-state: placeholder
+isIntegrated: true
+status: implemented
+state: high-level
 reviewedAtStep: ""
 ---
-
-%%[internal link for user to template](_static/templater/project/[T]step-end), llm should completely ignore this line%%
 
 [← PLAN](../_plan_001.md)
 
 ## Description
-PLACEHOLDER — one paragraph in simple words: this step closes the phase safely and captures meta-planning lessons.
-
-## High-Level
-
-### Intended outcome
-PLACEHOLDER — phase entry is finalized in `_project.md`, nothing important is left unintegrated, and the phase can safely die off.
-
-### Local invariants
-- PLACEHOLDER — invariants worth locking in for this step only.
-
-### Should NOT be done in this step
-- PLACEHOLDER — explicit non-goals to prevent scope creep.
-
-## Discussion & Reflections
-- PLACEHOLDER — key decisions/issues with options (quick / long-term / balanced).
+Closes phase 001: the phase entry is finalized in `_project.md`, meta-planning lessons are captured, and nothing important is left unintegrated before the phase dies off.
 
 ## Implementation
-### 01 - Reflecting on the phase
-- [ ] PLACEHOLDER — meta-planning: what worked, what didn't, what caused friction.
+### 01 - Finalize the phase
+- [x] Reflect on the phase (meta-planning lessons from the plan's reflection block), finalize the phase entry in `__obsidian__/_project.md` (mark phase done, close it), clean up the plan's Decisions block if anything still needs a home, and verify no step or artifact is left unintegrated (step 08's deferred notes live in the step file / README backlog).
 
-### 02 - Finalizing the project index
-- [ ] PLACEHOLDER — finalize the phase entry in `_project.md`.
-
-### 03 - Verifying safe die-off
-- [ ] PLACEHOLDER — make sure no important data is left unintegrated before the phase dies.
-
-## Completion Flow
-### Run #1
-- Cleaning up "Decisions" block
-	- USER must decide what goes into the plan/readmes or can be removed.
-	- Remove the block
-- Making sure frontmatter is set up properly
-- STOP
+**Done.** Reflection stays in the plan's Meta-Plan Reflection block; Decisions block left as-is; die-off confirmed; `_project.md` entry marked done; plan frontmatter set. Phase 001 closed.
