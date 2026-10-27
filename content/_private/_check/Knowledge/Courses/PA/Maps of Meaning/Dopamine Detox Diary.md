@@ -1,0 +1,15 @@
+- **03.10**
+  - First time in many weeks or months had sudden urge to study trading
+  - Had a talk with Angelina, and it's strange, it was a moment in my life where I didn't know what my future vision should be worthwhile. Because nothing got emotional response to signal its significance. And after the talk it seems to me that future doesn't have significance because I don't have people now around me. Like money worth nothing without other people. So that's why you was inclining towards nihilism.
+  - I'm thinking about an idea to create a life in which trading and its troubles - will be justifiable.
+    - Like something I'm trying to start right now. It's hard to articulate but it seems like abstinence from cheap dopamine, weirdly enough, feels like something good that I can default back from trading.
+    - Like you lost in trading today, but you still have upward life. Yeah, that's it.
+    - That's why it's so important to be free of porn, sweets, etc. When you fail - you fail into upward striving life. And that's cushion the fall.
+    - Key thing is that it shouldn't be important to introduce other people. Like just live a life that's obviously and undoubtfully aiming up and acting up. It's not as good as with other people, but it's much better than like hedonism + trading.
+    - ==So that's main thing right know. How to live a life that will justify failures in trading, and will allow to overcome setbacks==
+- 05.10
+  - First time at all got an idea to aim and sacrifice for ideal feminine.
+    - And that's was after the dream in which, I believe, there was very seductive girl that I rejected towards my girlfriend, where that girlfriend wasn't really defined, so I suppose it was denial of "whore of the Babylon" for the feminine ideal.
+  - Much more time to thinking
+    - And it seems like great thing. Because otherwise you're not thinking and watching some meaningless interview or podcast or etc. So You're inhibiting thinking for gathering mostly useless info.
+    - But now, when you can't do that - you're spending time much more optimized. You either watching what you need to watch, or you're thinking about that + some usual "mindgums"

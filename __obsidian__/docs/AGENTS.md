@@ -17,19 +17,21 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 
 ---
 
-## 00. SSOT of links to additional project's .md files
+## 00. Obsidian And Docs
 
 - ##### Instructions
     - It's crucial to adhere to conditions of reading to avoid unnecessary context bloat.
     - Links of attached docs below are relative to `AGENTS.md`, path from repo's root would be `__obsidian__/docs/AGENTS.md`. Rule applies only to those few docs below, so they're repository-agnostic.
+    - `__obsidian__/` folder is a **SYMLINK** (junction) target. Link to this `__obsidian__/` target is in my obsidian-vault (there's many junctions like this one with the same name but in different locations)
+        - I'm using obsidian to significantly improve my ability to work manually with markdown files. 
     - **Two link formats below mean two different things:**
-        - `[NAME](file:///C:/...)` — an **absolute OS path** for the LLM. Strip the `file:///` prefix and read the remaining path (e.g. `C:/Users/.../NAME.md`) directly with the read tool. These files live in the Obsidian vault, outside the repo, but on the same machine and readable.
+        - `[NAME](file:///C:/...)` — an **absolute OS path** for the LLM. Strip the `file:///` prefix and read the remaining path directly with the read tool. These files live in the Obsidian vault, outside the repo, but on the same machine and readable.
         - `[[...]]` — an **Obsidian internal link, for the user only** (clickable when the repo folder is opened/symlinked inside Obsidian). The LLM must never follow or resolve it.
 - ##### [PLANNING.md](file:///C:/Users/Taras/Documents/obsidian-vault/_static/projects/PLANNING.md)
     - to be read only during planning phase or implementation of the steps. [[../../../../_static/projects/PLANNING|internal link for the user]] — user-only, LLM ignores it.
-- ##### [DEV_RULES.md](./DEV_RULES.md)
+- ##### [DEV_RULES.md](__obsidian__/docs/DEV_RULES.md)
     - to be read only before writing the code, there's no information that is helpful during planning phase.
-- ##### [DEV_COMMANDS.md](./DEV_COMMANDS.md)
+- ##### [DEV_COMMANDS.md](__obsidian__/docs/DEV_COMMANDS.md)
     - to be read only if LLM tinkers with tasks/commands/scripts
 
 ---
@@ -43,7 +45,7 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - **Bundler**: esbuild (+ `esbuild-sass-plugin`). Notes: bundles page JS and the local plugin's browser script.
 - **CSS toolchain**: SCSS → Lightning CSS. Notes: compiled and minified at build time.
 - **Quality gates**: Prettier, `tsx --test`, `tsc --noEmit`. Notes: `npm run check`, `npm test`.
-- **Git hooks**: lefthook. Notes: `pre-push` runs types→format→tests→build fast-fail-first; `pre-commit` README-review ported but disabled (`skip: true` in `lefthook.yml`). Wired by root `prepare` → `lefthook install`; bypass with `LEFTHOOK=0`.
+- **Git hooks**: lefthook. Notes: `pre-push` runs types → format → tests → build fast-fail-first; `pre-commit` README-review ported but disabled (`skip: true` in `lefthook.yml`). Wired by root `prepare` → `lefthook install`; bypass with `LEFTHOOK=0`.
 
 **Content & generation**
 - **Authoring**: Markdown + YAML frontmatter, written in Obsidian. Notes: lives in `content/` (not vault). 
