@@ -33,7 +33,6 @@ export default (() => {
 		// CUSTOM EDIT: added preloading of fonts.
 		const fontPreloads = [
 			"atkinson-hyperlegible-next-latin-400-normal.woff2",
-			"playfair-display-latin-400-normal.woff2",
 			"jetbrains-mono-latin-400-normal.woff2",
 		]
 

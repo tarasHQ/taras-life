@@ -75,18 +75,3 @@ $jetbrains: "JetBrains Mono";
 @include face($jetbrains, "jetbrains-mono-cyrillic-400-italic", 400, italic, $unicode-cyrillic);
 @include face($jetbrains, "jetbrains-mono-cyrillic-800-normal", 800, normal, $unicode-cyrillic);
 @include face($jetbrains, "jetbrains-mono-cyrillic-800-italic", 800, italic, $unicode-cyrillic);
-
-// --- Playfair Display (headers; latin, latin-ext, cyrillic; 400/800) --------
-$playfair: "Playfair Display";
-@include face($playfair, "playfair-display-latin-400-normal", 400, normal, $unicode-latin);
-@include face($playfair, "playfair-display-latin-400-italic", 400, italic, $unicode-latin);
-@include face($playfair, "playfair-display-latin-800-normal", 800, normal, $unicode-latin);
-@include face($playfair, "playfair-display-latin-800-italic", 800, italic, $unicode-latin);
-@include face($playfair, "playfair-display-latin-ext-400-normal", 400, normal, $unicode-latin-ext);
-@include face($playfair, "playfair-display-latin-ext-400-italic", 400, italic, $unicode-latin-ext);
-@include face($playfair, "playfair-display-latin-ext-800-normal", 800, normal, $unicode-latin-ext);
-@include face($playfair, "playfair-display-latin-ext-800-italic", 800, italic, $unicode-latin-ext);
-@include face($playfair, "playfair-display-cyrillic-400-normal", 400, normal, $unicode-cyrillic);
-@include face($playfair, "playfair-display-cyrillic-400-italic", 400, italic, $unicode-cyrillic);
-@include face($playfair, "playfair-display-cyrillic-800-normal", 800, normal, $unicode-cyrillic);
-@include face($playfair, "playfair-display-cyrillic-800-italic", 800, italic, $unicode-cyrillic);

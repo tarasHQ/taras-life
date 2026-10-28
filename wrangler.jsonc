@@ -9,7 +9,7 @@
 	// No `taras-life.<account>.workers.dev` URL.
 	"workers_dev": false,
 
-	"preview_urls": true,
+	"preview_urls": false,
 	"previews": {},
 	// no "build " : { "command": "fetch shallow and/or npm run build, etc." }, because it's set in the UI for SSOT
 

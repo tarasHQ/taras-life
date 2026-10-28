@@ -9,8 +9,8 @@ no network fetch at build or runtime, fully OFL-compliant (see `OFL.txt`).
 
 ## Nuances
 
-- Cyrillic-ext subsets were fetched for JetBrains Mono and Playfair but
-  **deleted** as unnecessary; re-fetch if content ever needs them.
+- Cyrillic-ext subsets were fetched for JetBrains Mono but **deleted** as
+  unnecessary; re-fetch if content ever needs them.
 - Atkinson ships **no cyrillic** at all. Source Sans Pro cyrillic subsets
   cover that gap: they are registered in `quartz/styles/custom.scss` under the
   family name `"Atkinson Hyperlegible Next"` with a cyrillic `unicode-range`,
@@ -37,6 +37,6 @@ no network fetch at build or runtime, fully OFL-compliant (see `OFL.txt`).
 
 ## Licensing
 
-All four families are SIL Open Font License 1.1. Copyright headers for each
+All three families are SIL Open Font License 1.1. Copyright headers for each
 family plus the full OFL text are in `OFL.txt`, which ships alongside the
 font files as the license requires.

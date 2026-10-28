@@ -17,7 +17,7 @@ configuration:
         fontOrigin: local
         cdnCaching: false
         typography:
-            header: Playfair Display
+            header: Atkinson Hyperlegible Next
             body: Atkinson Hyperlegible Next
             code: JetBrains Mono
         colors:
