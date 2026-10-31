@@ -27,8 +27,8 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
     - **Two link formats below mean two different things:**
         - `[NAME](file:///C:/...)` — an **absolute OS path** for the LLM. Strip the `file:///` prefix and read the remaining path directly with the read tool. These files live in the Obsidian vault, outside the repo, but on the same machine and readable.
         - `[[...]]` — an **Obsidian internal link, for the user only** (clickable when the repo folder is opened/symlinked inside Obsidian). The LLM must never follow or resolve it.
-- ##### [PLANNING.md](file:///C:/Users/Taras/Documents/obsidian-vault/_static/projects/PLANNING.md)
-    - to be read only during planning phase or implementation of the steps. [[../../../../_static/projects/PLANNING|internal link for the user]] — user-only, LLM ignores it.
+- ##### [LLM.md](file:///C:/Users/Taras/Documents/obsidian-vault/@system/projects/LLM.md)
+    - to be read only during planning phase or implementation of the steps. [[../../../../@system/projects/LLM|internal link for the user]] — user-only, LLM ignores it.
 - ##### [DEV_RULES.md](__obsidian__/docs/DEV_RULES.md)
     - to be read only before writing the code, there's no information that is helpful during planning phase.
 - ##### [DEV_COMMANDS.md](__obsidian__/docs/DEV_COMMANDS.md)
@@ -124,16 +124,6 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - Due to the size of documentation files under `docs/`, avoid reading them entirely into context with direct read tools.
 - Always use the `explore` tool with focused queries to extract specific sections from `docs/` without bloating the context window.
 ---
-
-## 03. Knowledge & Planning 
-
-### 03.1 Location & File structure
-- `__obsidian__/` folder in the root of the project should contain all plans/reflections
-- `__obsidian__/phases/999/` folder structure separates plans and reflections by phase number
-- Name format for plan .md files: `DD-MM-YYYY - NAME.md` (e.g., `22-09-2026 - CHAT_VIEW.md`).
-### 03.2 Flow of the planning
-- First, discuss with the high level structure of the plan. When it's locked, write a skeleton that consists of X steps to achieve the goal of the plan.
-- Second, go step-by-step through the plan, and enrich it with more detailed implementation tasks/invariants/decisions/etc.
 
 ## 99. Maintaining AGENTS.md
 

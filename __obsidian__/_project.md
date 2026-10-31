@@ -8,21 +8,25 @@
 
 ## Docs
 
-```dataviewjs
-await cJS(c => c.RenderReflectionHelpers.renderColumns(dv, this.container));
+```dataview
+TABLE WITHOUT ID
+  map(filter(rows.file, (f) => startswith(f.folder, this.file.folder + "/_reflections")), (f) => f.link) AS "Reflections",
+  map(filter(rows.file, (f) => startswith(f.folder, this.file.folder + "/ideas")), (f) => f.link) AS "Ideas",
+  map(filter(rows.file, (f) => startswith(f.folder, this.file.folder + "/artifacts")), (f) => f.link) AS "Artifacts"
+FROM ""
+WHERE startswith(file.folder, this.file.folder + "/") AND file.path != this.file.path
+SORT file.name ASC
+GROUP BY true
 ```
 
-## Future Phases
-1. Styling
-	- Fonts https://quartz.jzhao.xyz/plugins/fonts
-2. Skeleton
-3. Optimization
-	1. Webp script before push to have optimized images. 
 
 ## Phases
 
-### Phase 001 - Remark42 plugin rewrite [done](./phases/001/_plan_001.md)
+### Phase 002 - Removing SCSS, Theming, Fonts plugin [open](./phases/002/_plan_002.md)
+Native CSS has many features where SCSS were pioneering. So doesn't make any sense to support things I have 0 experience with. 
+Theming and fonts just overlap scss, so they will go in this phase too.
 
-Remark42 plugin rewritten from scratch as a self-contained compiled package (`custom-plugins/remark42/`), shipped and documented. Deferred to future work: visual polish (see `steps/08-visual-polish.md`) and README backlog ideas (server config, OAuth, notifications).
+### Phase 001 - Remark42 plugin rewrite [done](phases/_archived/001/_plan_001.md)
+Remark42 plugin rewritten from scratch as a self-contained compiled package (`custom-plugins/remark42/`), shipped and documented. Deferred to future work: visual polish
 
 
