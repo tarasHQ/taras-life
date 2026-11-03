@@ -2,7 +2,7 @@ import { QuartzComponent } from "./components/types"
 import { ValidLocale } from "./i18n"
 import { PluginSpecifier } from "./plugins/loader/types"
 import { PluginTypes } from "./plugins/types"
-import { Theme } from "./util/theme"
+import type { ThemeData } from "./util/theme"
 
 export type Analytics =
 	| null
@@ -71,7 +71,12 @@ export interface GlobalConfiguration {
 	 *   Quartz will avoid using this as much as possible and use relative URLs most of the time
 	 */
 	baseUrl?: string
-	theme: Theme
+	/**
+	 * Build-time theme data for plugins that still consume the upstream `theme`
+	 * contract (og-image). Assigned in quartz.ts by parsing quartz/styles/theme.css
+	 * (the palette SSOT). Never authored in quartz.config.yaml.
+	 */
+	theme?: ThemeData
 	/**
 	 * Allow to translate the date in the language of your choice.
 	 * Also used for UI translation (default: en-US)

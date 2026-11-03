@@ -13,15 +13,6 @@
 - `npx quartz build --serve --remoteDevHost <url>` - override the WS URL when previewing from another machine/container
 - `npm run profile` - flamegraph a single-concurrency build via `0x` (not a dependency; installed on demand by `npx`)
 
-## Quartz CLI (`npx quartz ...`)
-(full description is at `/docs/quartz/cli/`)
-- `npx quartz build` - build static HTML; 
-- `npx quartz create` - initialize a site; 
-- `npx quartz sync` - commit, pull and push the site via git; 
-- `npx quartz restore` - recover the content folder from `.quartz-cache`
-- `npx quartz upgrade` (alias `update`) - upgrade Quartz to the latest upstream version
-- `npx quartz tui` - interactive plugin manager (requires `bun` and `npx quartz plugin add @quartz-community/tui`)
-
 ## Plugins
 
 - `npx quartz plugin` - no subcommand: print installed plugin status and available updates

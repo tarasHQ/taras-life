@@ -1,347 +1,142 @@
-export interface ColorScheme {
-	light: string
-	lightgray: string
-	gray: string
-	darkgray: string
-	dark: string
-	secondary: string
-	tertiary: string
-	highlight: string
-	textHighlight: string
-}
+/**
+ * Build-time theme data extracted from the `quartz/styles/theme.css` text.
+ *
+ * The stylesheet is the single source of truth for the site palette and font
+ * families: its `:root` / `:root[saved-theme="dark"]` blocks hold the colors and
+ * the `--headerFont` / `--bodyFont` variables hold the family names. This module
+ * parses that text back into the data shape consumed by plugins that still expect
+ * the upstream `cfg.theme` contract (@quartz-community/og-image); quartz.ts imports
+ * the stylesheet and injects the parsed result into the in-memory configuration at
+ * startup. The data is never authored in quartz.config.yaml — edit theme.css instead.
+ *
+ * The module is deliberately pure: the CSS text is threaded in by the caller rather
+ * than imported here, because the tsx test runner cannot load `.css` imports — a
+ * stylesheet import in this file would make the parser untestable.
+ */
 
-interface Colors {
-	lightMode: ColorScheme
-	darkMode: ColorScheme
-}
+// CSS custom properties that make up a palette; all must exist in both :root blocks.
+const COLOR_VARS = [
+	"light",
+	"lightgray",
+	"gray",
+	"darkgray",
+	"dark",
+	"secondary",
+	"tertiary",
+	"highlight",
+	"textHighlight",
+] as const
 
-export type FontSpecification =
-	| string
-	| {
-			name: string
-			weights?: number[]
-			includeItalic?: boolean
-	  }
+/** One light/dark palette as consumed by og-image (subset of the CSS variables). */
+export type Palette = Record<(typeof COLOR_VARS)[number], string>
 
-export interface Theme {
+/** Theme data derived from theme.css; injected into cfg.configuration.theme at startup. */
+export type ThemeData = {
 	typography: {
-		title?: FontSpecification
-		header: FontSpecification
-		body: FontSpecification
-		code: FontSpecification
+		header: string
+		body: string
 	}
-	cdnCaching: boolean
-	colors: Colors
-	fontOrigin: "googleFonts" | "local"
+	colors: {
+		lightMode: Palette
+		darkMode: Palette
+	}
 }
 
-export type ThemeKey = keyof Colors
+// ===
 
-const DEFAULT_SANS_SERIF =
-	'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
-const DEFAULT_MONO = "ui-monospace, SFMono-Regular, SF Mono, Menlo, monospace"
-
-export function getFontSpecificationName(spec: FontSpecification): string {
-	if (typeof spec === "string") {
-		return spec
-	}
-
-	return spec.name
-}
-
-function formatFontSpecification(type: "title" | "header" | "body" | "code", spec: FontSpecification) {
-	if (typeof spec === "string") {
-		spec = { name: spec }
+/**
+ * Extracts the body of a top-level CSS block identified by its selector pattern.
+ * Palette blocks contain no nested braces, so the first `{`/`}` pair after the
+ * selector is the block. The pattern is whitespace-tolerant so a formatting
+ * change (e.g. prettier dropping the space before `{`) can't false-alarm the
+ * build; only genuinely structural edits (renamed/removed selector) throw.
+ */
+function extractBlock(css: string, selector: RegExp, label: string): string {
+	const match = selector.exec(css)
+	if (!match) {
+		throw new Error(`theme.ts: selector ${label} not found in quartz/styles/theme.css`)
 	}
 
-	const defaultIncludeWeights = type === "header" ? [400, 700] : [400, 600]
-	const defaultIncludeItalic = type === "body"
-	const weights = spec.weights ?? defaultIncludeWeights
-	const italic = spec.includeItalic ?? defaultIncludeItalic
-
-	const features: string[] = []
-	if (italic) {
-		features.push("ital")
+	const open = css.indexOf("{", match.index)
+	const close = css.indexOf("}", open)
+	if (open === -1 || close === -1) {
+		throw new Error(`theme.ts: malformed block for selector ${label} in quartz/styles/theme.css`)
 	}
 
-	if (weights.length > 1) {
-		const weightSpec = italic
-			? weights
-					.flatMap((w) => [`0,${w}`, `1,${w}`])
-					.sort()
-					.join(";")
-			: weights.join(";")
+	return css.slice(open + 1, close)
+}
 
-		features.push(`wght@${weightSpec}`)
+/**
+ * Parses `--name: value;` declarations from a CSS block body into a name→value map.
+ * Values may span multiple lines (prettier-formatted font stacks), hence `[^;]+`.
+ */
+function parseVariables(block: string): Map<string, string> {
+	const variables = new Map<string, string>()
+	const declaration = /--([\w-]+):\s*([^;]+);/g
+	let match: RegExpExecArray | null
+	while ((match = declaration.exec(block)) !== null) {
+		variables.set(match[1], match[2].trim())
 	}
 
-	if (features.length > 0) {
-		return `${spec.name}:${features.join(",")}`
+	return variables
+}
+
+/**
+ * Pulls the first quoted family name from a font stack variable (e.g. --headerFont).
+ * The first quoted family is the primary family og-image resolves font files by;
+ * the fallback entries in the stack are CSS-only and never reach og-image.
+ */
+function parseFontFamily(variables: Map<string, string>, name: string): string {
+	const stack = variables.get(name)
+	const family = stack?.match(/"([^"]+)"/)?.[1]
+	if (!family) {
+		throw new Error(`theme.ts: variable --${name} carries no quoted font family in quartz/styles/theme.css`)
 	}
 
-	return spec.name
+	return family
 }
 
-export function googleFontHref(theme: Theme) {
-	const { header, body, code } = theme.typography
-	const headerFont = formatFontSpecification("header", header)
-	const bodyFont = formatFontSpecification("body", body)
-	const codeFont = formatFontSpecification("code", code)
-
-	return `https://fonts.googleapis.com/css2?family=${headerFont}&family=${bodyFont}&family=${codeFont}&display=swap`
-}
-
-export function googleFontSubsetHref(theme: Theme, text: string) {
-	const title = theme.typography.title || theme.typography.header
-	const titleFont = formatFontSpecification("title", title)
-
-	return `https://fonts.googleapis.com/css2?family=${titleFont}&text=${encodeURIComponent(text)}&display=swap`
-}
-
-export interface GoogleFontFile {
-	url: string
-	filename: string
-	extension: string
-}
-
-const fontMimeMap: Record<string, string> = {
-	truetype: "ttf",
-	woff: "woff",
-	woff2: "woff2",
-	opentype: "otf",
-}
-
-export async function processGoogleFonts(
-	stylesheet: string,
-	baseUrl: string,
-): Promise<{
-	processedStylesheet: string
-	fontFiles: GoogleFontFile[]
-}> {
-	const fontSourceRegex = /url\((https:\/\/fonts.gstatic.com\/.+(?:\/|(?:kit=))(.+?)[.&].+?)\)\sformat\('(\w+?)'\);/g
-	const fontFiles: GoogleFontFile[] = []
-	let processedStylesheet = stylesheet
-
-	let match
-	while ((match = fontSourceRegex.exec(stylesheet)) !== null) {
-		const url = match[1]
-		const filename = match[2]
-		const extension = fontMimeMap[match[3].toLowerCase()]
-		const staticUrl = `https://${baseUrl}/static/fonts/${filename}.${extension}`
-
-		processedStylesheet = processedStylesheet.replace(url, staticUrl)
-		fontFiles.push({ url, filename, extension })
+/** Builds one Palette from a parsed :root block, failing loudly on missing colors. */
+function parsePalette(variables: Map<string, string>, scheme: string): Palette {
+	const missing = COLOR_VARS.filter((name) => !variables.has(name))
+	if (missing.length > 0) {
+		throw new Error(
+			`theme.ts: ${scheme} palette is missing variables in quartz/styles/theme.css: ${missing.join(", ")}`,
+		)
 	}
 
-	return { processedStylesheet, fontFiles }
+	// The missing-variable check above establishes that every COLOR_VARS key has a
+	// value, so the assertion cannot introduce a hole into the palette shape.
+	return Object.fromEntries(COLOR_VARS.map((name) => [name, variables.get(name)!])) as Palette
 }
 
-function hexToHsl(hex: string): { h: number; s: number; l: number } {
-	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-	if (!result) return { h: 0, s: 0, l: 0 }
+// ===
 
-	const r = parseInt(result[1], 16) / 255
-	const g = parseInt(result[2], 16) / 255
-	const b = parseInt(result[3], 16) / 255
+/**
+ * Parses theme CSS text into the plugin-facing theme data. Throws on any
+ * structural drift between this parser and the stylesheet it parses.
+ *
+ * Fonts are read from the light block only — the dark palette defines colors.
+ */
+export function parseThemeData(css: string): ThemeData {
+	// Comments are stripped before parsing: a commented-out palette line must
+	// never be parsed as a live value (og-image would consume a color the
+	// stylesheet itself ignores — the divergence this module exists to prevent).
+	const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "")
 
-	const max = Math.max(r, g, b)
-	const min = Math.min(r, g, b)
-	const l = (max + min) / 2
+	const lightVariables = parseVariables(extractBlock(withoutComments, /:root\s*\{/, '":root"'))
+	const darkVariables = parseVariables(
+		extractBlock(withoutComments, /:root\[saved-theme=["']dark["']\]\s*\{/, ':root[saved-theme="dark"]'),
+	)
 
-	if (max === min) return { h: 0, s: 0, l: Math.round(l * 100) }
-
-	const d = max - min
-	const s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-
-	let h = 0
-	switch (max) {
-		case r:
-			h = ((g - b) / d + (g < b ? 6 : 0)) / 6
-			break
-		case g:
-			h = ((b - r) / d + 2) / 6
-			break
-		case b:
-			h = ((r - g) / d + 4) / 6
-			break
+	return {
+		typography: {
+			header: parseFontFamily(lightVariables, "headerFont"),
+			body: parseFontFamily(lightVariables, "bodyFont"),
+		},
+		colors: {
+			lightMode: parsePalette(lightVariables, "light"),
+			darkMode: parsePalette(darkVariables, "dark"),
+		},
 	}
-
-	return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) }
-}
-
-export function joinStyles(theme: Theme, ...stylesheet: string[]) {
-	return `
-${stylesheet.join("\n\n")}
-
-:root {
-  --light: ${theme.colors.lightMode.light};
-  --lightgray: ${theme.colors.lightMode.lightgray};
-  --gray: ${theme.colors.lightMode.gray};
-  --darkgray: ${theme.colors.lightMode.darkgray};
-  --dark: ${theme.colors.lightMode.dark};
-  --secondary: ${theme.colors.lightMode.secondary};
-  --tertiary: ${theme.colors.lightMode.tertiary};
-  --highlight: ${theme.colors.lightMode.highlight};
-  --textHighlight: ${theme.colors.lightMode.textHighlight};
-
-  --titleFont: "${getFontSpecificationName(theme.typography.title || theme.typography.header)}", ${DEFAULT_SANS_SERIF};
-  --headerFont: "${getFontSpecificationName(theme.typography.header)}", ${DEFAULT_SANS_SERIF};
-  --bodyFont: "${getFontSpecificationName(theme.typography.body)}", ${DEFAULT_SANS_SERIF};
-  --codeFont: "${getFontSpecificationName(theme.typography.code)}", ${DEFAULT_MONO};
-}
-
-:root[saved-theme="dark"] {
-  --light: ${theme.colors.darkMode.light};
-  --lightgray: ${theme.colors.darkMode.lightgray};
-  --gray: ${theme.colors.darkMode.gray};
-  --darkgray: ${theme.colors.darkMode.darkgray};
-  --dark: ${theme.colors.darkMode.dark};
-  --secondary: ${theme.colors.darkMode.secondary};
-  --tertiary: ${theme.colors.darkMode.tertiary};
-  --highlight: ${theme.colors.darkMode.highlight};
-  --textHighlight: ${theme.colors.darkMode.textHighlight};
-}
-
-:root {
-  /* Surface colors */
-  --background-primary: var(--light);
-  --background-primary-alt: var(--light);
-  --background-secondary: var(--lightgray);
-  --background-secondary-alt: var(--lightgray);
-  --background-modifier-border: var(--lightgray);
-  --background-modifier-border-hover: var(--gray);
-  --background-modifier-border-focus: var(--secondary);
-
-  /* Text colors */
-  --text-normal: var(--darkgray);
-  --text-muted: var(--gray);
-  --text-faint: var(--gray);
-  --text-accent: var(--secondary);
-  --text-accent-hover: var(--tertiary);
-  --text-on-accent: var(--light);
-  --text-on-accent-inverted: var(--dark);
-  --text-highlight-bg: var(--textHighlight);
-
-  /* Interactive */
-  --interactive-normal: var(--light);
-  --interactive-hover: var(--lightgray);
-  --interactive-accent: var(--secondary);
-  --interactive-accent-hover: var(--tertiary);
-
-  /* Base scale */
-  --color-base-00: var(--light);
-  --color-base-05: var(--light);
-  --color-base-10: var(--light);
-  --color-base-20: var(--lightgray);
-  --color-base-25: var(--lightgray);
-  --color-base-30: var(--lightgray);
-  --color-base-35: var(--lightgray);
-  --color-base-40: var(--gray);
-  --color-base-50: var(--gray);
-  --color-base-60: var(--gray);
-  --color-base-70: var(--darkgray);
-  --color-base-100: var(--dark);
-
-  /* Font aliases */
-  --font-text: var(--bodyFont);
-  --font-monospace: var(--codeFont);
-  --font-interface: var(--bodyFont);
-
-  /* Nav/sidebar */
-  --nav-item-color: var(--darkgray);
-  --nav-item-color-hover: var(--dark);
-  --nav-item-color-active: var(--secondary);
-  --nav-item-background-hover: var(--lightgray);
-  --nav-item-background-active: var(--highlight);
-
-  /* Tags */
-  --tag-background: var(--highlight);
-  --tag-color: var(--secondary);
-  --tag-background-hover: var(--lightgray);
-
-  /* Misc */
-  --icon-color: var(--darkgray);
-  --icon-color-hover: var(--dark);
-  --icon-color-active: var(--secondary);
-  --divider-color: var(--lightgray);
-  --link-color: var(--secondary);
-  --link-color-hover: var(--tertiary);
-
-  /* Accent HSL (computed from secondary) */
-  --accent-h: ${hexToHsl(theme.colors.lightMode.secondary).h};
-  --accent-s: ${hexToHsl(theme.colors.lightMode.secondary).s}%;
-  --accent-l: ${hexToHsl(theme.colors.lightMode.secondary).l}%;
-}
-
-:root[saved-theme="dark"] {
-  /* Surface colors */
-  --background-primary: var(--light);
-  --background-primary-alt: var(--light);
-  --background-secondary: var(--lightgray);
-  --background-secondary-alt: var(--lightgray);
-  --background-modifier-border: var(--lightgray);
-  --background-modifier-border-hover: var(--gray);
-  --background-modifier-border-focus: var(--secondary);
-
-  /* Text colors */
-  --text-normal: var(--darkgray);
-  --text-muted: var(--gray);
-  --text-faint: var(--gray);
-  --text-accent: var(--secondary);
-  --text-accent-hover: var(--tertiary);
-  --text-on-accent: var(--light);
-  --text-on-accent-inverted: var(--dark);
-  --text-highlight-bg: var(--textHighlight);
-
-  /* Interactive */
-  --interactive-normal: var(--light);
-  --interactive-hover: var(--lightgray);
-  --interactive-accent: var(--secondary);
-  --interactive-accent-hover: var(--tertiary);
-
-  /* Base scale */
-  --color-base-00: var(--light);
-  --color-base-05: var(--light);
-  --color-base-10: var(--light);
-  --color-base-20: var(--lightgray);
-  --color-base-25: var(--lightgray);
-  --color-base-30: var(--lightgray);
-  --color-base-35: var(--lightgray);
-  --color-base-40: var(--gray);
-  --color-base-50: var(--gray);
-  --color-base-60: var(--gray);
-  --color-base-70: var(--darkgray);
-  --color-base-100: var(--dark);
-
-  /* Font aliases */
-  --font-text: var(--bodyFont);
-  --font-monospace: var(--codeFont);
-  --font-interface: var(--bodyFont);
-
-  /* Nav/sidebar */
-  --nav-item-color: var(--darkgray);
-  --nav-item-color-hover: var(--dark);
-  --nav-item-color-active: var(--secondary);
-  --nav-item-background-hover: var(--lightgray);
-  --nav-item-background-active: var(--highlight);
-
-  /* Tags */
-  --tag-background: var(--highlight);
-  --tag-color: var(--secondary);
-  --tag-background-hover: var(--lightgray);
-
-  /* Misc */
-  --icon-color: var(--darkgray);
-  --icon-color-hover: var(--dark);
-  --icon-color-active: var(--secondary);
-  --divider-color: var(--lightgray);
-  --link-color: var(--secondary);
-  --link-color-hover: var(--tertiary);
-
-  /* Accent HSL (computed from secondary) */
-  --accent-h: ${hexToHsl(theme.colors.darkMode.secondary).h};
-  --accent-s: ${hexToHsl(theme.colors.darkMode.secondary).s}%;
-  --accent-l: ${hexToHsl(theme.colors.darkMode.secondary).l}%;
-}
-`
 }

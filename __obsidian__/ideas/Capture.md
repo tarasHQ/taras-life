@@ -248,6 +248,7 @@
 	- Kinda duplicate obsidian idea. The thing is - it allows to have a bit more complex structure without requiring additional cognitive processing of that structure. Like it's easier to abstract it out.
 - ###### Colorful Headings %% fold %%
 	- Use colors from obsidian + extract those from "minimal's config" to separate css snippet
+	- https://turntrout.com/design#color-scheme
 - ###### Links %% fold %%
 	- Underline. Never highlight whole link.
 - ###### Content Width %% fold %%

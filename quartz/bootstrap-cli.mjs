@@ -9,7 +9,7 @@ if (major < 22) {
 }
 import yargs from "yargs"
 import { hideBin } from "yargs/helpers"
-import { handleBuild, handleCreate, handleUpgrade, handleRestore, handleSync } from "./cli/handlers.js"
+import { handleBuild } from "./cli/handlers.js"
 
 import {
 	handlePluginInstallUnified,
@@ -22,7 +22,7 @@ import {
 	handlePluginConfig,
 	handlePluginPrune,
 } from "./cli/plugin-git-handlers.js"
-import { CommonArgv, BuildArgv, CreateArgv, SyncArgv } from "./cli/args.js"
+import { CommonArgv, BuildArgv } from "./cli/args.js"
 import { version } from "./cli/constants.js"
 
 async function launchTui() {
@@ -67,18 +67,6 @@ yargs(hideBin(process.argv))
 	.scriptName("quartz")
 	.version(version)
 	.usage("$0 <cmd> [args]")
-	.command("create", "Initialize Quartz", CreateArgv, async (argv) => {
-		await handleCreate(argv)
-	})
-	.command(["upgrade", "update"], "Upgrade Quartz to the latest version", CommonArgv, async (argv) => {
-		await handleUpgrade(argv)
-	})
-	.command("restore", "Try to restore your content folder from the cache", CommonArgv, async (argv) => {
-		await handleRestore(argv)
-	})
-	.command("sync", "Sync your Quartz to and from GitHub.", SyncArgv, async (argv) => {
-		await handleSync(argv)
-	})
 	.command("build", "Build Quartz into a bundle of static HTML files", BuildArgv, async (argv) => {
 		await handleBuild(argv)
 	})

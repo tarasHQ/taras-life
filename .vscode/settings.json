@@ -6,6 +6,8 @@
 	"editor.insertSpaces": false, // use tabs instead of spaces for indentation
 	"editor.detectIndentation": false, // disable auto-detection of indentation to enforce consistent tab usage
 
+	"files.eol": "\n", // new files born LF — matches endOfLine: "lf"; format-on-save can't fix EOL on its own
+
 	"js/ts.tsdk.path": "node_modules/typescript/lib", // enforce using project's version of TypeScript
 	// enforce relative imports for autocompletion
 	// without it might default to absolute imports which can cause issues or break uniformity in the codebase

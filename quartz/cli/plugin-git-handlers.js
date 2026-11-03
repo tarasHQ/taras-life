@@ -13,7 +13,6 @@ import {
 	parseGitSource,
 	getGitCommit,
 	PLUGINS_DIR,
-	LOCKFILE_PATH,
 	isLocalSource,
 	getSourceUrl,
 	formatSource,
@@ -1444,14 +1443,6 @@ export async function handlePluginConfig(name, options = {}) {
 	}
 }
 
-export async function handlePluginCheck() {
-	return handlePluginInstallUnified({ latest: true, dryRun: true })
-}
-
-export async function handlePluginUpdate(names) {
-	return handlePluginInstallUnified({ names, latest: true })
-}
-
 export async function handlePluginList() {
 	const lockfile = readLockfile()
 	if (!lockfile || Object.keys(lockfile.plugins).length === 0) {
@@ -1641,10 +1632,6 @@ export async function handlePluginStatus() {
 	if (failedChecks.length > 0) {
 		console.log(styleText("red", `\nChecks failed: ${failedChecks.join(", ")}`))
 	}
-}
-
-export async function handlePluginRestore() {
-	return handlePluginInstallUnified({ clean: true })
 }
 
 export async function handlePluginPrune({ dryRun = false } = {}) {

@@ -22,4 +22,10 @@ custom-plugins/remark42/dist/
 *.md
 *.mdx
 
+# Planning vault — includes captured oracle CSS artifacts that must stay verbatim
+__obsidian__/
+
 docs/
+
+#temp
+public-legacy/

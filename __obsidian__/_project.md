@@ -22,11 +22,10 @@ GROUP BY true
 
 ## Phases
 
-### Phase 002 - Removing SCSS, Theming, Fonts plugin [open](./phases/002/_plan_002.md)
-Native CSS has many features where SCSS were pioneering. So doesn't make any sense to support things I have 0 experience with. 
-Theming and fonts just overlap scss, so they will go in this phase too.
+### %%Phase 002 - Removing SCSS, Theming, Fonts plugin [done](./phases/_archived/002/_plan_002.md) 
+SCSS→plain CSS, static theming (theme.css SSOT), generation machinery + Google Fonts + quartz-fonts out, CLI create/git-flow out, README set + AGENTS.md aligned, semantic review.%%
 
-### Phase 001 - Remark42 plugin rewrite [done](phases/_archived/001/_plan_001.md)
-Remark42 plugin rewritten from scratch as a self-contained compiled package (`custom-plugins/remark42/`), shipped and documented. Deferred to future work: visual polish
+### %%Phase 001 - Remark42 plugin rewrite [done](phases/_archived/001/_plan_001.md)
+Remark42 plugin rewritten from scratch as a self-contained compiled package (`custom-plugins/remark42/`), shipped and documented. Deferred to future work: visual polish%%
 
 

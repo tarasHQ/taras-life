@@ -3,7 +3,7 @@ import assert from "node:assert"
 import fs from "fs"
 import path from "path"
 import os from "os"
-import { symlinkOrCopySync, symlinkOrCopy } from "./helpers.js"
+import { symlinkOrCopySync } from "./helpers.js"
 
 function makeTmpDir() {
 	return fs.mkdtempSync(path.join(os.tmpdir(), "quartz-symlink-test-"))
@@ -142,93 +142,6 @@ describe("symlinkOrCopySync", () => {
 			)
 		} finally {
 			fs.symlinkSync.mock.restore()
-			if (originalPlatform) {
-				Object.defineProperty(process, "platform", originalPlatform)
-			}
-		}
-	})
-})
-
-describe("symlinkOrCopy", () => {
-	let tmpDir
-
-	beforeEach(() => {
-		tmpDir = makeTmpDir()
-	})
-
-	afterEach(() => {
-		fs.rmSync(tmpDir, { recursive: true, force: true })
-	})
-
-	test("creates a symlink on success", async () => {
-		const target = makeTarget(tmpDir)
-		const linkPath = path.join(tmpDir, "link")
-
-		await symlinkOrCopy(target, linkPath)
-
-		const stat = fs.lstatSync(linkPath)
-		assert.ok(stat.isSymbolicLink())
-		assert.ok(fs.existsSync(path.join(linkPath, "marker.txt")))
-	})
-
-	test("silently succeeds when link already exists (EEXIST)", async () => {
-		const target = makeTarget(tmpDir)
-		const linkPath = path.join(tmpDir, "link")
-
-		await symlinkOrCopy(target, linkPath)
-		await assert.doesNotReject(() => symlinkOrCopy(target, linkPath))
-	})
-
-	test("falls back to copy when both symlink and junction fail on Windows", async () => {
-		const target = makeTarget(tmpDir)
-		const linkPath = path.join(tmpDir, "link")
-
-		const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform")
-		Object.defineProperty(process, "platform", { value: "win32", configurable: true })
-
-		const originalSymlink = fs.promises.symlink
-		mock.method(fs.promises, "symlink", async (_t, _lp, _type) => {
-			const err = new Error("EPERM: operation not permitted, symlink")
-			err.code = "EPERM"
-			err.errno = -4048
-			err.syscall = "symlink"
-			throw err
-		})
-
-		try {
-			await symlinkOrCopy(target, linkPath)
-
-			const stat = fs.lstatSync(linkPath)
-			assert.ok(stat.isDirectory(), "fallback should produce a real directory, not a symlink")
-			assert.strictEqual(fs.readFileSync(path.join(linkPath, "marker.txt"), "utf-8"), "hello")
-		} finally {
-			fs.promises.symlink.mock.restore()
-			if (originalPlatform) {
-				Object.defineProperty(process, "platform", originalPlatform)
-			}
-		}
-	})
-
-	test("does not fall back on EPERM when not on Windows", async () => {
-		const target = makeTarget(tmpDir)
-		const linkPath = path.join(tmpDir, "link")
-
-		const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform")
-		Object.defineProperty(process, "platform", { value: "linux", configurable: true })
-
-		mock.method(fs.promises, "symlink", async (_t, _lp, _type) => {
-			const err = new Error("EPERM: operation not permitted, symlink")
-			err.code = "EPERM"
-			throw err
-		})
-
-		try {
-			await assert.rejects(
-				() => symlinkOrCopy(target, linkPath),
-				(err) => err.code === "EPERM",
-			)
-		} finally {
-			fs.promises.symlink.mock.restore()
 			if (originalPlatform) {
 				Object.defineProperty(process, "platform", originalPlatform)
 			}

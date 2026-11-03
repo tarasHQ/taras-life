@@ -1,23 +1,30 @@
 import { createHash } from "crypto"
-import { FullSlug, joinSegments } from "../../util/path"
+import { FullSlug } from "../../util/path"
 import { QuartzEmitterPlugin } from "../types"
 
 // @ts-ignore
 import spaRouterScript from "../../components/scripts/spa.inline"
 // @ts-ignore
 import popoverScript from "../../components/scripts/popover.inline"
-import baseStyles from "../../styles/base.scss"
-import customStyles from "../../styles/custom.scss"
-import popoverStyle from "../../components/styles/popover.scss"
+// Core stylesheet fragment order (theme → syntax → callouts → base) is a
+// cascade invariant — keep the quartzBase assembly below in sync with it.
+// globalCss (e.g. popover css) intentionally precedes the fragments: it declares
+// no custom properties, so its position cannot shift variable resolution; if a
+// future global fragment starts declaring :root vars, re-examine this order.
+import themeStyles from "../../styles/theme.css"
+import syntaxStyles from "../../styles/syntax.css"
+import calloutStyles from "../../styles/callouts.css"
+import baseStyles from "../../styles/base.css"
+import customStyles from "../../styles/custom.css"
+import popoverStyle from "../../components/styles/popover.css"
+
 import { BuildCtx } from "../../util/ctx"
 import { QuartzComponent } from "../../components/types"
 import { normalizeResource } from "../../util/resources"
 import { componentRegistry } from "../../components/registry"
-import { googleFontHref, googleFontSubsetHref, joinStyles, processGoogleFonts } from "../../util/theme"
 import { Features, transform } from "lightningcss"
 import { transform as transpile } from "esbuild"
 import { write } from "./helpers"
-
 function hashContent(content: string | Buffer): string {
 	return createHash("sha256").update(content).digest("hex").slice(0, 8)
 }
@@ -271,47 +278,8 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
 	return {
 		name: "ComponentResources",
 		async *emit(ctx, _content, resources) {
-			const cfg = ctx.cfg.configuration
 			// component specific scripts and styles
 			const componentResources = getComponentResources(ctx)
-			let googleFontsStyleSheet = ""
-			if (cfg.theme.fontOrigin === "local") {
-				// let the user do it themselves in css
-			} else if (cfg.theme.fontOrigin === "googleFonts" && !cfg.theme.cdnCaching) {
-				// when cdnCaching is true, we link to google fonts in Head.tsx
-				const theme = ctx.cfg.configuration.theme
-				const response = await fetch(googleFontHref(theme))
-				googleFontsStyleSheet = await response.text()
-
-				if (theme.typography.title) {
-					const title = ctx.cfg.configuration.pageTitle
-					const response = await fetch(googleFontSubsetHref(theme, title))
-					googleFontsStyleSheet += `\n${await response.text()}`
-				}
-
-				if (!cfg.baseUrl) {
-					throw new Error("baseUrl must be defined when using Google Fonts without cfg.theme.cdnCaching")
-				}
-
-				const { processedStylesheet, fontFiles } = await processGoogleFonts(googleFontsStyleSheet, cfg.baseUrl)
-				googleFontsStyleSheet = processedStylesheet
-
-				// Download and save font files
-				for (const fontFile of fontFiles) {
-					const res = await fetch(fontFile.url)
-					if (!res.ok) {
-						throw new Error(`Failed to fetch font ${fontFile.filename}`)
-					}
-
-					const buf = await res.arrayBuffer()
-					yield write({
-						ctx,
-						slug: joinSegments("static", "fonts", fontFile.filename) as FullSlug,
-						ext: `.${fontFile.extension}`,
-						content: Buffer.from(buf),
-					})
-				}
-			}
 
 			// important that this goes *after* component scripts
 			// as the "nav" event gets triggered here and we should make sure
@@ -325,8 +293,8 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
 			// AFTER getComponentResources() returned, so it's not in componentCssStrings.
 			const globalCss = componentResources.css.filter((c) => !componentResources.componentCssStrings.has(c))
 
-			// Core CSS: theme + fonts + global CSS + base styles (no per-component CSS)
-			const quartzBase = joinStyles(ctx.cfg.configuration.theme, googleFontsStyleSheet, ...globalCss, baseStyles)
+			// Core CSS: global CSS + the theme/syntax/callouts/base fragments (no per-component CSS)
+			const quartzBase = [...globalCss, themeStyles, syntaxStyles, calloutStyles, baseStyles].join("\n\n")
 			const stylesheet = `@layer quartz-base {\n${quartzBase}\n}\n${customStyles}`
 
 			const prescript = await joinScripts(componentResources.beforeDOMLoaded)
@@ -369,6 +337,10 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
 				postscript = [`await Promise.all([\n  ${componentImports}\n]);`, spaImport].filter(Boolean).join("\n")
 			}
 
+			// Nesting must be force-lowered: the plain-CSS sources use `&` nesting
+			// and the pinned targets (Safari/iOS 15.6 etc.) can't parse it. Lowering
+			// currently happens via lightningcss' target data, but that is implicit —
+			// pin it so a lightningcss upgrade can't silently stop lowering.
 			const lightningTargets = {
 				safari: (15 << 16) | (6 << 8), // 15.6
 				ios_saf: (15 << 16) | (6 << 8), // 15.6
@@ -382,7 +354,7 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
 				code: Buffer.from(stylesheet),
 				minify: true,
 				targets: lightningTargets,
-				include: Features.MediaQueries,
+				include: Features.MediaQueries | Features.Nesting,
 			}).code.toString()
 
 			const cssStringToFilename = new Map<string, string>()
@@ -395,7 +367,7 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
 					code: Buffer.from(wrapped),
 					minify: true,
 					targets: lightningTargets,
-					include: Features.MediaQueries,
+					include: Features.MediaQueries | Features.Nesting,
 				}).code.toString()
 
 				const hash = hashContent(minified)
@@ -414,7 +386,7 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
 			ctx.componentCssMap = cssStringToFilename
 
 			// Extract inline CSS/JS from plugin externalResources() into external files.
-			// This prevents large inline payloads (e.g. theme CSS) from being duplicated
+			// This prevents large inline payloads (e.g. plugin CSS) from being duplicated
 			// into every HTML page's <head>.
 			const extractedInlineResources = new Map<string, string>()
 			for (const cssResource of resources.css) {
@@ -427,7 +399,7 @@ export const ComponentResources: QuartzEmitterPlugin = () => {
 						code: Buffer.from(cssResource.content),
 						minify: true,
 						targets: lightningTargets,
-						include: Features.MediaQueries,
+						include: Features.MediaQueries | Features.Nesting,
 					}).code.toString()
 				} catch {
 					output = cssResource.content

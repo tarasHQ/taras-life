@@ -12,7 +12,7 @@
 		},
 		"configuration": {
 			"type": "object",
-			"required": ["pageTitle", "enableSPA", "locale", "theme"],
+			"required": ["pageTitle", "enableSPA", "locale"],
 			"additionalProperties": false,
 			"properties": {
 				"pageTitle": {
@@ -38,131 +38,6 @@
 				"baseUrl": {
 					"type": "string",
 					"description": "Base URL for the site"
-				},
-				"theme": {
-					"type": "object",
-					"required": ["fontOrigin", "cdnCaching", "typography", "colors"],
-					"additionalProperties": false,
-					"properties": {
-						"fontOrigin": {
-							"type": "string",
-							"enum": ["googleFonts", "local"],
-							"description": "Source of fonts"
-						},
-						"cdnCaching": {
-							"type": "boolean",
-							"description": "Enable CDN caching"
-						},
-						"typography": {
-							"type": "object",
-							"additionalProperties": false,
-							"properties": {
-								"header": {
-									"type": "string",
-									"description": "Font family for headers"
-								},
-								"body": {
-									"type": "string",
-									"description": "Font family for body text"
-								},
-								"code": {
-									"type": "string",
-									"description": "Font family for code"
-								}
-							}
-						},
-						"colors": {
-							"type": "object",
-							"required": ["lightMode", "darkMode"],
-							"additionalProperties": false,
-							"properties": {
-								"lightMode": {
-									"type": "object",
-									"additionalProperties": false,
-									"properties": {
-										"light": {
-											"type": "string",
-											"description": "Light color"
-										},
-										"lightgray": {
-											"type": "string",
-											"description": "Light gray color"
-										},
-										"gray": {
-											"type": "string",
-											"description": "Gray color"
-										},
-										"darkgray": {
-											"type": "string",
-											"description": "Dark gray color"
-										},
-										"dark": {
-											"type": "string",
-											"description": "Dark color"
-										},
-										"secondary": {
-											"type": "string",
-											"description": "Secondary color"
-										},
-										"tertiary": {
-											"type": "string",
-											"description": "Tertiary color"
-										},
-										"highlight": {
-											"type": "string",
-											"description": "Highlight color"
-										},
-										"textHighlight": {
-											"type": "string",
-											"description": "Text highlight color"
-										}
-									}
-								},
-								"darkMode": {
-									"type": "object",
-									"additionalProperties": false,
-									"properties": {
-										"light": {
-											"type": "string",
-											"description": "Light color"
-										},
-										"lightgray": {
-											"type": "string",
-											"description": "Light gray color"
-										},
-										"gray": {
-											"type": "string",
-											"description": "Gray color"
-										},
-										"darkgray": {
-											"type": "string",
-											"description": "Dark gray color"
-										},
-										"dark": {
-											"type": "string",
-											"description": "Dark color"
-										},
-										"secondary": {
-											"type": "string",
-											"description": "Secondary color"
-										},
-										"tertiary": {
-											"type": "string",
-											"description": "Tertiary color"
-										},
-										"highlight": {
-											"type": "string",
-											"description": "Highlight color"
-										},
-										"textHighlight": {
-											"type": "string",
-											"description": "Text highlight color"
-										}
-									}
-								}
-							}
-						}
-					}
 				},
 				"analytics": {
 					"oneOf": [{ "type": "null" }, { "type": "object", "description": "Analytics configuration" }],

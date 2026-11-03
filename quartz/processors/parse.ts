@@ -66,7 +66,8 @@ async function transpileWorkerScript() {
 			{
 				name: "css-and-scripts-as-text",
 				setup(build) {
-					build.onLoad({ filter: /\.scss$/ }, (_) => ({
+					// Styles are irrelevant inside the markdown/html workers — stub .css as empty text.
+					build.onLoad({ filter: /\.css$/ }, (_) => ({
 						contents: "",
 						loader: "text",
 					}))

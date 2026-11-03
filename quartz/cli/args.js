@@ -18,62 +18,6 @@ export const CommonArgv = {
 	},
 }
 
-export const CreateArgv = {
-	...CommonArgv,
-	template: {
-		string: true,
-		alias: ["t"],
-		choices: ["default", "obsidian", "ttrpg", "blog"],
-		describe: "template to use for initial configuration",
-	},
-	source: {
-		string: true,
-		alias: ["s"],
-		describe: "source directory to copy/create symlink from",
-	},
-	strategy: {
-		string: true,
-		alias: ["X"],
-		choices: ["new", "copy", "symlink"],
-		describe: "strategy for content folder setup",
-	},
-	baseUrl: {
-		string: true,
-		alias: ["b"],
-		describe: "base URL for your Quartz site (e.g. mysite.github.io/quartz)",
-	},
-	links: {
-		string: true,
-		alias: ["l"],
-		choices: ["absolute", "shortest", "relative"],
-		describe: "strategy to resolve links",
-	},
-}
-
-export const SyncArgv = {
-	...CommonArgv,
-	commit: {
-		boolean: true,
-		default: true,
-		describe: "create a git commit for your unsaved changes",
-	},
-	message: {
-		string: true,
-		alias: ["m"],
-		describe: "option to override the default Quartz commit message",
-	},
-	push: {
-		boolean: true,
-		default: true,
-		describe: "push updates to your Quartz fork",
-	},
-	pull: {
-		boolean: true,
-		default: true,
-		describe: "pull updates from your Quartz fork",
-	},
-}
-
 export const BuildArgv = {
 	...CommonArgv,
 	output: {

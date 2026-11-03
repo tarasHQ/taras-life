@@ -7,7 +7,6 @@ const LOCKFILE_PATH = path.join(process.cwd(), "quartz.lock.json")
 const PLUGINS_DIR = path.join(process.cwd(), ".quartz", "plugins")
 const CONFIG_YAML_PATH = path.join(process.cwd(), "quartz.config.yaml")
 const DEFAULT_CONFIG_YAML_PATH = path.join(process.cwd(), "quartz.config.default.yaml")
-const TEMPLATES_DIR = path.join(process.cwd(), "quartz", "cli", "templates")
 
 const LEGACY_PLUGINS_JSON_PATH = path.join(process.cwd(), "quartz.plugins.json")
 const LEGACY_DEFAULT_PLUGINS_JSON_PATH = path.join(process.cwd(), "quartz.plugins.default.json")
@@ -18,12 +17,6 @@ function resolveConfigPath() {
 	if (fs.existsSync(DEFAULT_CONFIG_YAML_PATH)) return DEFAULT_CONFIG_YAML_PATH
 	if (fs.existsSync(LEGACY_DEFAULT_PLUGINS_JSON_PATH)) return LEGACY_DEFAULT_PLUGINS_JSON_PATH
 	return CONFIG_YAML_PATH
-}
-
-function resolveDefaultConfigPath() {
-	if (fs.existsSync(DEFAULT_CONFIG_YAML_PATH)) return DEFAULT_CONFIG_YAML_PATH
-	if (fs.existsSync(LEGACY_DEFAULT_PLUGINS_JSON_PATH)) return LEGACY_DEFAULT_PLUGINS_JSON_PATH
-	return DEFAULT_CONFIG_YAML_PATH
 }
 
 function readFileAsData(filePath) {
@@ -56,11 +49,6 @@ export function readPluginsJson() {
 export function writePluginsJson(data) {
 	const { $schema, ...rest } = data
 	writeDataToFile(CONFIG_YAML_PATH, rest)
-}
-
-function readDefaultPluginsJson() {
-	const defaultPath = resolveDefaultConfigPath()
-	return readFileAsData(defaultPath)
 }
 
 export function readLockfile() {
@@ -204,95 +192,6 @@ export function getGitCommit(pluginDir) {
 	}
 }
 
-export function updateGlobalConfig(updates) {
-	const json = readPluginsJson()
-	if (!json) return false
-	json.configuration = { ...json.configuration, ...updates }
-	writePluginsJson(json)
-	return true
-}
-
-export function configExists() {
-	return fs.existsSync(CONFIG_YAML_PATH) || fs.existsSync(LEGACY_PLUGINS_JSON_PATH)
-}
-
-export function createConfigFromDefault() {
-	const defaultData = readDefaultPluginsJson()
-	if (!defaultData) {
-		// No default available — create minimal config
-		const minimal = {
-			configuration: {
-				pageTitle: "Quartz",
-				enableSPA: true,
-				enablePopovers: true,
-				analytics: { provider: "plausible" },
-				locale: "en-US",
-				baseUrl: "quartz.jzhao.xyz",
-				ignorePatterns: ["private", "templates", ".obsidian"],
-				theme: {
-					cdnCaching: true,
-					typography: {
-						header: "Schibsted Grotesk",
-						body: "Source Sans Pro",
-						code: "IBM Plex Mono",
-					},
-					colors: {
-						lightMode: {
-							light: "#faf8f8",
-							lightgray: "#e5e5e5",
-							gray: "#b8b8b8",
-							darkgray: "#4e4e4e",
-							dark: "#2b2b2b",
-							secondary: "#284b63",
-							tertiary: "#84a59d",
-							highlight: "rgba(143, 159, 169, 0.15)",
-							textHighlight: "#fff23688",
-						},
-						darkMode: {
-							light: "#161618",
-							lightgray: "#393639",
-							gray: "#646464",
-							darkgray: "#d4d4d4",
-							dark: "#ebebec",
-							secondary: "#7b97aa",
-							tertiary: "#84a59d",
-							highlight: "rgba(143, 159, 169, 0.15)",
-							textHighlight: "#fff23688",
-						},
-					},
-				},
-			},
-			plugins: [],
-			layout: { groups: {}, byPageType: {} },
-		}
-		writePluginsJson(minimal)
-		return minimal
-	}
-
-	const { $schema, ...rest } = defaultData
-	writePluginsJson(rest)
-	return rest
-}
-
-const VALID_TEMPLATES = ["default", "obsidian", "ttrpg", "blog"]
-
-export function createConfigFromTemplate(templateName) {
-	if (!VALID_TEMPLATES.includes(templateName)) {
-		throw new Error(`Unknown template: ${templateName}. Valid templates: ${VALID_TEMPLATES.join(", ")}`)
-	}
-
-	const templatePath = path.join(TEMPLATES_DIR, `${templateName}.yaml`)
-	const templateData = readFileAsData(templatePath)
-	if (!templateData) {
-		// Template file missing — fall back to default config creation
-		return createConfigFromDefault()
-	}
-
-	const { $schema, ...rest } = templateData
-	writePluginsJson(rest)
-	return rest
-}
-
 /**
  * Resolves a user-facing plugin name (which may be an overridden name from config)
  * to the corresponding lockfile key (the original name at install time).
@@ -355,6 +254,4 @@ export function getNameOverrides(lockfile, pluginsJson) {
 	return overrides
 }
 
-export const PLUGINS_JSON_PATH = CONFIG_YAML_PATH
-export const DEFAULT_PLUGINS_JSON_PATH = DEFAULT_CONFIG_YAML_PATH
-export { LOCKFILE_PATH, PLUGINS_DIR }
+export { PLUGINS_DIR }

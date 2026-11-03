@@ -9,38 +9,10 @@ configuration:
     baseUrl: taras.life
     ignorePatterns:
         - .obsidian
-    # Fonts are fully self-hosted: @font-face rules live in quartz/styles/custom.scss
+    # Fonts are fully self-hosted: @font-face rules live in quartz/styles/custom.css
     # and woff2 files ship from quartz/static/fonts/ (copied by the Static emitter).
-    # "local" means the built-in pipeline loads nothing; typography below only
-    # defines the CSS variable family names that custom.scss @font-face rules resolve.
-    theme:
-        fontOrigin: local
-        cdnCaching: false
-        typography:
-            header: Atkinson Hyperlegible Next
-            body: Atkinson Hyperlegible Next
-            code: JetBrains Mono
-        colors:
-            lightMode:
-                light: "#faf8f8"
-                lightgray: "#e5e5e5"
-                gray: "#b8b8b8"
-                darkgray: "#4e4e4e"
-                dark: "#2b2b2b"
-                secondary: "#284b63"
-                tertiary: "#84a59d"
-                highlight: rgba(143, 159, 169, 0.15)
-                textHighlight: "#fff23688"
-            darkMode:
-                light: "#161618"
-                lightgray: "#393639"
-                gray: "#646464"
-                darkgray: "#d4d4d4"
-                dark: "#ebebec"
-                secondary: "#7b97aa"
-                tertiary: "#84a59d"
-                highlight: rgba(143, 159, 169, 0.15)
-                textHighlight: "#b3aa0288"
+    # The palette lives in quartz/styles/theme.css — the styling SSOT. Plugin-facing
+    # theme data (og-image) is derived from it at build time (quartz/util/theme.ts).
 plugins:
     - source: "@quartz-community/created-modified-date"
       enabled: true

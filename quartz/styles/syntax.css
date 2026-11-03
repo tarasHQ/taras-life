@@ -1,0 +1,23 @@
+/*
+ * Syntax highlighting rules (was syntax.scss — moved in verbatim, it had no
+ * Sass features). Dark Shiki rules key off the [saved-theme="dark"] attribute
+ * owned by the darkmode component.
+ */
+
+code[data-theme*=" "] {
+	color: var(--shiki-light);
+	background-color: var(--shiki-light-bg);
+}
+
+code[data-theme*=" "] span {
+	color: var(--shiki-light);
+}
+
+[saved-theme="dark"] code[data-theme*=" "] {
+	color: var(--shiki-dark);
+	background-color: var(--shiki-dark-bg);
+}
+
+[saved-theme="dark"] code[data-theme*=" "] span {
+	color: var(--shiki-dark);
+}
