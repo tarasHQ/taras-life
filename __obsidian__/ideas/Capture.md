@@ -51,7 +51,7 @@
 ---
 
 ## Other
-- ###### `README.md` %% fold %%
+- ###### ~~`README.md` %% fold %%
 	- What should be there? That's the question. You placed life-thing/reasoning on this. 
 	- But what if it should send on SSOT page on website. And readme itself should contain technical github-related notes? 
 	- For quartz - how to install and run. 
@@ -64,9 +64,11 @@
 - ###### Private config properties %% fold %%
 	- Make your remark42 config url private. It's not a secret to see the address, and it's protected(rejected) but to just not confuse people? Though it may be PIA. Cuz you theoretically need to configure variables in github AND cloudflare. So it's like 2-3 sources of truth. On another hand, do you need those locally, since localhost origin banned as well, and also on github, since you just build to test/check that it builds. 
 		- it's just unclear. If I will build locally and worker will only run it - then it's easier, I guess? I don't know. 
+- ###### FetchPriority %% fold %%
+	- Minor tweak on core stylesheets to have priority in download queue.
 
 ## Refactor
-- ###### SCSS - Remove it %% fold %%
+- ###### ~~SCSS - Remove it %% fold %%
 	- I didn't really understood any good reason to use it
 - ###### Theming Logic %% fold %%
 	- Discuss its use, because it seems to me it's just redundant code since I'm not like want to use themes neither now nor later
@@ -280,7 +282,7 @@
 			- You can use that Dore's painting + LLM to have some variations? 
 	- ##### Image Viewer %% fold %%
 		- Scroll to zoom in/out into mouse position on the image.
-	- ###### Convert to webp %% fold %%
+	- ###### Convert to ~~webp~~ Avif %% fold %%
 		- During build time
 			- What you see in obsidian is not what you get in website
 			- But this requires different building processes, to avoid conversion in worker/github.
@@ -288,6 +290,9 @@
 			- You establish low-friction workflows to insert processed images in obsidian, so building stays cheap. (100 images on high quality webp (lossless) can take minutes)
 			- You have apps like `squoosh.app` or others. Or you can write quick app in python/ahk based on clipboard buffer. You make a screenshot. Press hotkey. And get notification that clipboard was updated and you have optimized webp image in there.
 				- Another hotkey would do the same but with GUI sliders/preview. 
+		- UPD.
+			- Tested things with `sqoosh.app`, avif is faster and better. Plain and simple. It has the same/better quality than webp in lossless at max effort and 100% loss of quality (to reduce size to comparable with avif)
+			- on text/simple images they're kinda similar, but on complex images avif just so much better that it's not even on the same level with webp.
 	- ##### Async loading
 		- ###### Loading %% fold %%
 			- Notes

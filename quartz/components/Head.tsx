@@ -40,7 +40,8 @@ export default (() => {
 			<head>
 				<title>{title}</title>
 				<meta charSet="utf-8" />
-				{coreStylesheet && <link rel="preload" href={coreStylesheet} as="style" />}
+				{/* CUSTOM EDIT: fetchpriority=high — core CSS is render-blocking; outrank font preloads queued at the same priority tier. */}
+				{coreStylesheet && <link rel="preload" href={coreStylesheet} as="style" fetchPriority="high" />}
 				{fontPreloads.map((file) => (
 					<link
 						key={file}
