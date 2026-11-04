@@ -60,17 +60,20 @@ async function transpileWorkerScript() {
 		platform: "node",
 		format: "esm",
 		packages: "external",
+		// CSS imports must yield their text, never an empty stub: the worker bundle
+		// includes root quartz.ts (via worker.ts -> cfg), whose top-level
+		// parseThemeData() consumes theme.css as DATA (palette/font SSOT), not as a
+		// stylesheet. Keep in sync with the same loader in cli/handlers.js.
+		loader: {
+			".css": "text",
+		},
 		sourcemap: true,
 		sourcesContent: false,
 		plugins: [
 			{
-				name: "css-and-scripts-as-text",
+				name: "inline-scripts-as-text",
 				setup(build) {
-					// Styles are irrelevant inside the markdown/html workers — stub .css as empty text.
-					build.onLoad({ filter: /\.css$/ }, (_) => ({
-						contents: "",
-						loader: "text",
-					}))
+					// Inline browser scripts are runtime-only — stub them as empty text in workers.
 					build.onLoad({ filter: /\.inline\.(ts|js)$/ }, (_) => ({
 						contents: "",
 						loader: "text",

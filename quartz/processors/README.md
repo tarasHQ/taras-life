@@ -7,7 +7,7 @@
 - Parse (markdown/HTML → mdast/hast, concurrent via worker threads), filter (drop pages), emit (run configured emitters → `public/`).
 
 ## Module Map
-- `parse.ts` — markdown/HTML parsing; runs worker threads (concurrency clamped 1–4, chunks of 128). Its esbuild plugin stubs `.css` loads as empty text inside workers (`filter: /\.css$/`), alongside the `.inline.(ts|js)` text stub.
+- `parse.ts` — markdown/HTML parsing; runs worker threads (concurrency clamped 1–4, chunks of 128). Its worker esbuild config resolves CSS via the native `loader: { ".css": "text" }` (theme.css is consumed as data inside workers, see Decisions); the `.inline.(ts|js)` stub remains an empty-text plugin.
 - `filter.ts` — applies configured filter plugins (`shouldPublish`) sequentially; verbose mode logs every dropped file.
 - `emit.ts` — runs configured emitters in three phases: `ComponentResources` first (content-hashed asset filenames become available to pages), then `PageTypeDispatcher` (populates `ctx.virtualPages`), then all others concurrently with content extended by virtual pages; counts and reports emitter failures without aborting the build.
 
@@ -17,7 +17,7 @@
 - `parse.ts` is where the build's content ingestion starts; read `emit.ts` second to see how output lands in `public/`.
 
 ### Decisions
-- **`.css` worker stub**: workers can't load `.css` through esbuild normally, so the plugin stubs those loads as empty text — stylesheets are assembled once, in the main build, by the emitters. Must stay in sync with the `.css` text loader in `quartz/cli/handlers.js` and `index.d.ts`'s `declare module "*.css"` — the trio is the css-text invariant; changing one means checking the other two.
+- **`.css` text loader in the worker bundle**: CSS must arrive in workers as its real text, never empty. The worker bundle includes root `quartz.ts` (via `worker.ts` → `cfg`), whose top-level `parseThemeData()` consumes `theme.css` as data — stubbing it empty makes workers throw `selector ":root" not found` (latent until phase 002 made theme.css a data SSOT; concurrency ≤ 1 builds never execute the worker, so the gate stayed green while it was broken). The loader is identical to `quartz/cli/handlers.js`; together with `index.d.ts`'s `declare module "*.css"` the trio is the css-text invariant — changing one means checking the other two.
 
 ### Quirks & Nuances
 - Worker-based parsing means module-level mutable state in transformers is a bug — content processing runs concurrently (same reason components can't hold module state).
