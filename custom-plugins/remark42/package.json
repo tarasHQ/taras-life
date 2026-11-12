@@ -33,7 +33,7 @@
 		}
 	},
 	"dependencies": {
-		"preact": "^11.0.2"
+		"preact": "^11.2.0"
 	},
 	"devDependencies": {
 		"@quartz-community/types": "^1.0.0",
