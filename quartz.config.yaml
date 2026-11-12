@@ -9,10 +9,10 @@ configuration:
     baseUrl: taras.life
     ignorePatterns:
         - .obsidian
-    # Fonts are fully self-hosted: @font-face rules live in quartz/styles/custom.css
-    # and woff2 files ship from quartz/static/fonts/ (copied by the Static emitter).
-    # The palette lives in quartz/styles/theme.css — the styling SSOT. Plugin-facing
-    # theme data (og-image) is derived from it at build time (quartz/util/theme.ts).
+        # quick and dirty fix because quartz syncer can't do this
+        # should be synced with .gitignore
+        - _private
+        - "@projects/0vibes"
 plugins:
     - source: "@quartz-community/created-modified-date"
       enabled: true
@@ -83,14 +83,14 @@ plugins:
       options:
           enableSiteMap: true
           enableRSS: true
-    - source: "@quartz-community/favicon"
-      enabled: true
     - source: "@quartz-community/og-image"
-      enabled: true
+      enabled: false # Disabled for now
     - source: "@quartz-community/content-page"
       enabled: true
     - source: "@quartz-community/explorer"
       enabled: true
+      options:
+          folderClickBehavior: collapse
       layout:
           position: left
           priority: 50
@@ -122,12 +122,6 @@ plugins:
       layout:
           position: left
           priority: 10
-    - source: "@quartz-community/darkmode"
-      enabled: true
-      layout:
-          position: left
-          priority: 30
-          group: toolbar
     - source: "@quartz-community/breadcrumbs"
       enabled: true
       layout:
@@ -177,13 +171,6 @@ plugins:
           position: beforeBody
           priority: 15
           display: all
-    - source: "@quartz-community/obsidian-plugin-excalidraw"
-      enabled: true
-      options:
-          enableInteraction: true
-          darkMode: auto
-          exportPadding: 20
-      order: 50
 layout:
     groups:
         toolbar:
@@ -197,8 +184,5 @@ layout:
                 - "@quartz-community/content-meta"
         content: {}
         bases:
-            exclude:
-                - remark42
-        excalidraw:
             exclude:
                 - remark42

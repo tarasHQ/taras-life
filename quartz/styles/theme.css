@@ -4,18 +4,40 @@
  * callouts → base) in the stylesheet assembly (componentResources.ts), and is
  * also parsed at build time (quartz.ts → quartz/util/theme.ts) to derive the
  * plugin-facing theme data (og-image) — edit colors/fonts only here.
+ *
+ * Three mode blocks live here: :root (light), :root[saved-theme="dark"] and
+ * :root[saved-theme="dark-low"]. The parser reads the solid background from all
+ * three for browser chrome; og-image still consumes only a light/dark pair.
+ * Ramp values are iteration starting
+ * points, refined against the live pages.
  */
 
 :root {
-	--light: #faf8f8;
-	--lightgray: #e5e5e5;
-	--gray: #b8b8b8;
-	--darkgray: #4e4e4e;
-	--dark: #2b2b2b;
-	--secondary: #284b63;
-	--tertiary: #84a59d;
-	--highlight: rgba(143, 159, 169, 0.15);
-	--textHighlight: #fff23688;
+	color-scheme: light;
+	--light: #faf6ef;
+	--lightgray: #e8e0d4;
+	--gray: #b3a898;
+	--darkgray: #55483c;
+	--dark: #362c22;
+	--secondary: #9a6b2f;
+	--tertiary: #b89a5e;
+	--highlight: rgba(166, 124, 82, 0.15);
+	--textHighlight: #f2c94c88;
+
+	/* The scrolling wash fades from the lighter top to the darker solid page
+	 * background. Both are trial values, to be judged on the live site. */
+	--bg-grad-top: #fdfbf6;
+	--bg-grad-bottom: #f0e7d7;
+
+	/* Accent tier — per-level heading color ladder (h1..h6). STARTING VALUES
+	 * only: deliberately multi-hue plumbing for the eyeball pass — judge and
+	 * hand-tune against the live pages in all three modes. */
+	--heading-1: #a63d2f;
+	--heading-2: #b56a1e;
+	--heading-3: #8a6d1f;
+	--heading-4: #4a7a3a;
+	--heading-5: #35618f;
+	--heading-6: #7a4a8f;
 
 	--headerFont:
 		"Atkinson Hyperlegible Next", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
@@ -27,13 +49,65 @@
 }
 
 :root[saved-theme="dark"] {
-	--light: #161618;
-	--lightgray: #393639;
-	--gray: #646464;
-	--darkgray: #d4d4d4;
-	--dark: #ebebec;
-	--secondary: #7b97aa;
-	--tertiary: #84a59d;
-	--highlight: rgba(143, 159, 169, 0.15);
-	--textHighlight: #b3aa0288;
+	color-scheme: dark;
+	--light: #1a1714;
+	--lightgray: #3a332c;
+	--gray: #7a6f62;
+	--darkgray: #d8cfc2;
+	--dark: #ede5d8;
+	--secondary: #c89b5a;
+	--tertiary: #a6895a;
+	--highlight: rgba(166, 124, 82, 0.18);
+	--textHighlight: #c9a22788;
+
+	/* Background wash and solid continuation for dark mode. */
+	--bg-grad-top: #221d18;
+	--bg-grad-bottom: #100e0b;
+
+	/* Accent tier — heading ladder, tuned for dark backgrounds (lighter,
+	 * more saturated versions of the light block's hues). */
+	--heading-1: #e8836f;
+	--heading-2: #d99a4e;
+	--heading-3: #c9b458;
+	--heading-4: #8fb573;
+	--heading-5: #7fa8cf;
+	--heading-6: #b085c9;
+}
+
+/*
+ * Dark-low: a low-contrast reading variant of dark, hand-written as a minimal
+ * derivation over the dark block — no color-mix() derivation, no build-time
+ * generation. Overrides exactly five variables — --light (the lifted
+ * background is part of the derivation), --lightgray, --gray, --darkgray and
+ * --dark — pulling each text rung toward the midtones; the chromatic four
+ * (--secondary, --tertiary, --highlight, --textHighlight) and the accent
+ * heading ladder (--heading-1..6) are re-declared verbatim from dark, NOT
+ * re-picked.
+ *
+ * OG-image contract: this block contributes browser-chrome color only, not a
+ * third palette — og-image still receives exactly the light/dark pair.
+ */
+:root[saved-theme="dark-low"] {
+	color-scheme: dark;
+	--light: #26211c;
+	--lightgray: #453e36;
+	--gray: #857a6c;
+	--darkgray: #c9c0b4;
+	--dark: #ddd4c7;
+	--secondary: #c89b5a;
+	--tertiary: #a6895a;
+	--highlight: rgba(166, 124, 82, 0.18);
+	--textHighlight: #c9a22788;
+
+	/* Background wash and solid continuation for dark-low mode. */
+	--bg-grad-top: #2e2822;
+	--bg-grad-bottom: #1b1712;
+
+	/* Accent tier — heading ladder shared with dark verbatim (see banner). */
+	--heading-1: #e8836f;
+	--heading-2: #d99a4e;
+	--heading-3: #c9b458;
+	--heading-4: #8fb573;
+	--heading-5: #7fa8cf;
+	--heading-6: #b085c9;
 }

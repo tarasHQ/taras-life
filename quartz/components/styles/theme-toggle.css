@@ -1,0 +1,79 @@
+/*
+ * ThemeToggle button geometry + the icon morph. The icon state is keyed off
+ * the `saved-theme` attribute on `documentElement` — owned by the theme
+ * contract (components/scripts/themeContract.ts) — so the icon follows the
+ * attribute on every change (toggle click, SPA nav, hard load) with no
+ * script-driven icon state.
+ *
+ * Geometry (20×32 button, 20×20 svg centered) matches the toolbar row's
+ * alignment expectations — same slot the toolbar group reserves for it.
+ */
+
+.theme-toggle {
+	cursor: pointer;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	position: relative;
+	width: 20px;
+	height: 32px;
+	flex-shrink: 0;
+	color: var(--darkgray);
+}
+
+.theme-toggle svg {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	top: calc(50% - 10px);
+	left: 0;
+	display: block;
+}
+
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon,
+.theme-toggle .icon-low {
+	transform-origin: center;
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease;
+}
+
+/* One glyph per mode — every `saved-theme` value needs a branch here, or the
+   default (sun) glyph leaks into that mode. Inactive glyphs are collapsed
+   (scaled + rotated) so the crossfade reads as a morph, not a plain fade. */
+
+/* Light (the default, including a missing attribute): sun. */
+.theme-toggle .icon-sun {
+	opacity: 1;
+	transform: scale(1);
+}
+.theme-toggle .icon-moon,
+.theme-toggle .icon-low {
+	opacity: 0;
+	transform: scale(0.5) rotate(-40deg);
+}
+
+/* Dark: moon. */
+:root[saved-theme="dark"] .theme-toggle .icon-sun,
+:root[saved-theme="dark"] .theme-toggle .icon-low {
+	opacity: 0;
+	transform: scale(0.5) rotate(40deg);
+}
+:root[saved-theme="dark"] .theme-toggle .icon-moon {
+	opacity: 1;
+	transform: scale(1) rotate(0deg);
+}
+
+/* Dark-low: half moon — the moon family mirrors how dark-low is a partial
+   (dimmed) form of dark. */
+:root[saved-theme="dark-low"] .theme-toggle .icon-sun,
+:root[saved-theme="dark-low"] .theme-toggle .icon-moon {
+	opacity: 0;
+	transform: scale(0.5) rotate(40deg);
+}
+:root[saved-theme="dark-low"] .theme-toggle .icon-low {
+	opacity: 1;
+	transform: scale(1) rotate(0deg);
+}

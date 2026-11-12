@@ -1,45 +1,28 @@
 /**
  * Browser runtime for the Remark42 comments widget — the only part of the plugin
- * a visitor pays for (phase 001, step 06).
+ * a visitor pays for.
  *
- * Responsibilities:
- * - Ships site-wide as an `afterDOMLoaded` script string and stays a hard no-op
- *   on pages without a comments container: no gate observer, no watchdog timer,
- *   no network. The only unconditional cost is three `document`-level event
- *   subscriptions, which hold no DOM references.
- * - Loads Remark42's `embed.mjs` at most once per page load, gated by an
- *   IntersectionObserver (~600px rootMargin) so nothing is requested until the
- *   container nears the viewport (D5). The module auto-mounts on import; the
- *   gated import only ever happens with `#remark42` confirmed present, so the
- *   loader's "Can't find root node" throw is unreachable by construction.
- * - Owns `window.remark_config` deliberately: the per-page config is re-read
- *   from `script#remark42-config` on every navigation (inline scripts do not
- *   re-execute after micromorph patches the body) and written into the global
- *   before every mount — the loader's `createInstance` validates `site_id`
- *   against the global, not against its argument (v1.18.0 fixture).
- * - Keeps exactly one live widget instance: torn down on `prenav` (before
- *   micromorph patches the body) and remounted on `nav` through the persisted
- *   `window.REMARK42.createInstance` handle — a local call, never a re-download.
- * - Matches the widget's theme to `saved-theme` at every mount by injecting
- *   `theme` into the config copy handed to the loader — the iframe is then
- *   created with the correct `colorScheme` and query param, no flash — and
- *   follows `themechange` (dispatched on `document` by
- *   `@quartz-community/darkmode`; it does not fire on initial load) for the
- *   module's lifetime.
- * - Surfaces failure inside the container only: a watchdog replaces the
- *   placeholder with a failure note when the widget never reports `inited`,
- *   and an import rejection (offline/blocked) fails fast the same way. The
- *   failed instance is destroyed; there is no retry control — the reader
- *   reloads the page (locked at step 06).
+ * Ships site-wide as an `afterDOMLoaded` script and is a hard no-op on pages
+ * without `#remark42`: no observer, no timer, no network. The embed module is
+ * imported at most once per page load, gated by an IntersectionObserver (~600px
+ * rootMargin) so nothing is requested until the container nears the viewport.
+ * The per-page config is re-read from `script#remark42-config` on every
+ * navigation (inline scripts don't re-execute after micromorph patches the
+ * body) and written into `window.remark_config` before each mount — the loader
+ * validates `site_id` against the global, not its argument (v1.18.0 fixture).
  *
- * Reveal detection uses a MutationObserver on the container rather than
- * filtering cross-origin `message` events: the loader wipes every non-iframe
- * container child once the widget reports `inited`, so "only the iframe
- * remains" is a parent-side, DOM-only success signal with no fragile
- * `event.source` identity comparison.
+ * Exactly one widget instance lives at a time: destroyed on `prenav` (before
+ * the body is patched), remounted on `nav` through the persisted
+ * `window.REMARK42.createInstance` handle — a local call, never a re-download.
+ * The widget's theme is matched to `saved-theme` at every mount (no flash) and
+ * follows `themechange` (dispatched by the site's ThemeToggle contract script;
+ * does not fire on initial load) for the module's lifetime.
  *
- * The file name is fixed by `build.mjs` (pass-1 entry point); like `index.tsx`
- * it is a build entry, not a barrel.
+ * Failure stays inside the container: a watchdog (15s) or an import rejection
+ * replaces the placeholder with a failure note; recovery is a page reload.
+ * Reveal is detected by a MutationObserver on the container — the loader wipes
+ * every non-iframe child on `inited`, so "only the iframe remains" is a
+ * DOM-only success signal, no cross-origin `message` filtering.
  */
 
 // === Local Constants ===============================================
@@ -89,7 +72,7 @@ class Remark42Runtime {
 		const configScript = document.getElementById(CONFIG_SCRIPT_ID)
 		const config = configScript ? parseConfigFromDom(configScript) : null
 		if (!container || !config) {
-			// No comments on this route (absent `id`, 404, bases, excalidraw) — stay a no-op.
+			// No comments on this route (absent `id`, 404, bases) — stay a no-op.
 			return
 		}
 		// Every mount waits on the viewport gate, module cached or not: the module
@@ -104,7 +87,7 @@ class Remark42Runtime {
 	}
 
 	/** `themechange` handler — live for the module's lifetime; a no-op when nothing is mounted. */
-	onThemeChange(theme: "light" | "dark"): void {
+	onThemeChange(theme: RemarkTheme): void {
 		this.liveInstance?.changeTheme(theme)
 	}
 
@@ -155,6 +138,11 @@ class Remark42Runtime {
 			if (!this.liveInstance) {
 				throw new Error("Remark42 global is missing or malformed after import")
 			}
+			// Theme events during the import/auto-run wait have no live instance to
+			// update. Re-read the DOM after acquisition instead of caching another
+			// theme value; the generation checks above already reject stale mounts.
+			const liveTheme = currentTheme()
+			if (liveTheme !== themedConfig.theme) this.liveInstance.changeTheme(liveTheme)
 			this.armRevealWatch(container, generation)
 		} catch (error) {
 			if (generation !== this.generation) return
@@ -334,9 +322,26 @@ function adoptGlobalInstance(remark42: Remark42Global | null): Remark42Instance 
 	return { destroy: remark42.destroy, changeTheme: remark42.changeTheme }
 }
 
-/** Current site theme; `saved-theme` is set before after-DOM scripts run (darkmode's beforeDOMLoaded). */
-function currentTheme(): "light" | "dark" {
-	return document.documentElement.getAttribute("saved-theme") === "dark" ? "dark" : "light"
+/**
+ * Reads the raw site mode off `documentElement`; the theme init script in `<head>`
+ * guarantees the attribute is set before after-DOM scripts run. Returns null when the
+ * attribute is absent or holds a value outside the mode list — the caller picks the
+ * fallback, so no binary assumption is smuggled in here.
+ */
+function readSiteThemeMode(): SiteThemeMode | null {
+	const raw = document.documentElement.getAttribute("saved-theme")
+	return raw === "light" || raw === "dark" || raw === "dark-low" ? raw : null
+}
+
+/**
+ * Current site theme for the widget, mirroring the event path (`toRemarkTheme`):
+ * the raw mode is validated, then `dark-low` narrows to `dark`. An absent or
+ * unrecognized attribute falls back to `light` — the CSS default (`:root`) and the
+ * same fallback the site's own toggle script uses.
+ */
+function currentTheme(): RemarkTheme {
+	const mode = readSiteThemeMode()
+	return mode === null ? "light" : toRemarkTheme(mode)
 }
 
 /**
@@ -353,17 +358,26 @@ function widgetRevealed(container: HTMLElement): boolean {
 }
 
 /**
- * Runtime guard for the `themechange` event: the darkmode package dispatches a
- * `CustomEvent<{ theme: "light" | "dark" }>` on `document`, but this module
+ * Runtime guard for the `themechange` event: the site's ThemeToggle dispatches
+ * a `CustomEvent<{ theme: SiteThemeMode }>` on `document`, but this module
  * deliberately does not rely on the types package's global augmentation, so
  * the listener sees a plain `Event`. The guard establishes the shape before
- * `detail` is read.
+ * `detail` is read, accepting every raw mode the toggle can emit.
  */
-function hasThemeDetail(event: Event): event is CustomEvent<{ theme: "light" | "dark" }> {
+function hasThemeDetail(event: Event): event is CustomEvent<{ theme: SiteThemeMode }> {
 	const detail: unknown = (event as { detail?: unknown }).detail
 	if (typeof detail !== "object" || detail === null) return false
 	const theme = (detail as { theme?: unknown }).theme
-	return theme === "light" || theme === "dark"
+	return theme === "light" || theme === "dark" || theme === "dark-low"
+}
+
+/**
+ * Maps a raw site mode to the widget's binary theme: `dark-low` is the dimmed
+ * reading variant of dark, so the widget follows it as `dark`. Exhaustive over
+ * `SiteThemeMode`, so no value can fall through unrecognised.
+ */
+function toRemarkTheme(mode: SiteThemeMode): RemarkTheme {
+	return mode === "light" ? "light" : "dark"
 }
 
 /** Replaces the container's content with the failure note; never touches anything outside it. */
@@ -375,6 +389,12 @@ function showFailure(container: HTMLElement): void {
 }
 
 // === Local Types ===================================================
+
+/** Raw modes dispatched by the site's theme toggle — mirrors the `themechange` union in `index.d.ts`. */
+type SiteThemeMode = "light" | "dark" | "dark-low"
+
+/** The binary theme the Remark42 widget understands. */
+type RemarkTheme = "light" | "dark"
 
 /** Shape of the inline `remark_config` object the component renders into `script#remark42-config`. */
 type RemarkConfig = {
@@ -404,7 +424,7 @@ document.addEventListener("nav", () => remark42Runtime.onNav())
 document.addEventListener("prenav", () => remark42Runtime.onPrenav())
 document.addEventListener("themechange", (event) => {
 	// Not a theme event, or a theme value we do not recognise — ignore.
-	if (hasThemeDetail(event)) remark42Runtime.onThemeChange(event.detail.theme)
+	if (hasThemeDetail(event)) remark42Runtime.onThemeChange(toRemarkTheme(event.detail.theme))
 })
 
 export {}

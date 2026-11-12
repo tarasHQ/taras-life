@@ -10,7 +10,7 @@
 - Declares all self-hosted font faces (`custom.css`) and pins heading weight over the base layer.
 
 ### File semantics
-- `theme.css` — palettes (light + dark via `:root[saved-theme="dark"]`) + font stacks. **SSOT**: edit colors/fonts only here.
+- `theme.css` — palettes (light + dark, plus the hand-written `:root[saved-theme="dark-low"]` low-contrast reading variant — a minimal derivation over dark: five ramp values differ, while chromatic and heading values are redeclared identically, intentionally outside the og-image 2-palette contract) + font stacks. **SSOT**: edit colors/fonts only here.
 - `syntax.css` — Shiki light/dark rules (small; no custom properties of its own).
 - `callouts.css` — callout container/content/title rules + per-type icon custom properties.
 - `base.css` — layout, typography, tables, media, embeds, progress bar; the dissolved Sass variables/breakpoints/grid live here as literals.
@@ -18,7 +18,7 @@
 
 ## Module Map
 - `theme.css` — palette + font SSOT; also parsed at build time (see Decisions).
-- `syntax.css` — Shiki code highlighting, verbatim from legacy.
+- `syntax.css` — Shiki code highlighting, verbatim from legacy. Dark rules follow both dark variants via the explicit two-selector list.
 - `callouts.css` — callout styling incl. icon property indirection.
 - `base.css` — the bulk (~600 lines); layout/typography, literal breakpoints + grid.
 - `custom.css` — font faces + heading pin; sits outside the cascade layer.

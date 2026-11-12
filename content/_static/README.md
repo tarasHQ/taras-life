@@ -1,0 +1,4 @@
+- `fonts` - for having fonts I use bundled in case windows reinstall or something
+- `scripts` - for single place for all scripts to not have any stranded
+- `templater` - for **only** Templater's templates
+- `projects` - shared projects files (for SSOT) and project template

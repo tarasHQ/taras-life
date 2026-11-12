@@ -151,12 +151,7 @@ Verified order per navigation: `prenav` dispatched → cleanup callbacks flushed
 - `window.addCleanup` is a no-op when SPA is disabled, so never make correctness depend on it running — with SPA off, the full page load does that job.
 - Setup must be idempotent and teardown must tolerate "nothing is mounted yet": `nav` fires on every route, including the first one.
 
-### 4. Only three events actually fire
-- `nav` (`detail.url`), `prenav`, and `themechange` (`detail.theme`) are dispatched by code present in this checkout.
-- Before subscribing to a custom event, confirm something dispatches it — today only these three do. `readermodechange` and `render` are declared and even listened to, but nothing emits them.
-- `themechange` does not fire on initial load. Read the current value from `document.documentElement.getAttribute("saved-theme")` (`"light" | "dark"`) and only then subscribe for changes. Never write that attribute: the darkmode component owns it, together with the `theme` key in `localStorage`.
-
-### 5. Never navigate by hand
+### 4. Never navigate by hand
 - No `window.location` assignment, no `history.pushState`, no manual re-render. For programmatic navigation use `window.spaNavigate(url)`, which exists in both modes and degrades to a full page load when SPA is off.
 
 ================================================================

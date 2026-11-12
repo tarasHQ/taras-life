@@ -1,0 +1,15 @@
+- [ ] This is huge one, because I delayed it for years. I was lucky to not need it.
+- Ok, it gets a bit complex to track everything. Let's try this place.
+  - **Remark42**
+    - Set up max backups to 10, and do every 4 hours
+  - **You have issues with understanding storage in proxmox**
+    - Like there's lots of volumes with different amount of free space which doesn't add up
+  - **Backup logic**
+    - 2 daily + 1 weekly retention
+    - primary is proxmox local storage
+    - smb is secondary
+  - **Encryption?**
+    - there's nothing really important. BUT.
+    - what if recording pc gets compromised. those dumps are basically just api keys for everyone to see. in age of ai - security is hardly can be enough. So F it. It's not hard and gives another layer of protection. I must establish a good practices
+    - Nah. Decided against it for now, because it adds up complexity with syncing. Too much failure points. I want balanced approach that won't give me an headache on every day basis.
+    - For now those dumps don't/won't have nothing really important. If attacker can get their hands on those - then I'll have much bigger problems anyways.
