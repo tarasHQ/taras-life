@@ -132,7 +132,7 @@ describe("parseThemeData", () => {
 		const theme = parseThemeData(css)
 		assert.equal(theme.colors.lightMode.light, "#faf6ef")
 		assert.equal(theme.colors.darkMode.dark, "#ede5d8")
-		assert.equal(theme.typography.header, "Atkinson Hyperlegible Next")
+		assert.equal(theme.typography.header, "Georgia")
 		assert.deepEqual(Object.keys(theme.colors), ["lightMode", "darkMode"])
 		assert.deepEqual(theme.chrome, { light: "#f0e7d7", dark: "#100e0b", "dark-low": "#1b1712" })
 	})
