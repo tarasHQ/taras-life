@@ -39,16 +39,7 @@
 		- But for longer pages it may be confusing. Or harder to implement. So not sure. 
 		- For phones though?
 		- Like it's easy to prototype but hard to do it properly. 
-	- ##### Buttons
-		- ###### Up/Down Floating Block %% fold %%
-			- On bottom right. Scrolls up/down. Especially useful if you'll have that planned navigation on top of the page.
-		- ###### Download .md or .pdf + copy .md + get link to page %% fold %%
-			- Why not? Compact. If I want to debug something - easy. Download a page to put into LLM - good too. So yeah. Wouldn't hurt for sure. 
-			- Location. Either top near title, or bottom. Check examples, see what fits it more. 
-		- ###### [DISCARDED] Page on Github Link %% fold %%
-			- Few reasons. One is that link must be to obsidian vault, not website. Which makes it much more complex (theoretically)
-			- Another reason is that I'm not sure how to feel about theoretical PRs by others? Like it's not a collaborative project. I mean markdown notes. Website code may be used as template, but for notes... doesn't make sense. 
-	- ###### [NOT SURE]Following Table of Contents %% fold %%
+	- ###### [NOT SURE] Following Table of Contents %% fold %%
 		- Experimental. May be distracting. 
 		- Logic is that it's following Y coordinate of the cursor. To be like "near the mouse" to increase usability of it.
 	- ###### [NOT SURE] Hide page load under fading animation %% fold %%
@@ -107,7 +98,10 @@
 # DISCARDED
 - ###### Breadcrumbs %% fold %%
 	- on top of notes, but the issue is that it may get broken without index folders. So navigation would be either through explorer or the page itself?
-- 
+- ##### Buttons
+	- ###### [DISCARDED] Page on Github Link %% fold %%
+		- Few reasons. One is that link must be to obsidian vault, not website. Which makes it much more complex (theoretically)
+		- Another reason is that I'm not sure how to feel about theoretical PRs by others? Like it's not a collaborative project. I mean markdown notes. Website code may be used as template, but for notes... doesn't make sense. 
 
 ---
 ---

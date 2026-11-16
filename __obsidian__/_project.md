@@ -32,7 +32,7 @@ GROUP BY true
 		- ###### SEO - Worth to research %% fold %%
 			- Just placeholder. I need to have at least basics set up. Do proper research. And make sure it's all good.
 - ### Doing Now
-	- #### IDEAS %% fold %%
+	- #### IDEAS
 		- Why? %% fold %%
 			- To connect the website with living human being. You read all those other website and they felt like footprint of dead people. While this "doing now" logic will allow to kinda unconsciously give the website more meaning. 
 		- ##### Fetching latest journaling log %% fold %%
@@ -72,7 +72,7 @@ GROUP BY true
 		- ###### Oauth %% fold %%
 			- Add all other ones. Including Yandex (should work theoretically). 
 		- Read plugin's readme for more. (with some overlap)
-		- Prelcalc size of comments block to avoid layout jumping?
+		- Precalc size of comments block to avoid layout jumping?
 - ### Optimization
 	- #### IDEAS
 		- ###### FetchPriority %% fold %%
@@ -114,6 +114,7 @@ GROUP BY true
 		- ###### Mermaid Diagrams %% fold %%
 			- I plan on using them. Later. 
 			- `pele` package was recommended on one website (with ref link though).
+				- Used by Obsidian too now. So worth checking.
 				- You need fast and lightweight one. 
 				- You need to be able to zoom and pan
 			- OR you can consider SVG approach on build time. And cover under image viewer feature.
@@ -134,52 +135,66 @@ GROUP BY true
 			- ⚠️ `og-image` bundled code reads it by filesystem path — move file, build, verify OG images before deleting
 		- ###### Remove unused/redundant styles %% fold %%
 			- After SCSS→CSS migration: audit base/callouts/popover for styles of removed plugins (e.g. things tied to dropped features)
+- ### Pages
+	- ##### Buttons
+		- ###### Up/Down Floating Block %% fold %%
+			- On bottom right. Scrolls up/down. Especially useful if you'll have that planned navigation on top of the page.
+		- ###### Download .md or .pdf + copy .md + get link to page %% fold %%
+			- Why not? Compact. If I want to debug something - easy. Download a page to put into LLM - good too. So yeah. Wouldn't hurt for sure. 
+			- Location. Either top near title, or bottom. Check examples, see what fits it more. 
+	- ###### `_static` %% fold %%
+		- maybe for 
+		- scripts and other files it'll parse description from top-level comment and/or frontmatter? Because in case of static (and maybe some other files) - it'll be pretty tedious to write all scripts manually into index.md. And dataview flat list will be suboptimal as well, because who knows what each script/template does. Brief description for each one would be helpful. And automatic parsing from frontmatter or top-comment will make it automatic.
+	- ###### **In-page navigation** %% fold %%
+		- here's the thing. Do I need this in obsidian? I would say no. Like it'll be PIA to do. Though I won't say it's impossible, but no. 
+		- So, this thing would be website only.
+		- Ok, recently opened pages can play bigger role here. 
+		- But here's the thing I see. Top of the page navigational block. You established pages with underscore to be entry points. So, it means that every file should have a page with underscore. as parent. For example. `Temptations/_reflections/test-reflection.md` - will have automatic backlink to `../_temptations.md` Now. Question whether it should be automatic OR done by the widget or something.
+		- Like some of those will have that backlink for pure ease of use inside obsidian. Then. It'll be duplicated You can create custom html + js code through dataview that will open parent folder, seek for the underscore parent and place back button. with id, so it can be styled on the website as well. 
+		- But here's edge case.
+		- `@system/projects/shared/flows/flow.md` while shared folder won't have index. Well, it's easily covered by looking one folder above. Like it's not an issue at all. You just go up until you find underscore file. 
+		- You can have up to 3 buttons. 
+			- excluding on homepage index. 
+			- so 1st level indexes can have back to home. 2nd level - back to home or back to 1st level. And third level is the same. 
+			- 3rd level will cover... or not. No. projects are `/projects/taras.life/__obsidian__/_project.md` which means that projects have subprojects, and it's actually 4 levels deep to `_project.md`, and it shouldn't go further into phases for `_plan_xxx.md` it'll be covered by the project.md.
+			- so, you would have homepage at `_index.md`, then `_projects.md` then `_taras.life.md` then `_project.md` That's what I'm talking about. Potentially will be even more
+			- ⭐But we need exclusions here, so I can avoid processing phases. 
+			- ⭐I would lock in 2 buttons. Back up one level or go to home. Pages will load fast, most of them will be cached. So it'll be fine on both phones and PCs. Styling would be an issue though, but I'll figure something out. 
+				- Either look for inspiration/examples OR copy like windows explorer. 
+	- ##### Collapsible list and headings
+		- ###### `%% fold %%` Parsing %% fold %%
+						- to preserve collapsed states and also to NOT have those markers
+		- ###### Folding logic %% fold %%
+					- create one. there's none. Since the plugin you will use foldings a lot, which means without them - there will be huge walls of text on website. Which is suboptimal, obviously.
+- ### Widgets
+	- ###### **CALENDAR** %% fold %%
+		- sidebar on pc(widget), top bar on mobile (button + modal with the same widget)
+		- But how to figure out all types of intervals. Daily can be on dates, weekly can be on side row with weeks numbers, monthly on month name and quarterly? well, month can have Q1 near it + year. So everything will be accessible. 
+		- I'm not sure I'll do all of those but it's better to be prepared and stay flexible
+		- **HUGE**
+			- Combine with doing now? Like single widget that will contain everything? 
+			- but not sure on this. Because doing now can be like small pill on the top, that expands on popup... 
+			- Nah, not huge. But just worth to consider. 
+	- ###### **Recently opened** %% fold %%
+		- Another widget idea. Can be under explorer on both pc and mobile. 
+		- OR can be done somewhere at the top of the page as tabs.
+		- Like another powerful navigation tool to not get lost. 
+		- Saved into local storage? Last 20 pages? 
+	- ###### **Bookmarks widget** %% fold %%
+		- Separate idea. But kinda like calendar. Can be on the right or left. Saves to local storage. Why not? Like if you want to have project bookmarked. The only issue though is links getting broken if I change something. So yeah... But it's worth to extract to archive of ideas and implement later. 
 
 - ---
-- 
-- ### 01 Basics
-	- #### IDEAS %% fold %%
-		- ##### Collapsible list and headings
-			- ###### `%% fold %%` Parsing %% fold %%
-				- to preserve collapsed states and also to NOT have those markers
-			- ###### Folding logic %% fold %%
-				- create one. there's none. Since the plugin you will use foldings a lot, which means without them - there will be huge walls of text on website. Which is suboptimal, obviously.
-		- ##### Structure
-			- ###### Decisions %% fold %%
-				- List of decisions and rationale 
-				- For you to remember.
-				- Examples
-					- Why excalidraw over obsidian? 
-					- Why this structure of other ones?
-					- Maybe it's worth to have it in system? So it's in one place?
-						- For readers to understand.
-			- ###### Index Pages %% fold %%
-				- Issues
-					- Explorer, navigation, ux.
-				- Solution
-					- Example. System index page. Has cards linking to each sub-system folder. you don't have to list collapse/unfold explorer. Everything is on the page to explore and explorer is basically like top-level navigation.
-						- I like this. Very much. Low friction. And fits into my need for reducing cognitive complexity of structures I use.
-		- ##### Explorer
-			- ###### Limit depth of the explorer? %% fold %%
-				- Issue
-					- You will have pages with lots files. It's super inconvenient to explore them through "explorer". It's narrow and free space is limited.
-				- Solution?
-					- #1 - 1-2 levels of depth + index pages. 
-						- con is that index page would be a single page under that folder, so if you don't have 2 levels of depth - then it doesn't make sense to have 1 level. 
-					- #2 - use folder-pages
-						- makes sense with 1 level depth, looses sense with 2 and more levels. 
-				- Discussion
-					- It's basically about how much you want to use indexes idea. 
-					- Like if - a lot, then explorer could be supplemental, and then it's easier.
-					- if not much - then explorer is main navigation tool, and it's a bit complex. 
-			- ###### Exclude folders & Files %% fold %%
-				- `@journals`
-					- Too much files and folders. No sense in having explorer navigation. At all. 
-				- `@projects`
-					- Same reasoning?
-				- `README.md` - for github.
-			- ###### Icons & Colors for Files & Folders %% fold %%
-				- Kinda duplicate obsidian idea. The thing is - it allows to have a bit more complex structure without requiring additional cognitive processing of that structure. Like it's easier to abstract it out.
+- ### 02 Basic Functionality
+	- #### Phase 004 - Structure & Explorer [plan](./phases/004/_plan_004.md)
+	  Custom Explorer side menu and a focused vault-structure update: create needed entry pages with generic Dataview listings. Refined, specialized pages are future work.
+	- **Ideas**
+		- Widgets ideas
+		- Pages category of ideas
+		- scroll restoration
+		- Non-phased, in parallel
+			- selective refactoring in parallel
+			- probably also remark42 backend side (anon logic, emails, more oauth, etc.)
+- ### 01 Fundamentals
 	- #### ~~Phase 003 - Visual Identity [done](./phases/_archived/003/_plan_003.md)
 	  Palette and three modes, typography, accents, background, favicon, and published visual test pages.
 	- #### ~~Phase 002 - Removing SCSS, Theming, Fonts plugin [done](./phases/_archived/002/_plan_002.md) 

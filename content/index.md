@@ -1,5 +1,6 @@
 ---
 title: Welcome to Quartz
+id: "asdf-waef-wae"
 ---
 
 This is a blank Quartz installation.
