@@ -14,3 +14,8 @@ quartz/cli/tui/dist/
 
 tmp/
 .axon/
+
+# quick and dirty fix because quartz syncer can't do this
+# should be synced with quartz.config.yaml
+/content/_private
+/content/@projects/0vibes

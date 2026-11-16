@@ -13,7 +13,7 @@
 - `cli/` — CLI entry, esbuild context (incl. the `.css` text loader), serve/watch.
 - `components/` — Preact components + their styles (incl. `styles/popover.css`).
 - `plugins/` — the plugin system; `emitters/` assemble stylesheets and write output.
-- `processors/` — mdast/hast transforms; worker build carries the `.css` stub contract.
+- `processors/` — mdast/hast transforms; worker build shares the `.css` text-loader contract (theme.css is data inside workers too).
 - `styles/` — site CSS, palette/font SSOT.
 - `static/` — served verbatim assets; `static/fonts/`.
 - `util/` — shared helpers; `theme.ts` parses `styles/theme.css` at build time.
