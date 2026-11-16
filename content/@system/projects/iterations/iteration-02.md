@@ -1,0 +1,82 @@
+## Possible Refinements
+
+- \[DISCARDED] ~~**Format of the artifacts between refining reflection and steps implementation**&#x20;
+  - You basically offloaded walls of text in there, and created an abstraction that structures all of that nicely. BUT it would be even better if you could have more Order in those artifacts as well.
+  - ###### Discussion
+    - Nah, it's not walls of text at all. I just needed to open that in obsidian, not vscode, so it's formatted nicely. It's pretty straightforward. Current wording is good.
+- \[POSTPONED] ~~**Template for the whole project**&#x20;
+  - Not hard really. Templater script similar to phase. pre-creates single `_project.md` + folders, and that's it.
+  - ###### Discussion
+    - Do I need it right now? The thing is - this flow isn't fixed, things will change. And I don't have any projects worth of this system. So yeah, no need.
+- \[DONE] **Additional exploration AFTER listing**&#x20;
+  - In this case LLM listed a solution, but partially. Which means it kinda guessed it. So you probably should change ordering of stages in `initial-planning` (and maybe others too), so it does exploration, then writes to file brainstorming, THEN writes to another file list of ideas, THEN does exploration again on those ideas in multiple explore task and only THEN it lists the answer in a manner that is self-sufficient and doesn't rely on user knowledge about previous files.
+  - ###### Discussion
+    - what's the scope? - the whole thing.
+    - So how that would look like? Or...
+      - I have this thing about making LLM to reason explicitly. Because thinking sometimes contains BS. While response to the user is much more coherent. That's why I want To have this.
+      - But also, now that I think about it - writing to the file is hidden in a tool call, that might have kinda lower "importance" over LLM plan responses. What if I ditch temp files?
+      - Exploration -> Brainstorm -> Drafting the answer -> Second Exploration -> Final answer. yeah, Makes more sense.
+    - I'll have to check other points in case of possible collision/overlap.
+    - Do I need this though?
+      - I would say that yes. It's actually huge. Because it lists lots of issues and there were times of "Actually..." backing off from some issues, or refining them. second exploration pass focused on those issues should be enough.
+    - How to structure this?
+      - run multiple exploration in parallel on evenly grouped chunks of points? By 1-3, for example?
+    - **BIG ONE**
+      - Since initial flow is autonomous, you need to be able to do the whole thing without LLM asking you to continue. Either edit code of your project OR add a rule?
+        - Code is a bit PIA to edit, because it needs something architectural to not be a tool call
+        - But a rule seems better. Which rule though? Re-reading flow file would bee too token inefficient. Or will it? Like it does first exploration autonomously, then response #1 with brainstorm - READS. Or yeah. Maybe it indeed needs to write it down to the file. Ok, that's more streamlined than other options.
+        - Write will happen in a single file through appending response #2 to response #1
+- \[POSTPONED] **Flow including format of responses**&#x20;
+  - When LLM responds - it can either respond as it wants OR you can have something meaningful included in that response. (I meant the deterministic structure of response)
+  - ###### Discussion
+    - Interesting theoretically. Practically I can't say much about this. Because it's vague. Most responses are tied to flows which are structured and deterministic.
+    - Though implementation of steps could be interesting to explore. But that would be iteration 03, where I have specifics and not have to calculate this preemptively.
+- ### Steps
+  - \[DONE] **Structure of steps in writing-steps should NOT include "drafted list of steps"**&#x20;
+    - Instead it should be used as reference/example, and the structure should be drafted from the scratch.
+  - \[DONE] **Clean up drafted steps after all steps are written**
+  - \[DONE] **Issues with ordering steps (should be ascending)**
+  - \[DONE] **Step condensation**&#x20;
+    - wording
+      - step condensation wording was a bit too enforcing for the fresh task, llm resisted a bit.
+    - explicit things to remove
+      - OR just  `Implementation Summary` block and remove everything else. (description too, there's one in the plan)
+  - \[DONE] **Implementation should avoid initial-reflections**&#x20;
+    - And use it only as the kinda reference/docs when there's something unclear. So maybe initial-reflection would have more input on this.
+  - \[DONE] **Step implementation enforce no autonomy**&#x20;
+    - To make LLM less likely to write not discussed things on its own without the permission of the user.
+  - \[DONE] **Step completion verbosity**&#x20;
+    - for output into plan - explicitly say what shouldn't get it. Temporary files. Description of changes. Stuff like that. And also explicitly say it should be concise. Like exactly in the flow.
+  - \[DONE] **Step description verbosity in the plan**&#x20;
+    - gets bigger and bigger. Concise. 3-5 sentences?
+  - \[DISCARDED]~~**Remove high-level state**&#x20;
+    - It's not used often, but when there will be additional steps in the middle of implementation - it will be useful. So don't remove it.
+- ### Exploration
+  - \[DONE] **Warn about big files**&#x20;
+    - to not read if unnecessary or to use explore tool. (if files super big, like hundreds kilobytes), for still big files - just warn and suggest using explore tool if it needs some small parts of that code, but if it needs a lot of parts of that code, or it needs to understand whole file - probably should read it whole.
+    - ###### Discussion
+      - Exploration block should contain file sizes. That's plan and simple.
+  - \[DONE] **Tips needs better framing**&#x20;
+    - It's used as all tips. Should be exploration tips only. But also we need some nuances too. Like how to run things. Where to do it. Stuff like that and more.
+  - \[DONE] **Created/Deleted/Modified FILES**&#x20;
+    - add this to template. So they won't list deleted sections of code or something. It's meant to be list of files for more efficient exploration. That's it. Concise.
+- ### Write prompts instead of suggestions
+  - code review, condensation flow, etc. Let llm write the whole thing so you copypaste only
+  - I would also say the same for step finalization. Like templated prompt to start the next step too.
+  - ALSO, for issues, LLM lists like 15 issues - let it write template to answer on those as number + name and bullet point below for user answers, so it's tied by number and name and less likely to be ignored)
+- \[DONE] **List of benefits (code review and others)**&#x20;
+  - Different structure. describe the issue first, then describe how it's fixed, THEN run usual flow of benefit, complexity, etc. Because it's a bit unclear to me in current manner when it starts from the benefit.
+- \[DONE] **ELI5 Description in simpler terms is too childish**&#x20;
+  - It starts to use gardens, houses, apples and other metaphors. Like LLM takes ELI5 literally.
+  - ###### Discussion
+    - What would be better wording? Maybe just avoid ELI5? Simpler terms is enough. Or in non-advance terms.
+- ### Plan
+  - \[DISCARDED] ~~**For each step - add indication that it was code-reviewed**&#x20;
+    - encourages doing those.
+    - ###### Discussion
+      - Do I actually need it? Like what value it brings? If the flow already calls for explicit code review? So yeah. No need to give LLM another restriction where it may fail to write down properly, which I have to maintain and so on.
+  - \[DONE] **Verbose exploration**&#x20;
+    - walls of text in exploration. Need more strict rules to not overuse it. Like allow it to describe, but concisely. for steps though - to let it offload those, add a simple prefix for the link like \[S02, S05] - `link`, so that you signify which steps are related to the link. But it should be self-explanatory, so maybe `Related steps: 05, 06` ? It needs to be there though, so LLM won't read unrelated files.
+- \[DONE] **Every Write Into Docs Considers Its Scope**&#x20;
+  - AGENTS.md - doesn't need to know about some details of styling. The phase's plan doesn't need to know about step-scoped detail that won't be worth to know for future steps
+  - You can enforce this through rules on last stage of flows. Like make LLM generate autoregressive context within the same turn it writes to high-level docs, where it'll list what it will write and confirm that it's not messing up with the scope of the document.

@@ -1,0 +1,36 @@
+# Remark42: notifications, fork & integration
+
+## Notifications & thread URLs
+
+- **Done:** built-in Telegram admin notifications reach a public channel via a BotFather bot; `NOTIFY_ADMINS=telegram`, `TELEGRAM_TOKEN`, `NOTIFY_TELEGRAM_CHAN`. Bot is channel admin with posting permission. User reply subscriptions remain separate/not enabled. Keep token private. `__obsidian__/docs/AGENTS.md` still says no notification transport; update after confirming current deployment notes.
+- Public notifications expose their message contents; verify formatting/privacy and do not assume deleting a comment deletes its Telegram message. Email subscriptions, moderation, anonymous login and more OAuth providers remain separate future ideas.
+- **Problem:** Telegram links to `https://taras.life/comments/<id>` (Remark42 thread identity), not the real page. Existing messages keep their old links.
+- **Invariant:** preserve the synthetic locator and stable frontmatter ID; changing either splits/orphans existing threads unless deliberately remapped. `site_id` is not a separate thread ID; bundled docs identify `url` as the thread key.
+- Alternative: use actual page URLs as thread keys; links work, but moves require a backed-up Remark42 URL remap. Could retain `id` solely as opt-in. Simpler, but loses automatic move resilience.
+- **Redirect alternative:** generate Cloudflare `public/_redirects` 302 mappings from ID to published URL; no runtime Worker. Handle duplicate IDs, published/index URLs, 404 thread, reserved `/comments/`, rule lengths and coexistence with manual rules. Research reports 2,000 exact rules; verify current official docs/deployment and caching. Bulk Redirects were suggested as a larger but separately synchronized fallback. Thousands of notes make per-page limits unattractive; redirect design paused.
+
+## Fork: notification links & templates
+
+- Clone: `C:/Users/Taras/Dev/_other/remark42-master`. Compare its version/commit with the deployed binary before design or deployment; clone ≠ confirmed live version. Forking is plausible given desired customization, but means owning builds, security/dependency updates, frontend/backend compatibility, backups and recovery.
+- **Preferred investigation:** retain `locator.url` as thread key; pass the actual page URL separately from the host page through the iframe and comment request to notification generation. Use it for page and comment-anchor links; no ID mapping or comment migration. A transient value may avoid storage changes, but trace notification queues/retries and other transports first.
+- Headers alone are unreliable: comment requests originate from the iframe and referrer policies may omit/reduce the article path. Parent embed knows the URL and already sends the iframe the page title. Ensure correct URL after Quartz SPA navigation.
+- Treat submitted URL as untrusted: validate HTTPS and allowed host, reject credentials/malformed URLs, escape Telegram HTML; host allowlist alone cannot prove the URL matches the thread. Decide fallback for missing/invalid URLs. Test anchors and reply links.
+- Direct page links fix **new** messages only and can break if the page later moves; old messages remain unchanged. Making `/comments/<id>` permanently resolve still requires an authoritative ID→page mapping somewhere.
+- Built-in Telegram notifier hardcodes message construction and uses `Locator.URL`; bundled docs don't document a Telegram template. Webhook has a separate configurable template, not a Telegram override. Fork could add Telegram template fields (author, text, title, actual URL, comment link), safe escaping, defaults and failure handling; or hardcode a simpler format first. Check email/other notification paths separately.
+
+## Styling & frontend architecture
+
+- Current widget is a cross-origin iframe from `comments.taras.life`; site CSS and variables do not cascade into its document. Plugin maps site `dark-low` to Remark42 `dark`; upstream supports light/dark and documented `--font-family` via creation-time `custom_properties` (other variables best-effort). No current runtime palette-update API. Existing CSP restricts external styles/fonts; verify live headers.
+- **Iframe styling bridge:** fork can load site-owned override CSS inside the iframe and/or pass theme values through messaging; support light/dark/dark-low at runtime, stable CSS hooks, font/CSP allowances and fallback styling. Site CSS can then change without rebuilding Remark42, but iframe needs its own shared variables/fonts; internal selectors may change upstream.
+- Hosting widget assets on Cloudflare and removing the iframe are **separate** choices. A same-origin iframe still has a separate CSS cascade. Browser loads the client and calls the backend; the backend does not connect to the static UI.
+- **Direct-DOM fork:** host frontend on Cloudflare, mount Preact UI in the page, inherit site CSS/theme and read page URL directly. More native, but requires an explicit mount/unmount API; adapt iframe messages, hash/scroll/profile behavior, global styles/listeners and async cleanup for Quartz SPA; scope CSS; retain lazy loading. Widget currently has iframe-specific assumptions and no public direct-mount API.
+- Cross-origin API/OAuth/cookies/XSRF, popup completion, login/logout/admin actions, asset paths and frontend/backend version coordination need a browser proof of concept. Current fetch does not explicitly include cross-origin credentials. Direct DOM also removes cross-origin document isolation for rendered comments: backend sanitizes HTML, but review XSS/token exposure rather than assuming safety. Existing parent embed JS already runs on the site.
+- Recommended if native integration becomes a priority: first prove read-only mount, OAuth + posting, repeated SPA navigation/anchors and cleanup; only then invest in styling and deployment. Otherwise keep iframe and add targeted hooks.
+
+## Traffic, security & next steps
+
+- Current plugin lazy-loads near the comments viewport (~600px), including subsequent SPA mounts: comment-enabled ≠ widget requested on every page visit. Static JS/CSS/HTML may be browser-cached depending on live headers; thread/user data still needs dynamic requests. Measure before assuming traffic cost.
+- If comments host is Cloudflare-proxied, investigate caching only appropriate static `/web/` assets at the existing host; do **not** blanket-cache API, OAuth or personalized responses. Alternatively host built frontend on the site, but moving an iframe to a different origin affects API/auth and still does not remove the iframe.
+	- User addition: if we modify fork anyway - we can add hash to the file name. So it's more reliably cached. 
+- Static edge delivery reduces origin asset traffic, not the need to expose the dynamic API. Review proxy/DNS, origin exposure, firewall, rate limits, updates and backups separately. Iframe provides useful cross-origin document isolation; direct DOM trades some of it for styling control.
+- **Current direction:** keep iframe for now; inspect Network requests, transfer sizes and cache headers on first/repeat load and SPA navigation, and confirm Cloudflare proxy/cache behavior. Investigate fork URL fix, template and styling hooks before committing to direct DOM. Verify live deployment/version and test end-to-end; no architecture change is decided.

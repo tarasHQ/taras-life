@@ -72,8 +72,8 @@ export interface GlobalConfiguration {
 	 */
 	baseUrl?: string
 	/**
-	 * Build-time theme data for plugins that still consume the upstream `theme`
-	 * contract (og-image). Assigned in quartz.ts by parsing quartz/styles/theme.css
+	 * Build-time theme data for browser chrome and plugins that consume the upstream
+	 * `theme` contract (og-image). Assigned in quartz.ts by parsing quartz/styles/theme.css
 	 * (the palette SSOT). Never authored in quartz.config.yaml.
 	 */
 	theme?: ThemeData

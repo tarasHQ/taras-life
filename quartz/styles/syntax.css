@@ -1,7 +1,8 @@
 /*
  * Syntax highlighting rules (was syntax.scss — moved in verbatim, it had no
- * Sass features). Dark Shiki rules key off the [saved-theme="dark"] attribute
- * owned by the darkmode component.
+ * Sass features). Dark Shiki rules key off the saved-theme attribute and
+ * follow both dark variants — the explicit two-selector list (no attribute
+ * prefix trick) keeps dark-low from silently falling back to light syntax.
  */
 
 code[data-theme*=" "] {
@@ -13,11 +14,13 @@ code[data-theme*=" "] span {
 	color: var(--shiki-light);
 }
 
-[saved-theme="dark"] code[data-theme*=" "] {
+[saved-theme="dark"] code[data-theme*=" "],
+[saved-theme="dark-low"] code[data-theme*=" "] {
 	color: var(--shiki-dark);
 	background-color: var(--shiki-dark-bg);
 }
 
-[saved-theme="dark"] code[data-theme*=" "] span {
+[saved-theme="dark"] code[data-theme*=" "] span,
+[saved-theme="dark-low"] code[data-theme*=" "] span {
 	color: var(--shiki-dark);
 }

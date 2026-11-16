@@ -263,15 +263,21 @@ export async function handleBuild(argv) {
 	}
 
 	if (argv.watch) {
-		const paths = await globby([
-			"**/*.ts",
-			"quartz/cli/*.js",
-			"quartz/static/**/*",
-			"**/*.tsx",
-			"**/*.css",
-			"package.json",
-			"quartz.config.yaml",
-		])
+		// gitignore must be explicit: globby defaults it to false, so without it the
+		// glob matches gitignored build output (public/**/*.css) and every rebuild
+		// re-triggering on its own emitted files loops the watcher forever.
+		const paths = await globby(
+			[
+				"**/*.ts",
+				"quartz/cli/*.js",
+				"quartz/static/**/*",
+				"**/*.tsx",
+				"**/*.css",
+				"package.json",
+				"quartz.config.yaml",
+			],
+			{ gitignore: true },
+		)
 		chokidar
 			.watch(paths, { ignoreInitial: true })
 			.on("add", () => build(clientRefresh))

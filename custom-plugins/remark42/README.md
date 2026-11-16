@@ -11,6 +11,7 @@
 
 - Configuration is hardcoded in in `src/index.tsx`. Nothing in `quartz.config.yaml` to avoid bloat of parsing/validation/etc.
 - Threads are keyed by `https://taras.life/comments/<id>` changing `THREAD_BASE_URL` or `id` values silently orphans the entire comment history
+- The site emits three theme modes; the widget supports only light/dark, so the browser runtime maps `dark-low` to `dark` both on mount and on theme changes.
 - 404 page carries "universal" comments thread for reporting broken links.
 
 

@@ -242,6 +242,52 @@ describe("resolveGroups", () => {
 	})
 })
 
+describe("buildLayoutForEntries with coreComponents", () => {
+	test("injects core component into a position before plugin entries", () => {
+		const core = makeComponent("Core")
+		const plugin = makeComponent("Plugin")
+		componentRegistry.register("plugin-comp", plugin, "test-source")
+
+		const result = buildLayoutForEntries([makeEntry("plugin-comp", { position: "left", priority: 20 })], {}, [
+			{ component: core, position: "left", priority: 30 },
+		])
+
+		assert.deepStrictEqual(result.left, [plugin, core])
+	})
+
+	test("core component joins a Flex group with plugin components", () => {
+		const core = makeComponent("Core")
+		const search = makeComponent("Search")
+		componentRegistry.register("search-comp", search, "test-source")
+
+		const result = buildLayoutForEntries(
+			[
+				{
+					source: "search-comp",
+					enabled: true,
+					options: {},
+					layout: { position: "left" as LayoutPosition, priority: 20, group: "toolbar" },
+				},
+			],
+			{ groups: { toolbar: { priority: 35, direction: "row" } } },
+			[{ component: core, position: "left", priority: 30, group: "toolbar" }],
+		)
+
+		// Both toolbar members resolve into a single Flex component in `left`.
+		assert.strictEqual(result.left?.length, 1)
+	})
+
+	test("core component with unknown position is silently skipped", () => {
+		const core = makeComponent("Core")
+		const result = buildLayoutForEntries([], {}, [
+			// Cast: positions map is keyed by the six layout positions only; the
+			// lookup guard makes an out-of-map key a silent skip, not a crash.
+			{ component: core, position: "body" as "left", priority: 10 },
+		])
+		assert.deepStrictEqual(result.left, [])
+	})
+})
+
 describe("buildLayoutForEntries with display wrappers", () => {
 	test("applies display wrapper for mobile-only", () => {
 		const component = makeComponent("Wrapped")

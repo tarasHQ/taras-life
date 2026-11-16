@@ -624,8 +624,25 @@ export async function loadQuartzLayout(layoutOverrides?: {
 	const enabledWithLayout = json.plugins.filter((e) => e.enabled)
 	const layoutConfig = json.layout ?? {}
 
+	// Core ThemeToggle, placed inside the `toolbar` Flex group exactly where the
+	// replaced @quartz-community/darkmode package sat (priority 30, toolbar group):
+	// injecting through the grouping pipeline (not splicing resolved arrays) keeps
+	// it beside the search input in the same flex row. The placement is passed to
+	// every buildLayoutForEntries call — page-type overrides rebuild `left` from
+	// scratch, so the default layout's copy would not survive them.
+	const ThemeToggleModule = await import("../../components/ThemeToggle")
+	const themeToggle = ThemeToggleModule.default()
+	const coreComponents: CoreComponentPlacement[] = [
+		{
+			component: themeToggle,
+			position: "left",
+			priority: 30,
+			group: "toolbar",
+		},
+	]
+
 	// Build default layout for all page types
-	const defaultLayout = buildLayoutForEntries(enabledWithLayout, layoutConfig)
+	const defaultLayout = buildLayoutForEntries(enabledWithLayout, layoutConfig, coreComponents)
 
 	// Build per-page-type overrides
 	const byPageType: Record<string, Partial<FullPageLayout>> = {}
@@ -641,7 +658,7 @@ export async function loadQuartzLayout(layoutOverrides?: {
 				})
 			}
 
-			const ptLayout = buildLayoutForEntries(filteredEntries, layoutConfig)
+			const ptLayout = buildLayoutForEntries(filteredEntries, layoutConfig, coreComponents)
 
 			// Apply position overrides (empty array = clear position)
 			if (override.positions) {
@@ -694,8 +711,24 @@ export async function loadQuartzLayout(layoutOverrides?: {
 	return { defaults: mergedDefaults, byPageType: mergedByPageType }
 }
 
+/**
+ * A core component injected directly by the loader, bypassing the plugin-entry
+ * pipeline. It is placed through the same position/priority/group machinery as
+ * plugin-declared components, so it participates in Flex groups identically.
+ */
+export type CoreComponentPlacement = {
+	component: QuartzComponent
+	position: keyof Pick<FullPageLayout, "header" | "left" | "right" | "beforeBody" | "afterBody" | "footer">
+	priority: number
+	group?: string
+}
+
 /** @internal Exported for testing only. */
-export function buildLayoutForEntries(entries: PluginJsonEntry[], layoutConfig: LayoutConfig): Partial<FullPageLayout> {
+export function buildLayoutForEntries(
+	entries: PluginJsonEntry[],
+	layoutConfig: LayoutConfig,
+	coreComponents: CoreComponentPlacement[] = [],
+): Partial<FullPageLayout> {
 	const positions: Record<
 		string,
 		{
@@ -711,6 +744,19 @@ export function buildLayoutForEntries(entries: PluginJsonEntry[], layoutConfig: 
 		beforeBody: [],
 		afterBody: [],
 		footer: [],
+	}
+
+	// Core components seed their positions before plugin entries are processed,
+	// so they sort and group together with plugin-declared components.
+	for (const placement of coreComponents) {
+		const posArray = positions[placement.position]
+		if (posArray) {
+			posArray.push({
+				component: placement.component,
+				priority: placement.priority,
+				group: placement.group,
+			})
+		}
 	}
 
 	for (const entry of entries) {

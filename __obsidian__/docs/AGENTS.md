@@ -8,6 +8,7 @@ Personal blog built with **Quartz v5**, deployed to **Cloudflare Workers**.
 - **Rendering**: Preact components, rendered to string at build time (no hydration). Lives in: `quartz/components/`.
 - **Content pipeline**: unified → remark (mdast) → rehype (hast) → JSX. Lives in: `quartz/processors/`.
 - **Styling / bundling**: plain CSS files, composed at build time, minified with Lightning CSS. Lives in: `quartz/styles/`.
+- **Theme**: local three-mode system (light, dark, dark-low); a stored reader choice takes precedence over the OS preference, which only seeds the initial mode. The component contract lives in `quartz/components/`, and palette values in `quartz/styles/theme.css`.
 - **Hosting**: Cloudflare Workers, **assets-only** (no `main`, no bindings). Lives in: `wrangler.jsonc`.
 - **Delivery**: Cloudflare **Workers Builds** on push → `npm run build` → `public/`. Lives in: `wrangler.jsonc`. NO PREVIEWS enabled. 
 - **Comments**: Self-hosted Remark42 (external LXC) via a local Quartz plugin. Lives in: `custom-plugins/remark42/`.

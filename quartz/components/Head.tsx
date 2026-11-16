@@ -3,6 +3,7 @@ import { FullSlug, getFileExtension, joinSegments, pathToRoot } from "../util/pa
 import { CSSResourceToStyleElement, JSResourceToScriptElement } from "../util/resources"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
+import { themeColorInitScript, themeInitScript } from "./scripts/themeContract"
 
 export default (() => {
 	const Head: QuartzComponent = ({ cfg, fileData, externalResources, ctx }: QuartzComponentProps) => {
@@ -14,11 +15,14 @@ export default (() => {
 			unescapeHTML(fileData.description?.trim() ?? i18n(cfg.locale).propertyDefaults.description)
 
 		const { css, js, additionalHead } = externalResources
+		const chrome = cfg.theme?.chrome
+		if (!chrome) throw new Error("Head: build-derived theme chrome colors are missing")
 
 		const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
 		const path = url.pathname as FullSlug
 		const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
-		const iconPath = joinSegments(baseDir, "static/icon.png")
+		const iconPath = joinSegments(baseDir, "static/favicon.svg")
+		const appleTouchIconPath = joinSegments(baseDir, "static/apple-touch-icon.png")
 
 		// Url of current page
 		const socialUrl = fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
@@ -40,6 +44,27 @@ export default (() => {
 			<head>
 				<title>{title}</title>
 				<meta charSet="utf-8" />
+				{/* CUSTOM EDIT: zero-flash theme init — sets `saved-theme` from the stored choice or the
+    OS seed before first paint; contract owned by components/scripts/themeContract.ts. */}
+				<script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+				{/* OS-based defaults remain usable without JavaScript; the following script
+				    refines both tags to the visitor's chosen mode once they exist. */}
+				<meta
+					name="theme-color"
+					media="(prefers-color-scheme: light)"
+					content={chrome.light}
+					data-theme-color="light"
+					data-color={chrome.light}
+				/>
+				<meta
+					name="theme-color"
+					media="(prefers-color-scheme: dark)"
+					content={chrome.dark}
+					data-theme-color="dark"
+					data-color={chrome.dark}
+					data-dark-low={chrome["dark-low"]}
+				/>
+				<script dangerouslySetInnerHTML={{ __html: themeColorInitScript }} />
 				{/* CUSTOM EDIT: fetchpriority=high — core CSS is render-blocking; outrank font preloads queued at the same priority tier. */}
 				{coreStylesheet && <link rel="preload" href={coreStylesheet} as="style" fetchPriority="high" />}
 				{fontPreloads.map((file) => (
@@ -86,7 +111,8 @@ export default (() => {
 					</>
 				)}
 
-				<link rel="icon" href={iconPath} />
+				<link rel="icon" type="image/svg+xml" href={iconPath} />
+				<link rel="apple-touch-icon" href={appleTouchIconPath} />
 				<meta name="description" content={description} />
 				<meta name="generator" content="Quartz" />
 

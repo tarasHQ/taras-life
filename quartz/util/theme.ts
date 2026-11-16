@@ -3,7 +3,8 @@
  *
  * The stylesheet is the single source of truth for the site palette and font
  * families: its `:root` / `:root[saved-theme="dark"]` blocks hold the colors and
- * the `--headerFont` / `--bodyFont` variables hold the family names. This module
+ * the `--headerFont` / `--bodyFont` variables hold the family names. All three
+ * mode blocks provide the solid background for browser chrome. This module
  * parses that text back into the data shape consumed by plugins that still expect
  * the upstream `cfg.theme` contract (@quartz-community/og-image); quartz.ts imports
  * the stylesheet and injects the parsed result into the in-memory configuration at
@@ -39,6 +40,11 @@ export type ThemeData = {
 	colors: {
 		lightMode: Palette
 		darkMode: Palette
+	}
+	chrome: {
+		light: string
+		dark: string
+		"dark-low": string
 	}
 }
 
@@ -112,6 +118,15 @@ function parsePalette(variables: Map<string, string>, scheme: string): Palette {
 
 // ===
 
+/** Reads the solid page background used to color browser chrome. */
+function parseChromeColor(variables: Map<string, string>, mode: string): string {
+	const color = variables.get("bg-grad-bottom")
+	if (!color) {
+		throw new Error(`theme.ts: ${mode} is missing --bg-grad-bottom in quartz/styles/theme.css`)
+	}
+	return color
+}
+
 /**
  * Parses theme CSS text into the plugin-facing theme data. Throws on any
  * structural drift between this parser and the stylesheet it parses.
@@ -128,6 +143,9 @@ export function parseThemeData(css: string): ThemeData {
 	const darkVariables = parseVariables(
 		extractBlock(withoutComments, /:root\[saved-theme=["']dark["']\]\s*\{/, ':root[saved-theme="dark"]'),
 	)
+	const darkLowVariables = parseVariables(
+		extractBlock(withoutComments, /:root\[saved-theme=["']dark-low["']\]\s*\{/, ':root[saved-theme="dark-low"]'),
+	)
 
 	return {
 		typography: {
@@ -137,6 +155,11 @@ export function parseThemeData(css: string): ThemeData {
 		colors: {
 			lightMode: parsePalette(lightVariables, "light"),
 			darkMode: parsePalette(darkVariables, "dark"),
+		},
+		chrome: {
+			light: parseChromeColor(lightVariables, "light"),
+			dark: parseChromeColor(darkVariables, "dark"),
+			"dark-low": parseChromeColor(darkLowVariables, "dark-low"),
 		},
 	}
 }

@@ -6,28 +6,20 @@
  * invariant carried over from the SCSS @use chain and verified against the
  * sass-expanded oracle in step 01.
  *
- * Sass variables from variables.scss are dissolved into literals: breakpoints
- * mobile = 800px / desktop = 1200px, side panel width 320px, top spacing 6rem.
- *
  * NOTE: media query forms are intentionally double-parenthesized
  * (`@media all and ((max-width: 800px))`) — that is verbatim what the Sass
  * compiler emitted; do not "clean" them up. (Lightning CSS normalizes them
  * to single-paren form in the minified build output, as it did pre-phase.)
  */
-
-/*
- * Layout breakpoints
- * mobile: screen width below this value will use mobile styles
- * desktop: screen width above this value will use desktop styles
- * Screen width between mobile and desktop width will use the tablet layout.
- * assuming mobile < desktop
- */
-
 html {
+	font-size: 18px; /* every rem-based size on the site — derives from this one knob. */
 	scroll-behavior: smooth;
 	text-size-adjust: none;
 	overflow-x: hidden;
 	width: 100vw;
+	/* The solid page background matches the gradient's bottom endpoint, so
+	 * the wash ends seamlessly; body stays transparent to expose the layer. */
+	background-color: var(--bg-grad-bottom);
 
 	@media all and ((max-width: 800px)) {
 		scroll-padding-top: 4rem;
@@ -37,9 +29,58 @@ html {
 body {
 	margin: 0;
 	box-sizing: border-box;
-	background-color: var(--light);
+	/* Containing block for the background layer below — removing this makes
+	 * the absolutely-positioned layer resolve against the initial containing
+	 * block instead of the body, silently changing where it sits. */
+	position: relative;
+	/* Background deliberately NOT set here — the base color lives on `html`
+	 * (see the html rule); body must stay transparent or the background layer
+	 * below would paint behind it and vanish. */
 	font-family: var(--bodyFont);
 	color: var(--darkgray);
+	/* Site-wide inherited rhythm baseline (unitless — children compute the line
+	 * box from their own font-size). p/li/tbody restate it explicitly; table
+	 * children deliberately override to 2. */
+	line-height: 1.6;
+}
+
+/*
+ * Background layer — a one-viewport gradient wash at the very top of the
+ * document, fading DOWN into the page's base color so everything below the
+ * initial viewport is plain solid background (no hard edge: the gradient's
+ * bottom endpoint IS the base color). Painted BEHIND all content as an
+ * absolutely-positioned layer — deliberately not a `background-attachment:
+ * fixed`-style effect (mobile Safari repaint jank is why this mechanism
+ * exists at all).
+ * Load-bearing placement facts:
+ * - The base color lives on `html`, NOT `body` (see the html rule) — a
+ *   negative z-index box paints behind its originating element's own opaque
+ *   background, so an opaque body would hide the layer.
+ * - `body` must stay `position: relative` — it is the layer's containing
+ *   block (document top, one viewport tall); see the body rule.
+ * - The bottom endpoint and html's solid background share --bg-grad-bottom
+ *   so no hard edge appears at 100vh.
+ * - The navigation progress bar (z-index 9999) and all content stack above.
+ */
+body::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 100vh;
+	z-index: -1;
+	background: linear-gradient(to bottom, var(--bg-grad-top), var(--bg-grad-bottom));
+}
+
+@media print {
+	html {
+		background-color: var(--light);
+	}
+
+	body::before {
+		display: none;
+	}
 }
 
 .text-highlight {
@@ -47,9 +88,12 @@ body {
 	padding: 0 0.1rem;
 	border-radius: 5px;
 }
+/* Selection: one translucent chromatic wash over the mode's own background —
+ * composes correctly in all three modes (light / dark / dark-low) from this
+ * single rule, no white-alpha component (that mix washed out on dark-low). */
 ::selection {
-	background: color-mix(in srgb, var(--tertiary) 60%, rgba(255, 255, 255, 0));
-	color: var(--darkgray);
+	background: color-mix(in srgb, var(--secondary) 35%, transparent);
+	color: inherit;
 }
 
 p,
@@ -71,37 +115,49 @@ strong {
 	font-weight: 600;
 }
 
+/*
+ * Link design language (decided explicitly, one pass across the full variant
+ * matrix — see the phase's accent step), in TWO cascade layers:
+ *
+ * GLOBAL identity (this rule) — color, weight, hover, broken-opacity wiki
+ * marker, tag "#" prefix. Deliberately matches the pre-accent bare-`a`
+ * baseline so all chrome (explorer, TOC, footer, breadcrumbs) renders
+ * exactly as before: navigation is not prose, and it should not carry
+ * link-type underline semantics.
+ *
+ * CONTENT underline layer (rule below) — EXTERNAL = solid thin underline,
+ * INTERNAL = dashed thin underline (broken = dashed + 0.5 opacity), TAG =
+ * chip without underline. Scoped to article content + popovers, where both
+ * link kinds can appear side by side and the underline style carries
+ * meaning. The old internal-link pill (background + padding + radius) is
+ * dead — its images-in-links exception died with it (image links keep NO
+ * underline instead of no pill chrome). Underline uses a muted color so
+ * resting prose isn't striped heavily; hover flips text to --tertiary and
+ * the underline to currentColor.
+ */
 a {
 	font-weight: 600;
+	color: var(--secondary);
 	text-decoration: none;
 	transition: color 0.2s ease;
-	color: var(--secondary);
 
 	&:hover {
 		color: var(--tertiary);
 	}
 
 	&.internal {
-		text-decoration: none;
-		background-color: var(--highlight);
-		padding: 0 0.1rem;
-		border-radius: 5px;
-		line-height: 1.4rem;
-
 		&.broken {
-			color: var(--secondary);
 			opacity: 0.5;
-			transition: opacity 0.2s ease;
+			/* shorthand REPLACES the transition list — must restate color or the
+			 * hover color change snaps instead of animating like every other link. */
+			transition:
+				color 0.2s ease,
+				opacity 0.2s ease;
 			&:hover {
 				opacity: 0.8;
 			}
 		}
 
-		&:has(> img) {
-			background-color: transparent;
-			border-radius: 0;
-			padding: 0;
-		}
 		&.tag-link {
 			&::before {
 				content: "#";
@@ -115,6 +171,42 @@ a {
 
 		& > path {
 			fill: var(--dark);
+		}
+	}
+}
+
+/*
+ * Content underline layer — article content + popover previews (popover
+ * renders article content, so its links speak the same language). Solid =
+ * external, dashed = internal, chip = tag; see the global rule's banner.
+ */
+.center > article,
+.popover {
+	& a {
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--gray) 60%, transparent);
+		text-decoration-thickness: 1.5px;
+		text-underline-offset: 0.15em;
+		transition:
+			color 0.2s ease,
+			text-decoration-color 0.2s ease;
+
+		&:hover {
+			text-decoration-color: currentColor;
+		}
+
+		&.internal {
+			text-decoration-style: dashed;
+		}
+
+		&.internal.tag-link {
+			text-decoration: none;
+		}
+
+		/* an underline under an image box reads as a stray line — image links
+		 * opt out of decoration entirely */
+		&:has(> img) {
+			text-decoration: none;
 		}
 	}
 }
@@ -153,10 +245,6 @@ a {
 	max-width: calc(1200px + 300px);
 	margin: 0 auto;
 	& article {
-		& > h1 {
-			font-size: 2rem;
-		}
-
 		& li:has(> input[type="checkbox"]) {
 			list-style-type: none;
 			padding-left: 0;
@@ -286,8 +374,13 @@ a {
 			}
 		}
 
+		/* Reading measure: article content only (never .center or the grid
+		 * track). Absolute 80ch, NO escape hatch — wide blocks (pre, tables,
+		 * mermaid) scroll internally instead of widening the column. */
 		& .center > article {
 			grid-area: grid-center;
+			max-width: 80ch;
+			margin-inline: auto;
 		}
 
 		& footer {
@@ -311,6 +404,22 @@ a {
 		& footer {
 			margin-left: 0;
 		}
+	}
+}
+
+/* Extend the compact mobile header across the grid's 1rem page inset while
+ * keeping its controls aligned with the content. The header and open panel
+ * use the solid page color to hide content behind them. The html prefix lets
+ * these rules win over the later-loaded Explorer CSS. */
+@media all and ((max-width: 800px)) {
+	html .page > #quartz-body .sidebar.left:has(.explorer) {
+		margin-inline: -1rem;
+		padding: 0.25rem 1rem;
+		background-color: var(--bg-grad-bottom);
+	}
+
+	html .explorer .explorer-content {
+		background-color: var(--bg-grad-bottom);
 	}
 }
 
@@ -400,6 +509,9 @@ blockquote {
 	transition: border-color 0.2s ease;
 }
 
+/* Shared heading rule: font, weight, balance, anchor link. Per-level COLOR
+ * accents are applied in the scale table below from the accent-tier ladder
+ * vars (--heading-1..6 in theme.css) — starting values, hand-tuned by eye.  */
 h1,
 h2,
 h3,
@@ -413,11 +525,17 @@ thead {
 	 * unlayered heading pin in custom.css then wins and holds headings at 600.
 	 * Removing either side silently shifts heading rendering — keep the pair. */
 	font-weight: revert;
+	/* balance: even multi-line headings; body text keeps its existing `pretty`.
+	 * thead gets it too — a harmless no-op on table header text. */
+	text-wrap: balance;
 	margin-bottom: 0;
 
 	article > & > a[role="anchor"] {
-		color: var(--dark);
+		color: inherit;
 		background-color: transparent;
+		/* anchors are affordances, not prose links — they must not pick up the
+		 * content underline layer when they fade in on heading hover */
+		text-decoration: none;
 	}
 }
 
@@ -445,38 +563,62 @@ h6 {
 	}
 }
 
-/* typography improvements */
+/*
+ * Heading scale — baked rem table, values verbatim from typescale.com
+ * (base 22px, ratio 1.125 "minor second"; h1 2.027rem … h6 1.125rem, body
+ * 1rem). Deliberately NOT calc-derived from --base/--ratio custom properties:
+ * values get hand-tweaked by eye anyway, and a formula would be a second
+ * thing to keep in sync. Each level carries its accent-tier color
+ * (--heading-N) — the ladder is deliberately multi-hue STARTING VALUES for
+ * the eyeball pass, not a settled identity.
+ */
 h1 {
-	font-size: 1.75rem;
+	font-size: 2.027rem;
 	margin-top: 2.25rem;
 	margin-bottom: 1rem;
+	color: var(--heading-1);
 }
 
 h2 {
-	font-size: 1.4rem;
+	font-size: 1.802rem;
 	margin-top: 1.9rem;
 	margin-bottom: 1rem;
+	color: var(--heading-2);
 }
 
 h3 {
-	font-size: 1.12rem;
+	font-size: 1.602rem;
 	margin-top: 1.62rem;
 	margin-bottom: 1rem;
+	color: var(--heading-3);
 }
 
 h4,
 h5,
 h6 {
-	font-size: 1rem;
 	margin-top: 1.5rem;
 	margin-bottom: 1rem;
+}
+
+h4 {
+	font-size: 1.424rem;
+	color: var(--heading-4);
+}
+
+h5 {
+	font-size: 1.266rem;
+	color: var(--heading-5);
+}
+
+h6 {
+	font-size: 1.125rem;
+	color: var(--heading-6);
 }
 
 figure[data-rehype-pretty-code-figure] {
 	margin: 0;
 	position: relative;
-	line-height: 1.6rem;
-	position: relative;
+	line-height: 1.6;
 
 	& > [data-rehype-pretty-code-title] {
 		font-family: var(--codeFont);
@@ -553,7 +695,10 @@ pre {
 }
 
 code {
-	font-size: 0.9em;
+	/* 0.85em matches pre>code's 0.85rem (pre sets no font-size of its own, so
+	 * both resolve against the 22px base); em keeps inline code proportional
+	 * when it appears inside headings. */
+	font-size: 0.85em;
 	color: var(--dark);
 	font-family: var(--codeFont);
 	font-variant-ligatures: none;
@@ -562,10 +707,13 @@ code {
 	background: var(--lightgray);
 }
 
+/* line-height values are unitless ratios on purpose: nested/smaller
+ * elements (code, small text) keep a line box proportional to their own
+ * font size, instead of inheriting a fixed rem-sized one. */
 tbody,
 li,
 p {
-	line-height: 1.6rem;
+	line-height: 1.6;
 }
 
 .table-container {
@@ -582,7 +730,7 @@ p {
 		}
 
 		& > * {
-			line-height: 2rem;
+			line-height: 2;
 		}
 	}
 }

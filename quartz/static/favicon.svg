@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Serif T — outlined dark tile</title>
+  <rect x="5" y="5" width="54" height="54" rx="13" fill="#221d18" stroke="#c89b5a" stroke-width="4"/>
+  <path d="M16 17h32l1 9h-4l-2-5h-7v22h5v4H23v-4h5V21h-7l-2 5h-4z" fill="#ede5d8"/>
+</svg>
