@@ -71,7 +71,7 @@ The flow to start the planning in the best state of mind.
 
 ## Checklists
 
-- [ ] **Rename the phase in `_project.md`**
+- [ ] **Create the phase in `_project.md`**
 - [ ] **Acknowledge if you're in elevated state of mind**
 - [ ] **Can your idea/plan fit into bite-sized phase?**
 

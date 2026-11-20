@@ -20,6 +20,8 @@
 - **How I record my life**
   - OBS. Tell about speed up and recording at 10fps, so 0.33x speed would be real time.
 
+For pressure & advantages - you might also want to add history of failures. Like you failed a lot. It may be beneficial both to you and to the reader to have it locked down on the paper
+
 ## Why I'm worth of your attention?
 
 (in my opinion, obviously)

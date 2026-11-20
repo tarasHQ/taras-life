@@ -1,7 +1,7 @@
 ---
 publish: true
 title: Type Specimen
-created: 2026-11-05T15:18:58.894Z
+created: 2026-11-15T11:16:26.701Z
 modified: 2026-11-05T15:19:14.720Z
 published: 2026-11-05T15:19:14.720Z
 id: md-tests-type

@@ -14,12 +14,11 @@
 // 4. Turns your current empty tab into the new phase's _plan_<NNN>.md (avoids stray tabs).
 //    The plan note embeds the phase number (e.g. \_plan\_004.md) so its title is
 //    unique across the whole vault.
-// 5. Inserts the new phase under "## Phases" in \_project.md with stable spacing.
-// 6. Silently creates ideas/parking.md, \_reflections/initial-reflection.md, and the
+// 5. Silently creates ideas/parking.md, \_reflections/initial-reflection.md, and the
 //    deterministic steps/00-start.md + steps/99-end.md from their dedicated templates
 //    (\[T]ideas, \[T]reflections, \[T]step-start, \[T]step-end). The phase plan remains
 //    focused; starter steps do not open additional tabs.
-// 7. No per-phase SSOT copies are shipped anymore:
+// 6. No per-phase SSOT copies are shipped anymore:
 //    - New steps are written by LLM flows from the shared template
 //      `@system/projects/shared/step-template.md` (see \_flows/writing-steps.md).
 //    - Exploration lives directly in the plan note (\[T]plan.md "## Exploration").
@@ -73,15 +72,9 @@ stepStartFileName: "00-start",
 stepEndFileName: "99-end",
 stepStartTemplateName: "[T]step-start",
 stepEndTemplateName: "[T]step-end",
-
-// --- _project.md index update ------------------------------------------------
-projectPhasesHeader: "## Phases",       // header under which new phase entries are inserted
-phaseEntryPlaceholder: "UNTITLED_PHASE",
 ```
 
 };
-
-const escapeRegExp = (s) => s.replace(/\[.\*+?^${}()|[\]\\]/g, "\\$&");
 
 // --- Template resolution -----------------------------------------------------
 // Project templates live together in one folder (templatesRoot). When this
@@ -257,37 +250,7 @@ finalOutput = await tp.file.include(planTemplate);
 window\[CFG.autoPlanFlag] = false;
 }
 
-// 8. Insert new phase link under the configured header in \_project.md.
-//    The regex consumes any existing empty lines under the header so spacing never grows.
-try {
-const projectContent = await app.vault.read(selectedProjectFile);
-// Entry inserted into \_project.md — relative link is written from the project root.
-const newPhaseEntry = `### Phase ${phaseNumber} - ${CFG.phaseEntryPlaceholder} [open](./${CFG.phasesDirName}/${phaseNumber}/${planNoteName}.md)`;
-
-```
-if (!projectContent.includes(newPhaseEntry)) {
-    // Matches the header line plus any following empty lines
-    const phasesHeaderRegex = new RegExp(
-        `(${escapeRegExp(CFG.projectPhasesHeader)}[ \\t]*\\r?\\n)(?:\\r?\\n)*`,
-        "i"
-    );
-
-    if (phasesHeaderRegex.test(projectContent)) {
-        // $1 is the header line, followed by 1 blank line (\n), then the entry and \n
-        const updatedProjectContent = projectContent.replace(
-            phasesHeaderRegex,
-            `$1\n${newPhaseEntry}\n\n`
-        );
-        await app.vault.modify(selectedProjectFile, updatedProjectContent);
-    }
-}
-```
-
-} catch (err) {
-console.error(`Failed to auto-update ${CFG.projectFileName}:`, err);
-}
-
-// 9. Create starter notes and the deterministic start/end step notes.
+// 8. Create starter notes and the deterministic start/end step notes.
 // Start/end steps are born with the phase and are never created manually or by an LLM.
 // A child failure must not prevent the rendered plan from being written to the starting note.
 let initialReflectionFile;

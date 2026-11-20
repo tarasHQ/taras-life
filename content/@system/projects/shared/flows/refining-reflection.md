@@ -12,7 +12,6 @@
 ## Rules
 
 - **STAGE AWARENESS** - Every response to the user should have current stage letter, name and substage letter-number at the first line.
-- **TEMP ARTIFACTS ARE WRITE-ONCE** - `refining-possibilities-xxxx` etc. are written during the brainstorm stages and never edited or appended afterwards. Locked decisions/results go ONLY into durable documents (reflection, plan, steps) — never back into a temp artifact.
 
 ## Stages
 
@@ -25,16 +24,11 @@
     - Goal of exploration is to be able to have context for brainstorming of radically different possibilities
 - ### B - Brainstorm
   - [ ] **B1** - \[LLM] - \*\*Response #1**
-    - Writes a temporary file with self-reflective exploration of all high-level possibilities in
-    - Only `write` tool is allowed.
-    - a temporary `.md` file inside `artifacts/refining-possibilities-xxxx`, where last 4 digits are random \[a-z0-9] to avoid duplication.
-    - Format is nested lists of questions/points/reflections/ideas (no answers/finalizations/recommendations)
+    - Responds with a one-off self-reflective exploration of high-level possibilities (plain response; no tools except the required final continuation read).
+    - Format is nested lists of questions/points/reflections/ideas (no answers/finalizations/recommendations).
+    - MANDATORY - end the response by reading `C:\Users\Taras\Documents\obsidian-vault\@system\projects\shared\loop-continuation.md` to continue automatically without asking the user to continue.
   - [ ] **B2** - \[LLM] - \*\*Response #2**
-    - Only `write` tool is allowed.
-    - Using already created temporary `.md` file `artifacts/refining-possibilities-xxxx` in previous stage
-      - Using append functionality of write tool.
-    - LLM writes in that file 5 to 10 **(reasonable, high-level, radical, architectural)** possibilities for improving user's artifacts.
-    - **This file is write-once.** After this stage the artifact is never edited again — results/locked decisions go into durable documents in later stages.
+    - LLM lists **(reasonable, high-level, radical, architectural)** possibilities (anywhere from 1 to 15) for improving user's artifacts (plain response; no tools except the required final continuation read).
     - Those points may cover categories:
       - Blind Spots
       - Security
@@ -50,6 +44,7 @@
       - **Complexity** - a paragraph or less about how complex is this point
       - **Closed Advantageous Doors** - bulleted list of others paths that will get closed/hard to mover/transfer to if this point will be accepted.
       - **Description In Simpler Terms** - a paragraph of description in simpler terms (non-advanced) about this point. Goal is to preemptively explain it in a bit more easier wording, so user won't get stuck on unknown technicalities.
+    - MANDATORY - end the response by reading `C:\Users\Taras\Documents\obsidian-vault\@system\projects\shared\loop-continuation.md` to continue automatically without asking the user to continue.
 - ### C - Further Exploration
   - [ ] **C1** - \[LLM]
     - LLM starts second pass of thorough exploration focused on points it listed in previous stage, to make sure descriptions/solutions/benefits/etc. is accurate.
@@ -65,7 +60,7 @@
     - LLM responds to the user with confirmed/validated/refined possibilities for improving user's artifacts.
     - In the same **FORMAT** that initial drafted list was written.
     - Each point - name, description, how to do this, benefit, complexity, closed advantageous door, description in simpler terms.
-    - **CRUCIAL** - it must be a self-contained list without depending on user's knowledge of previously created temporary file and its contents.
+    - **CRUCIAL** - it must be a self-contained list without depending on the user's knowledge of the earlier brainstorm responses.
   - [ ] **D2** - \[LLM] - \*\*Still Response #1**
     - Within the same response LLM writes a template for user response inside markdown codeblock
     - In this template it lists the number and name of the point and empty bullet point after for user to fill.
@@ -78,7 +73,7 @@
   - [ ] **F1** - \[LLM]
     - LLM fills out the `_plan_xxx.md`'s **exploration section** with concise related links/tips on exploration for future tasks on this plan based on experience with current exploration.
       - Since no files were touched - related links should only be under "Context Files" section
-      - Plan scope: phase-level knowledge only — step-scoped detail belongs in step files or the flow's artifacts (from which steps are later written), not the plan. When updating exploration, remove stale/no-longer-relevant entries in the same pass.
+      - Plan scope: phase-level knowledge only — step-scoped detail belongs in step files, not the plan. When updating exploration, remove stale/no-longer-relevant entries in the same pass.
   - [ ] **F2** - \[LLM + USER]
     - LLM asks for user's approval to update user's artifacts to be aligned with locked-in decisions/refining from current flow-task.
   - [ ] **F3** - \[LLM]

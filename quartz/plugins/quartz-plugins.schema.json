@@ -120,6 +120,11 @@
 								"type": "number",
 								"description": "Layout priority"
 							},
+							"leftSidebarRegion": {
+								"type": "string",
+								"enum": ["top"],
+								"description": "Stationary top controls region for left-slot components; omitted components belong to the panel"
+							},
 							"display": {
 								"type": "string",
 								"enum": ["all", "mobile-only", "desktop-only"],

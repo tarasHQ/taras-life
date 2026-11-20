@@ -178,5 +178,3 @@ setTimeout(() => {
 ctime: <% tp.file.creation\_date(CFG.ctimeFormat) %>
 isIntegrated: false
 -------------------
-
-<% backlink %>

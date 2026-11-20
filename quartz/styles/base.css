@@ -292,6 +292,8 @@ a {
 		}
 		@media all and ((max-width: 800px)) {
 			/* mobile grid */
+			/* 800px breakpoint: keep in sync with quartz/components/styles/left-sidebar.css
+			 * and quartz/components/scripts/leftSidebar.ts (matchMedia). */
 			grid-template-columns: auto;
 			grid-template-rows: auto auto auto auto auto;
 			column-gap: 5px;
@@ -407,19 +409,19 @@ a {
 	}
 }
 
-/* Extend the compact mobile header across the grid's 1rem page inset while
- * keeping its controls aligned with the content. The header and open panel
- * use the solid page color to hide content behind them. The html prefix lets
- * these rules win over the later-loaded Explorer CSS. */
+/* A cleared default-frame sidebar must not leave an empty mobile grid row. */
 @media all and ((max-width: 800px)) {
-	html .page > #quartz-body .sidebar.left:has(.explorer) {
-		margin-inline: -1rem;
-		padding: 0.25rem 1rem;
-		background-color: var(--bg-grad-bottom);
+	.page[data-frame="default"] > #quartz-body:has(> .sidebar.left:empty) {
+		grid-template-rows: auto auto auto auto;
+		grid-template-areas:
+			"grid-header"
+			"grid-center"
+			"grid-sidebar-right"
+			"grid-footer";
 	}
 
-	html .explorer .explorer-content {
-		background-color: var(--bg-grad-bottom);
+	.page[data-frame="default"] > #quartz-body > .sidebar.left:empty {
+		display: none;
 	}
 }
 

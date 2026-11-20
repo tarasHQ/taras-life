@@ -9,7 +9,6 @@ From initial refined reflection(**what** I want to do) -> to properly explored, 
 ## Rules
 
 - **STAGE AWARENESS** - Every response to the user should have current stage letter, name and substage letter-number at the first line.
-- **TEMP ARTIFACTS ARE WRITE-ONCE** - `implementation-possibilities-xxxx` etc. are written during the brainstorm stages and never edited or appended afterwards. Locked decisions/results go ONLY into durable documents (plan, steps) — never back into a temp artifact.
 
 ## Stages
 
@@ -22,15 +21,11 @@ From initial refined reflection(**what** I want to do) -> to properly explored, 
     - Goal of exploration is to be ready to list many possibilities of implementation of user's artifacts.
 - ### B - Brainstorm
   - [ ] **B1** - \[LLM] - \*\*Response #1**
-    - Using `write` tool.
-    - Writes a temporary self-reflective exploration of all implementation possibilities in a temporary `.md`  file inside `artifacts/implementation-possibilities-xxxx`, where last 4 digits are random \[a-z0-9] to avoid duplication.
-    - Format is nested lists of questions/points/reflections/ideas (no answers/finalizations/recommendations)
+    - Responds with a one-off self-reflective exploration of implementation possibilities (plain response; no tools except the required final continuation read).
+    - Format is nested lists of questions/points/reflections/ideas (no answers/finalizations/recommendations).
+    - MANDATORY - end the response by reading `C:\Users\Taras\Documents\obsidian-vault\@system\projects\shared\loop-continuation.md` to continue automatically without asking the user to continue.
   - [ ] **B2** - \[LLM] - \*\*Response #2**
-    - Only `write` tool is allowed.
-    - Using already created temporary `.md` file `artifacts/implementation-possibilities-xxxx` in previous stage
-      - Using append functionality of write tool.
-      - This file is write-once. After this stage the artifact is never edited again — results/locked decisions go into durable documents in later stages.
-    - LLM lists 5 to 10 of the most **(reasonable, high-level, radical, architectural)** implementation possibilities for of provided user's artifacts.
+    - LLM lists of the most **(reasonable, high-level, radical, architectural)** implementation possibilities (anywhere from 1 to 15) for provided user's artifacts (plain response; no tools except the required final continuation read).
     - Those points may cover categories:
       - More streamlined code&#x20;
       - Reduced lines of code&#x20;
@@ -48,6 +43,7 @@ From initial refined reflection(**what** I want to do) -> to properly explored, 
       - **Complexity** - a paragraph or less about how complex is this point
       - **Closed Advantageous Doors** - bulleted list of others paths that will get closed/hard to mover/transfer to if this point will be accepted.
       - **Description In Simpler Terms** - a paragraph of description in simpler terms (non-advanced) about this point. Goal is to preemptively explain it in a bit more easier wording, so user won't get stuck on unknown technicalities.
+    - MANDATORY - end the response by reading `C:\Users\Taras\Documents\obsidian-vault\@system\projects\shared\loop-continuation.md` to continue automatically without asking the user to continue.
 - ### C - Further Exploration
   - [ ] **C1** - \[LLM]
     - LLM starts second pass of thorough exploration focused on points it listed in previous stage, to make sure descriptions/solutions/benefits/etc. is accurate.
@@ -63,7 +59,7 @@ From initial refined reflection(**what** I want to do) -> to properly explored, 
     - LLM responds to the user with confirmed/validated/refined possibilities for improving user's artifacts.
     - In the same **FORMAT** that initial drafted list was written.
     - Each point - name, description, how to do this, benefit, complexity, closed advantageous door, description in simpler terms.
-    - **CRUCIAL** - it must be a self-contained list without depending on user's knowledge of previously created temporary file and its contents.
+    - **CRUCIAL** - it must be a self-contained list without depending on the user's knowledge of the earlier brainstorm responses.
   - [ ] **D2** - \[LLM] - \*\*Still Response #1**
     - Within the same response LLM writes a template for user response inside markdown codeblock
     - In this template it lists the number and name of the point and empty bullet point after for user to fill.
@@ -76,7 +72,7 @@ From initial refined reflection(**what** I want to do) -> to properly explored, 
 - ### F - Filling Out the Plan and Drafting the Steps
   - [ ] **F1** - \[LLM]
     - LLM fills out the `_plan_xxx.md`'s **exploration section** with concise related links/tips on exploration for future tasks on this plan based on experience with current exploration.
-    - Plan scope: phase-level knowledge only — step-scoped detail belongs in step files or this flow's artifacts (from which steps are later written), not the plan. When updating exploration, remove stale/no-longer-relevant entries in the same pass.
+    - Plan scope: phase-level knowledge only — step-scoped detail belongs in step files, not the plan. When updating exploration, remove stale/no-longer-relevant entries in the same pass.
     - **Between** 00 and 99 steps - inserts ### Drafted Steps Recommendation block, with suggested order/granularity of steps as simple bulleted list with one point per list (will be deleted when actual steps arrive)
       - steps are sorted "Highest step number on the top, lowest on the bottom"
   - [ ] **F2** - \[LLM + USER]

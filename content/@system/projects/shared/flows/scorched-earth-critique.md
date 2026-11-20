@@ -7,7 +7,6 @@
 ## Rules
 
 - **STAGE AWARENESS** - Every response to the user should have current stage letter, name and substage letter-number at the first line.
-- **TEMP ARTIFACTS ARE WRITE-ONCE** - `critique-xxxx` etc. are written during the brainstorm stages and never edited or appended afterwards. Locked decisions/results go ONLY into durable documents (reflection, plan, steps) — never back into a temp artifact.
 
 ## Stages
 
@@ -21,15 +20,11 @@
 - ### B - Brainstorm
   - **Tone** - Honest, Critical, Realistic, Efficient.
   - [ ] **B1** - \[LLM] - \*\*Response #1**
-    - Using `write` tool.
-    - Writes a temporary self-reflective exploration of attack surface in a temporary `.md`  file inside `artifacts/critique-xxxx`, where last 4 digits are random \[a-z0-9] to avoid duplication.
+    - Responds with a one-off self-reflective exploration of attack surface in. (no tools, just plain response)
     - Format is nested lists of questions/points/reflections/ideas (no answers/finalizations/recommendations)
+    - MANDATORY - response ends with reading `C:\Users\Taras\Documents\obsidian-vault\@system\projects\shared\loop-continuation.md`, because if response ends in tool call - you will get next turn automatically without user needing to manually continue it.
   - [ ] **B2** - \[LLM] - \*\*Response #2**
-    - Only `write` tool is allowed.
-    - Using already created temporary `.md` file `artifacts/critique-xxxx` in previous stage
-      - Using append functionality of write tool.
-      - This file is write-once. After this stage the artifact is never edited again — results/locked decisions go into durable documents in later stages.
-    - LLM lists 5 to 10 weakest points in provided artifacts.
+    - LLM lists weakest points (anywhere from 1 to 15) in provided artifacts(and further research) - still no tools, just plain response.
     - Those points may cover issues from categories:
       - Blind Spots
       - Security issues
@@ -50,6 +45,7 @@
       - Format is 2 paragraphs
         - First paragraph is description of the size issue
         - Second paragraph is 2-3 recommended solutions to the size issue
+    - MANDATORY - response ends with reading `C:\Users\Taras\Documents\obsidian-vault\@system\projects\shared\loop-continuation.md`, because if response ends in tool call - you will get next turn automatically without user needing to manually continue it.
 - ### C - Further Exploration
   - [ ] **C1** - \[LLM]
     - LLM starts second pass of thorough exploration focused on points it listed in previous stage, to make sure descriptions/solutions/benefits/etc. is accurate.

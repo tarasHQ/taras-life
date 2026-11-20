@@ -305,6 +305,67 @@ describe("buildLayoutForEntries with display wrappers", () => {
 	})
 })
 
+describe("left sidebar regions", () => {
+	test("throws a clear error on an unknown region value before the frame silently drops the widget", () => {
+		const component = makeComponent("Typoed")
+		componentRegistry.register("typoed", component, "test-source")
+		const entry: PluginJsonEntry = {
+			source: "typoed",
+			enabled: true,
+			layout: {
+				position: "left" as LayoutPosition,
+				priority: 10,
+				// YAML is not schema-validated at load time, so a wrong-case or
+				// mistyped value arrives as a plain string and must fail loudly.
+				leftSidebarRegion: "Top" as "top",
+			},
+		}
+		assert.throws(() => buildLayoutForEntries([entry], {}), /Invalid leftSidebarRegion "Top" on component "Typoed"/)
+	})
+	test("preserves top classification and resources through wrappers and toolbar grouping without mutation", () => {
+		const search = makeComponent("Search")
+		search.css = "search-css"
+		search.afterDOMLoaded = "search-script"
+		const theme = makeComponent("Theme")
+		theme.css = "theme-css"
+		componentRegistry.register("search", search, "test-source")
+		const entry: PluginJsonEntry = {
+			source: "search",
+			enabled: true,
+			layout: {
+				position: "left",
+				priority: 20,
+				group: "toolbar",
+				leftSidebarRegion: "top",
+				display: "mobile-only",
+				condition: "not-index",
+			},
+		}
+		const result = buildLayoutForEntries([entry], { groups: { toolbar: { priority: 35 } } }, [
+			{ component: theme, position: "left", priority: 30, group: "toolbar", leftSidebarRegion: "top" },
+		])
+		assert.strictEqual(result.left?.length, 1)
+		assert.strictEqual(result.left?.[0].leftSidebarRegion, "top")
+		assert.ok(String(result.left?.[0].css).includes("search-css"))
+		assert.ok(String(result.left?.[0].css).includes("theme-css"))
+		assert.ok(String(result.left?.[0].afterDOMLoaded).includes("search-script"))
+		assert.strictEqual(search.leftSidebarRegion, undefined)
+		assert.strictEqual(theme.leftSidebarRegion, undefined)
+	})
+
+	test("rejects mixed left regions but leaves unrelated groups unchanged", () => {
+		const a = makeComponent("A")
+		const b = makeComponent("B")
+		a.leftSidebarRegion = "top"
+		const items = [
+			{ component: a, priority: 1, group: "toolbar" },
+			{ component: b, priority: 2, group: "toolbar" },
+		]
+		assert.throws(() => resolveGroups(items, {}, true), /mixes sidebar regions/)
+		assert.strictEqual(resolveGroups(items, {}).length, 1)
+	})
+})
+
 describe("buildLayoutForEntries with constructors", () => {
 	test("instantiates constructor components via registry", () => {
 		const ctor = makeConstructor("Instantiated")

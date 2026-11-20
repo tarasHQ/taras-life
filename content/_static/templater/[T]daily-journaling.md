@@ -18,6 +18,7 @@ action:
   - [ ] Day scene
   - [ ] Check webcam (exposure)
   - [ ] Check IP cam (quality, delay)
+    - [ ] Reconnect to reset delay
     - [ ] Disable sleep blur
   - [ ] Check all elements are present on the canvas
   - [ ] Check TickTick schedule
@@ -46,10 +47,9 @@ action:
   - Obsidian
     - [ ] Write overview of the current day
     - [ ] Create journal for the next day
-    - [ ] Move uncompleted tasks
-    - [ ] Make sure all day's reflections are linked under reflections
+    - [ ] Make sure all day's reflections are linked artifacts
     - [ ] Delete Dream Analysis block if empty
-    - [ ] Delete other blocks if empty (task/reflections)
+    - [ ] Delete other blocks if empty
   - [ ] Night scene
   - [ ] Check IP cam (quality, delay)
     - [ ] Enable sleep blur
@@ -63,7 +63,7 @@ action:
 
 ## OVERVIEW
 
-Remove. Goal of the overview is condense a day into a key points. Don't start with reflections/ideas/etc. Just condense.
+OVERVIEW\_FOR\_VIDEO
 
 ---
 
@@ -76,17 +76,7 @@ Remove. Goal of the overview is condense a day into a key points. Don't start wi
 
 ---
 
-## TASKS
-
-- ### TODO
-  - \[ ]
-- ### Completed
-  - [ ] copy\_from\_here
-  - \[ ]
-
----
-
-## REFLECTIONS
+## CREATED ARTIFACTS
 
 -
 
@@ -94,15 +84,11 @@ Remove. Goal of the overview is condense a day into a key points. Don't start wi
 
 ## TIME LOG
 
-```meta-bind-button {fold}
-label: New Log Entry
-style: default
-icon: clock
-cssStyle: "height: 24px; padding: 5px; font-size 11px;"
-action:
-  type: js
-  file: _static/scripts/meta-bind/journal-time-entry.js
-```
+[[../../../_capturing/ideas|capture ideas]]
+`BUTTON[journal-time, journal-meaning]`
+---------------------------------------
+
+==REPEAT The Project is dead. Website is priority. Stay in tension by avoiding indulgence==
 
 ---
 
@@ -110,6 +96,7 @@ action:
 
 ### Read First
 
+- **WRITE THEM DOWN**. if you don't want to analyze them - the best next thing is to just write them down and re-live while you're doing so. This increases their effectiveness.
 - **Goal** of the dream isn't only to show you the answer, but also to give meaning to the answer through the story. Peterson's "story" from his Maps of Meaning work.
 - Not all dreams will **click**.  As LLM put it - drill-sergeant's dream isn't supposed to give me chills.
   - I can be rich with meaning but poor with action, in this case I don't need inspiration, I need to have a dream that is grounded in action and persistent day-to-day movement of men's work.

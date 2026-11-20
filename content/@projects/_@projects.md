@@ -1,0 +1,134 @@
+---
+publish: true
+title: "@projects"
+created: 2026-11-17T22:27:14.926Z
+modified: 2026-11-20T00:03:22.192Z
+published: 2026-11-20T00:03:22.192Z
+icon: workflow
+---
+
+- taras.life
+  - **obsidian**
+    - \_reflections
+      - [[@projects/taras.life/__obsidian__/_reflections/on-navigation-and-structure|on-navigation-and-structure.md]]
+      - [[@projects/taras.life/__obsidian__/_reflections/what-to-do-abstractly|what-to-do-abstractly.md]]
+      - [[@projects/taras.life/__obsidian__/_reflections/what-to-do-with-website|what-to-do-with-website.md]]
+    - artifacts
+      - [[@projects/taras.life/__obsidian__/artifacts/the-pond-design|the-pond-design.md]]
+    - docs
+      - [[@projects/taras.life/__obsidian__/docs/AGENTS|AGENTS.md]]
+      - [[@projects/taras.life/__obsidian__/docs/DEV_COMMANDS|DEV_COMMANDS.md]]
+      - [[@projects/taras.life/__obsidian__/docs/DEV_RULES|DEV_RULES.md]]
+    - ideas
+      - \_attachments
+        - [[@projects/taras.life/__obsidian__/ideas/_attachments/image.webp|image.webp]]
+        - [[@projects/taras.life/__obsidian__/ideas/_attachments/Pasted image 20261029184519.png|Pasted image 20261029184519.png]]
+        - [[@projects/taras.life/__obsidian__/ideas/_attachments/Pasted image 20261029215947.png|Pasted image 20261029215947.png]]
+        - [[@projects/taras.life/__obsidian__/ideas/_attachments/Pasted image 20261029220112.png|Pasted image 20261029220112.png]]
+        - [[@projects/taras.life/__obsidian__/ideas/_attachments/Pasted image 20261029220348.png|Pasted image 20261029220348.png]]
+      - [[@projects/taras.life/__obsidian__/ideas/Capture|Capture.md]]
+      - [[@projects/taras.life/__obsidian__/ideas/remark42|remark42.md]]
+    - phases
+      - \_archived
+        - 001
+          - \_reflections
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/_reflections/initial-reflection|initial-reflection.md]]
+          - artifacts
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/artifacts/OLD-PLAN|OLD-PLAN.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/artifacts/README|README.md]]
+          - ideas
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/ideas/parking|parking.md]]
+          - steps
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/00-start|00-start.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/01-loading-topology-spike|01-loading-topology-spike.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/02-package-lock-in|02-package-lock-in.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/03-options-contract|03-options-contract.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/04-identity-id-rename|04-identity-id-rename.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/05-render-component|05-render-component.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/06-browser-runtime|06-browser-runtime.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/06.5-404-comments|06.5-404-comments.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/07-tests-and-docs|07-tests-and-docs.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/08-visual-polish|08-visual-polish.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/09-readme|09-readme.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/001/steps/99-end|99-end.md]]
+          - [[@projects/taras.life/__obsidian__/phases/_archived/001/_plan_001|_plan_001.md]]
+        - 002
+          - \_reflections
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/_reflections/initial-reflection|initial-reflection.md]]
+          - artifacts
+            - oracle
+              - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/oracle/base.expanded.css|base.expanded.css]]
+              - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/oracle/custom.expanded.css|custom.expanded.css]]
+              - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/oracle/generated-theme.css|generated-theme.css]]
+              - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/oracle/popover.expanded.css|popover.expanded.css]]
+              - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/oracle/variables.expanded.css|variables.expanded.css]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/attack-surface-7k2f|attack-surface-7k2f.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/attack-surface-q3x8|attack-surface-q3x8.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/dead-css-checklist|dead-css-checklist.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/implementation-possibilities-a4c7|implementation-possibilities-a4c7.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/possibilities-k4m8|possibilities-k4m8.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/artifacts/semantic-review|semantic-review.md]]
+          - ideas
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/ideas/parking|parking.md]]
+          - steps
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/00-start|00-start.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/01-groundwork|01-groundwork.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/02-scss-to-css-theming|02-scss-to-css-theming.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/03-remove-generation-googlefonts|03-remove-generation-googlefonts.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/04-toolchain-cleanup|04-toolchain-cleanup.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/05-templates-cli-create-removal|05-templates-cli-create-removal.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/06-docs-final-verification|06-docs-final-verification.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/002/steps/99-end|99-end.md]]
+          - [[@projects/taras.life/__obsidian__/phases/_archived/002/_plan_002|_plan_002.md]]
+        - 003
+          - \_reflections
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/_reflections/initial-reflection|initial-reflection.md]]
+          - artifacts
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/artifacts/code-review-k3f9|code-review-k3f9.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/artifacts/code-review-k4q9|code-review-k4q9.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/artifacts/code-review-r8m3|code-review-r8m3.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/artifacts/implementation-possibilities-q7m2|implementation-possibilities-q7m2.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/artifacts/implementation-possibilities-q7z2|implementation-possibilities-q7z2.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/artifacts/refining-possibilities-k3f9|refining-possibilities-k3f9.md]]
+          - ideas
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/ideas/parking|parking.md]]
+          - steps
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/00-start|00-start.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/01-visual-test-pages|01-visual-test-pages.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/02-palette-foundation|02-palette-foundation.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/03-theme-system|03-theme-system.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/04-typography|04-typography.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/05-accent-layers|05-accent-layers.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/06-background-bench|06-background-bench.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/07-favicon-meta|07-favicon-meta.md]]
+            - [[@projects/taras.life/__obsidian__/phases/_archived/003/steps/99-end|99-end.md]]
+          - [[@projects/taras.life/__obsidian__/phases/_archived/003/_plan_003|_plan_003.md]]
+      - 004
+        - \_reflections
+          - [[@projects/taras.life/__obsidian__/phases/004/_reflections/initial-reflection|initial-reflection.md]]
+        - artifacts
+          - [[@projects/taras.life/__obsidian__/phases/004/artifacts/code-review-k7m2|code-review-k7m2.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/artifacts/critique-k3f9|critique-k3f9.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/artifacts/critique-q8v3|critique-q8v3.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/artifacts/implementation-possibilities-n7q2|implementation-possibilities-n7q2.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/artifacts/refining-possibilities-k4t7|refining-possibilities-k4t7.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/artifacts/refining-possibilities-k7m2|refining-possibilities-k7m2.md]]
+        - ideas
+          - [[@projects/taras.life/__obsidian__/phases/004/ideas/parking|parking.md]]
+        - steps
+          - [[@projects/taras.life/__obsidian__/phases/004/steps/00-start|00-start.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/steps/01-explorer-navigation-model|01-explorer-navigation-model.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/steps/02-internal-explorer|02-internal-explorer.md]]
+          - [[@projects/taras.life/__obsidian__/phases/004/steps/99-end|99-end.md]]
+        - [[@projects/taras.life/__obsidian__/phases/004/_plan_004|_plan_004.md]]
+    - [[@projects/taras.life/__obsidian__/_project|_project.md]]
+  - publicity
+    - \_reflections
+    - artifacts
+    - docs
+    - ideas
+      - [[@projects/taras.life/publicity/ideas/Capture|Capture.md]]
+    - phases
+    - [[@projects/taras.life/publicity/_project|_project.md]]
+  - [[@projects/taras.life/_taras.life|_taras.life.md]]
+- [[@projects/_@projects|_@projects.md]]

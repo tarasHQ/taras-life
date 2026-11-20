@@ -15,7 +15,7 @@
 ![[_attachments/Pasted image 20261029220112.png|215]]![[_attachments/Pasted image 20261029220348.png|336]]
 
 ![[_attachments/Pasted image 20261029215947.png|107]]![[_attachments/Pasted image 20261029184519.png|419]]
-- ### Websites %% fold %%
+- ### Websites
 	- https://oliverfalvai.com/Evergreen/Inspiring-gardens - collections
 	- https://quartz.jzhao.xyz/showcase - collections
 	- https://28mm.coffee/mostly-how-i-built-this-site
@@ -23,6 +23,9 @@
 	- https://davidhurtado.ai/Home
 	- [https://garden.sgenov.dev/](https://garden.sgenov.dev/How-Does-This-Blog-Work)
 	- https://notes.dsebastien.net/50+Resources/55+Obsidian+Publish/README
+	- New ones
+		- [http://taurusxin.com/minecraft-mods/](https://www.taurusxin.com/artalk-comment/)
+		- https://blog.sobigrice.com/
 
 ## TIPS
 - **Look at the website through the eyes of first-time visitor**

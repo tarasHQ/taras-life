@@ -1,6 +1,6 @@
 ---
 publish: true
-created: 2026-10-22T08:13:49.601Z
+created: 2026-11-15T11:16:26.543Z
 modified: 2026-10-18T21:17:02.989Z
 published: 2026-10-18T21:17:02.989Z
 isIntegrated: true

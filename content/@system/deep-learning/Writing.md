@@ -1,0 +1,1 @@
+I don't know where/how you will setup learning. But for writing - you can have interesting thing going on. Take files for last 10-20 days. Analyze them on word by word basis. See like top 20 words. And then don't use them for another X days. You can even tie this into weekly journaling flows. To be more "literate", or, at least, to not have 30 "like"s per paragraph)

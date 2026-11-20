@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-    pageTitle: Taras.Life
+    pageTitle: taras.life
     pageTitleSuffix: " - taras.life"
     enableSPA: true
     enablePopovers: true
@@ -87,23 +87,17 @@ plugins:
       enabled: false # Disabled for now
     - source: "@quartz-community/content-page"
       enabled: true
-    - source: "@quartz-community/explorer"
-      enabled: true
-      options:
-          folderClickBehavior: collapse
-      layout:
-          position: left
-          priority: 50
     - source: "@quartz-community/search"
       enabled: true
       layout:
           position: left
+          leftSidebarRegion: top
           priority: 20
           group: toolbar
           groupOptions:
               grow: true
     - source: "@quartz-community/backlinks"
-      enabled: true
+      enabled: false
       layout:
           position: right
           priority: 50
@@ -121,13 +115,8 @@ plugins:
       enabled: true
       layout:
           position: left
+          leftSidebarRegion: top
           priority: 10
-    - source: "@quartz-community/breadcrumbs"
-      enabled: true
-      layout:
-          position: beforeBody
-          priority: 5
-          condition: not-index
     - source: ./custom-plugins/remark42
       enabled: true
       layout:
@@ -142,14 +131,6 @@ plugins:
           priority: 50
     - source: "@quartz-community/recent-notes"
       enabled: false
-    - source: "@quartz-community/spacer"
-      enabled: true
-      options: {}
-      order: 25
-      layout:
-          position: left
-          priority: 25
-          display: mobile-only
     - source: "@quartz-community/bases-page"
       enabled: true
       options: {}

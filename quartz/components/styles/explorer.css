@@ -1,0 +1,59 @@
+.internal-explorer {
+	min-height: 0;
+	overflow-y: auto;
+}
+
+.internal-explorer .explorer-definitions {
+	position: absolute;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+.internal-explorer ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.internal-explorer li a {
+	display: grid;
+	grid-template-columns: 1.25rem minmax(0, 1fr);
+	align-items: center;
+	gap: 0.65rem;
+	padding: 0.5rem 0.65rem;
+	border-radius: 0.4rem;
+	color: var(--darkgray);
+	text-decoration: none;
+}
+
+.internal-explorer li a:hover,
+.internal-explorer li.is-current a {
+	background: var(--lightgray);
+	color: var(--dark);
+}
+
+.internal-explorer li.is-current a {
+	font-weight: 600;
+}
+
+.internal-explorer .explorer-icon-column {
+	display: flex;
+}
+
+.internal-explorer .explorer-icon {
+	width: 1.25rem;
+	height: 1.25rem;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+@media all and (max-width: 800px) {
+	.internal-explorer {
+		min-height: auto;
+		overflow: visible;
+	}
+}

@@ -1,0 +1,94 @@
+---
+publish: true
+title: "@journal"
+created: 2026-11-17T22:27:31.744Z
+modified: 2026-11-20T00:03:17.188Z
+published: 2026-11-20T00:03:17.188Z
+icon: notebook
+---
+
+- \_archive
+  - 2026
+    - October
+      - plans
+        - [[@journal/_archive/2026/October/plans/better-schedule-plan|better-schedule-plan.md]]
+        - [[@journal/_archive/2026/October/plans/proxmox-backup-plan|proxmox-backup-plan.md]]
+      - [[@journal/_archive/2026/October/01|01.md]]
+      - [[@journal/_archive/2026/October/02|02.md]]
+      - [[@journal/_archive/2026/October/03|03.md]]
+      - [[@journal/_archive/2026/October/04|04.md]]
+      - [[@journal/_archive/2026/October/05|05.md]]
+      - [[@journal/_archive/2026/October/06|06.md]]
+      - [[@journal/_archive/2026/October/07|07.md]]
+      - [[@journal/_archive/2026/October/08|08.md]]
+      - [[@journal/_archive/2026/October/09|09.md]]
+      - [[@journal/_archive/2026/October/October 14th, 2026|October 14th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 15th, 2026|October 15th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 16th, 2026|October 16th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 17th, 2026|October 17th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 18th, 2026|October 18th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 19th, 2026|October 19th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 20th, 2026|October 20th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 21st, 2026|October 21st, 2026.md]]
+      - [[@journal/_archive/2026/October/October 22nd, 2026|October 22nd, 2026.md]]
+      - [[@journal/_archive/2026/October/October 23rd, 2026|October 23rd, 2026.md]]
+      - [[@journal/_archive/2026/October/October 24th, 2026|October 24th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 25th, 2026|October 25th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 26th, 2026|October 26th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 27th, 2026|October 27th, 2026.md]]
+      - [[@journal/_archive/2026/October/October 28th, 2026|October 28th, 2026.md]]
+    - September
+      - [[@journal/_archive/2026/September/2026-08-26|2026-08-26.md]]
+      - [[@journal/_archive/2026/September/2026-08-28|2026-08-28.md]]
+      - [[@journal/_archive/2026/September/2026-09-07|2026-09-07.md]]
+      - [[@journal/_archive/2026/September/2026-09-09|2026-09-09.md]]
+      - [[@journal/_archive/2026/September/2026-09-11|2026-09-11.md]]
+      - [[@journal/_archive/2026/September/2026-09-12|2026-09-12.md]]
+      - [[@journal/_archive/2026/September/2026-09-13|2026-09-13.md]]
+      - [[@journal/_archive/2026/September/2026-09-14|2026-09-14.md]]
+      - [[@journal/_archive/2026/September/2026-09-16|2026-09-16.md]]
+      - [[@journal/_archive/2026/September/2026-09-19|2026-09-19.md]]
+      - [[@journal/_archive/2026/September/2026-09-24|2026-09-24.md]]
+      - [[@journal/_archive/2026/September/2026-09-29|2026-09-29.md]]
+      - [[@journal/_archive/2026/September/2026-09-30|2026-09-30.md]]
+- \_capturing
+  - [[@journal/_capturing/archive|archive.md]]
+  - [[@journal/_capturing/ideas|ideas.md]]
+- 01 Daily
+  - 2026
+    - 10-October
+      - \_attachments
+        - [[@journal/01 Daily/2026/10-October/_attachments/Pasted image 20261030123326.png|Pasted image 20261030123326.png]]
+      - [[@journal/01 Daily/2026/10-October/October 29th Thu|October 29th Thu.md]]
+      - [[@journal/01 Daily/2026/10-October/October 30th Fri|October 30th Fri.md]]
+      - [[@journal/01 Daily/2026/10-October/October 31st Sat|October 31st Sat.md]]
+    - 11-November
+      - \_attachments
+        - [[@journal/01 Daily/2026/11-November/_attachments/image.avif|image.avif]]
+        - [[@journal/01 Daily/2026/11-November/_attachments/Nov-16th-Mon-20261116214732730000.avif|Nov-16th-Mon-20261116214732730000.avif]]
+      - [[@journal/01 Daily/2026/11-November/Nov-11th-Wed|Nov-11th-Wed.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-12th-Thu|Nov-12th-Thu.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-13th-Fri|Nov-13th-Fri.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-14th-Sat|Nov-14th-Sat.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-15th-Sun|Nov-15th-Sun.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-16th-Mon|Nov-16th-Mon.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-17th-Tue|Nov-17th-Tue.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-18th-Wed|Nov-18th-Wed.md]]
+      - [[@journal/01 Daily/2026/11-November/Nov-19th-Thu|Nov-19th-Thu.md]]
+      - [[@journal/01 Daily/2026/11-November/November 10th Tue|November 10th Tue.md]]
+      - [[@journal/01 Daily/2026/11-November/November 1st Sun|November 1st Sun.md]]
+      - [[@journal/01 Daily/2026/11-November/November 2nd Mon|November 2nd Mon.md]]
+      - [[@journal/01 Daily/2026/11-November/November 3rd Tue|November 3rd Tue.md]]
+      - [[@journal/01 Daily/2026/11-November/November 4th Wed|November 4th Wed.md]]
+      - [[@journal/01 Daily/2026/11-November/November 5th Thu|November 5th Thu.md]]
+      - [[@journal/01 Daily/2026/11-November/November 6th Fri|November 6th Fri.md]]
+      - [[@journal/01 Daily/2026/11-November/November 7th Sat|November 7th Sat.md]]
+      - [[@journal/01 Daily/2026/11-November/November 8th Sun|November 8th Sun.md]]
+      - [[@journal/01 Daily/2026/11-November/November 9th Mon|November 9th Mon.md]]
+- 02 Weekly
+  - 2026
+    - [[@journal/02 Weekly/2026/keep-folder|keep-folder.md]]
+- 03 Monthly
+  - [[@journal/03 Monthly/keep-folder 1|keep-folder 1.md]]
+- [[@journal/_@journal|_@journal.md]]
+- [[@journal/README|README.md]]

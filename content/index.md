@@ -1,39 +1,9 @@
 ---
-title: Welcome to Quartz
-id: "asdf-waef-wae"
+publish: true
+created: 2026-11-15T11:16:20.268Z
+modified: 2026-11-18T21:33:25.005Z
+published: 2026-11-18T21:33:25.005Z
+icon: house
 ---
 
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
-
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
-
-```typescript
-export declare global {
-	interface Document {
-		addEventListener<K extends keyof CustomEventMap>(
-			type: K,
-			listener: (this: Document, ev: CustomEventMap[K]) => void,
-		): void
-		removeEventListener<K extends keyof CustomEventMap>(
-			type: K,
-			listener: (this: Document, ev: CustomEventMap[K]) => void,
-		): void
-		dispatchEvent<K extends keyof CustomEventMap>(ev: CustomEventMap[K] | UIEvent): void
-	}
-	interface Window {
-		spaNavigate(url: URL, isBack: boolean = false)
-		addCleanup(fn: (...args: any[]) => void)
-	}
-}
-
-```
+static files - [[_static/_hidden|_hidden.md]]

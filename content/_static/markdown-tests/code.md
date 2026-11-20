@@ -1,7 +1,7 @@
 ---
 publish: true
 title: Code, Tables & Mermaid
-created: 2026-11-05T15:18:59.170Z
+created: 2026-11-15T11:16:26.697Z
 modified: 2026-11-05T15:19:15.104Z
 published: 2026-11-05T15:19:15.104Z
 id: md-tests-code

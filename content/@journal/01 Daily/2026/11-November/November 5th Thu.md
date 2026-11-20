@@ -1,8 +1,8 @@
 ---
 publish: true
-created: 2026-11-04T22:50:20.762Z
-modified: 2026-11-05T15:18:02.347Z
-published: 2026-11-05T15:18:02.347Z
+created: 2026-11-15T11:16:26.264Z
+modified: 2026-11-05T23:27:26.684Z
+published: 2026-11-05T23:27:26.684Z
 journal: Daily
 journal-date: 2026-11-05
 ---
@@ -12,41 +12,11 @@ journal-date: 2026-11-05
 
 ---
 
-```meta-bind-button
-label: Remove Night Checklist
-style: default
-icon: trash-2
-cssStyle: "height: 22px; min-height: 0; padding: 0 6px; font-size: 11px; line-height: 1; gap: 4px;"
-action:
-  type: js
-  file: _static/scripts/meta-bind/journal-remove-checklist.js
-```
-
-- ##### NIGHT CHECKLIST
-  - [ ] Check audio delay to webcam
-  - [ ] Check TickTick schedule (correct day, scheduled)
-  - [ ] Set time of next sleep for stager timer.
-  - Obsidian
-    - [ ] Write overview of the current day
-    - [ ] Create journal for the next day
-    - [ ] Move uncompleted tasks
-    - [ ] Make sure all day's reflections are linked under reflections
-    - [ ] Delete Dream Analysis block if empty
-    - [ ] Delete other blocks if empty (task/reflections)
-  - [ ] Night scene
-  - [ ] Check IP cam (quality, delay)
-    - [ ] Enable sleep blur
-  - [ ] monitor OFF (seems like keeping on makes him die faster)
-  - Cat
-    - [ ] Clean up cat's litter box
-    - [ ] Food + plate is in my room at the shelf
-  - [ ] Make sure there's tomorrow's food out of the freezer.
-
----
-
 ## OVERVIEW
 
-Remove. Goal of the overview is condense a day into a key points. Don't start with reflections/ideas/etc. Just condense.
+Day of no meaning. Work is done on either will power or inertia. I see no meaning in either my "website" idea or the main project. Doing tedious work for a guy from my old job was more meaningful.
+
+So yeah... day is ok. A bit too much indulgence. Gave in to 3-hour nap.
 
 ---
 
@@ -56,40 +26,6 @@ Remove. Goal of the overview is condense a day into a key points. Don't start wi
 > Time Spent in Bed - **High**
 >  
 > Approx. Compensation of Dreams - \*\*Inspiring towards full commitment? \*\*
-
----
-
-## TASKS
-
-- ### TODO
-  - [ ] &#x20;when you go sleep - create and leave big plan and your position in it. That's how you meaningfully will track higher scope. But be careful so your "cost" scope won't overfocus on this.
-    - Probably in excalidraw?
-  - [ ] Fix outliner plugin issues
-    - [ ] Css. Outline collapse indicators. Hide? Increase size of dots on hover.
-    - [ ] Remove movable points.
-  - [ ] Psychoanalysis would probably need separate folder. Not reflections though. Separate. Dream analysis included probably. To keep journals lean but with like easy links to go to these kind of things.
-    - Why? Feels bloated. And chances are, with proper practice, you would want to expand on dream analysis some days after initial attempt. Same with psychoanalysis "sessions". So they must be like separate things to research/review.
-      - Backlink to journal would be nice though, so you can see how session is integrated into the day (time log)
-  - [ ] Same hotkeys between two PC.
-    - Probably try to go native as much as you can, and then have some small ahk helper script for the rest
-  - [ ] Your budget is limited but sync is important. Maybe selfhost livesync?
-  - [ ] Mouse has 12 buttons. But actually customizable are like 3. Because 2 buttons for tv on/off to preserve organic diodes. And 3 for music control. 2 for back and forward. 1 for win menu. Not much left.
-    - And if I had a modifier. Either through shift(but check conflicts with ahk) or through mouse buttons. Like rmb (if it's possible), then on rmb you can place rarely used functions. And have more buttons for actively used ones
-  - [ ] **META** Figure out where to accumulate such secondary tasks and where you can prioritize them, because flat list is stupid and limiting.
-  - [ ] Ideally to go away from the minimal theme. It does add a lot of things that I don't use, and basically a deadweight. Like it's better to have 30 styles in CSS than like 2 plugins with 100 settings + a theme .
-  - [ ] flow to compress png into webp from screenshot, so it won't harm neither website nor size of the vault. But also figure out if deskflow can do it, because right now it's half-supported. (or don't do it through deskflow)
-    - priority because it adds another dimension to thinking + cognitive offload.
-  - [ ] Bring back screenshots of desktop. BUT ALSO add analysis routine. (not sure if it's good for the night, but you need to do it after you woke up? Or like after the first meal. So it influences the current day on top of extracting patterns/insights)
-  - [ ] 🔴[[plans/better-schedule-plan|better-schedule-plan]]
-- ### Completed
-  - [ ] copy\_from\_here
-  - \[ ]
-
----
-
-## REFLECTIONS
-
--
 
 ---
 
@@ -105,6 +41,19 @@ action:
   file: _static/scripts/meta-bind/journal-time-entry.js
 ```
 
+- ###### 01:16
+  - Done. Going to sleep?
+- ###### 00:29
+  - Weird that I can work on this tedious and boring as hell things. But on actually interesting problem solving I get discouraged. But I guess if I did this tedious work every day and not like once in a few weeks - it would be painful too?
+  - But still. It's tedious from the start
+- ###### 23:14
+  - Found out another feature from my project is done. Got anxiety-impulse reaction. Doesn't look good for me. Because it pulls the whole future into this. Scary stuff
+- ###### 22:37
+  - Have some boring work yesterday to help that guy from old job. Since today is fucked I'll just watch some shit and will do that work now, so hopefully yesterday will be more free.
+- ###### 17:51
+  - I just don't care... How I can do this shit if I just don't care? Like t all. It can burn .
+- ###### 17:30
+  - 15 more
 - ###### 17:15
   - Ok. Timer 15 minutes.
 - ###### 17:04

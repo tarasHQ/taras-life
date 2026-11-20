@@ -6,7 +6,7 @@ aliases:
   - site-design
 title: The design of this website
 description: Showing off and explaining this site's beauty.
-created: 2026-11-03T22:22:34.852Z
+created: 2026-11-06T08:25:32.656Z
 modified: 2026-11-04T15:34:57.870Z
 published: 2026-11-04T15:34:57.870Z
 tags:

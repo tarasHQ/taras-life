@@ -123,6 +123,8 @@ export type PluginSpecifier =
 export interface PluginLayoutDeclaration {
 	position: LayoutPosition
 	priority: number
+	/** Opt into the stationary controls region when positioned on the left. */
+	leftSidebarRegion?: "top"
 	display?: LayoutDisplay
 	condition?: string
 	group?: string

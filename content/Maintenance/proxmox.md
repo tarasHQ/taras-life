@@ -7,6 +7,7 @@
 
 ## Reinstall notes
 
+- https://community-scripts.org/ - might want to look at to make some installs easier.
 - Figure out proper networking rules. Don't use dhcp. use static IPs outside of the dhcp range.
 - check cron
   - `@reboot (sleep 60 && echo "conservative" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor)`— CPU frequency governor set to `conservative` at every boot (mini-PC fan/noise/heat choice)

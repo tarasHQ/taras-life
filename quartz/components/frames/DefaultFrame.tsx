@@ -12,12 +12,27 @@ const Header = HeaderConstructor()
 export const DefaultFrame: PageFrame = {
 	name: "default",
 	render({ componentData, header, beforeBody, pageBody: Content, afterBody, left, right, footer }: PageFrameProps) {
+		const top = left.filter((component) => component.leftSidebarRegion === "top")
+		const panel = left.filter((component) => !component.leftSidebarRegion)
+		const controls = left.filter((component) => component.leftSidebarRegion === "panel-controls")
 		return (
 			<>
 				<div class="left sidebar">
-					{left.map((BodyComponent) => (
-						<BodyComponent {...componentData} />
-					))}
+					{top.length > 0 && (
+						<div class="left-sidebar-top">
+							{top.map((Component) => (
+								<Component {...componentData} />
+							))}
+						</div>
+					)}
+					{panel.length > 0 && (
+						<div class="left-sidebar-panel">
+							{panel.map((Component) => (
+								<Component {...componentData} />
+							))}
+						</div>
+					)}
+					{panel.length > 0 && controls.map((Component) => <Component {...componentData} />)}
 				</div>
 				<div class="center">
 					<div class="page-header">

@@ -1,8 +1,8 @@
 ---
 publish: true
-created: 2026-11-03T22:35:01.094Z
-modified: 2026-11-04T22:28:23.800Z
-published: 2026-11-04T22:28:23.800Z
+created: 2026-11-15T11:16:26.263Z
+modified: 2026-11-04T22:59:32.348Z
+published: 2026-11-04T22:59:32.348Z
 journal: Daily
 journal-date: 2026-11-04
 ---
@@ -23,30 +23,34 @@ action:
 ```
 
 - ##### NIGHT CHECKLIST
-  - [ ] Check audio delay to webcam
-  - [ ] Check TickTick schedule (correct day, scheduled)
-  - [ ] Set time of next sleep for stager timer.
+  - [x] Check audio delay to webcam
+  - [x] Check TickTick schedule (correct day, scheduled)
+  - [x] Set time of next sleep for stager timer.
   - Obsidian
     - [ ] Write overview of the current day
-    - [ ] Create journal for the next day
-    - [ ] Move uncompleted tasks
-    - [ ] Make sure all day's reflections are linked under reflections
-    - [ ] Delete Dream Analysis block if empty
-    - [ ] Delete other blocks if empty (task/reflections)
-  - [ ] Night scene
-  - [ ] Check IP cam (quality, delay)
-    - [ ] Enable sleep blur
+    - [x] Create journal for the next day
+    - [x] Move uncompleted tasks
+    - [x] Make sure all day's reflections are linked under reflections
+    - [x] Delete Dream Analysis block if empty
+    - [x] Delete other blocks if empty (task/reflections)
+  - [x] Night scene
+  - [x] Check IP cam (quality, delay)
+    - [x] Enable sleep blur
   - [ ] monitor OFF (seems like keeping on makes him die faster)
   - Cat
     - [ ] Clean up cat's litter box
     - [ ] Food + plate is in my room at the shelf
-  - [ ] Make sure there's tomorrow's food out of the freezer.
+  - [x] Make sure there's tomorrow's food out of the freezer.
 
 ---
 
 ## OVERVIEW
 
-Remove. Goal of the overview is condense a day into a key points. Don't start with reflections/ideas/etc. Just condense.
+Ok day. Too much youtube in the evening, but I guess it makes sense, I'm lacking hope. I can't even have blind faith that it'll work out. There's a mountain of proof that what I'm doing is hopeless. And that made me think about dark thoughts of reducing my life span. But that's how day is going. And a day before this. And a day before that one.
+
+I have this talent to work for 12+ hours per day, but have efficiency of 3 hour work session... Extremely discouraging and hopeless.
+
+The main issue is offing is on the table, in my dictionary and I'm getting more and more used to thoughts and visions where I'm, well... But I just don't see other way. I don't have reasons to live that would sustain me. I just don't have to research or order things for my method. Because in moments like this one - I see how much closer this ultimate action is than I think. In a month I may order stuff "just to be there", and on the next one - a bad day again, and maybe I would want to use that stuff and find my peace in the absolute relief from all this pain and pressure.
 
 ---
 
@@ -56,41 +60,6 @@ Remove. Goal of the overview is condense a day into a key points. Don't start wi
 > Time Spent in Bed - **Low**
 >  
 > Approx. Compensation of Dreams - **A bit inspirational**
-
----
-
-## TASKS
-
-- ## Test
-- ### TODO
-  - [ ] &#x20;when you go sleep - create and leave big plan and your position in it. That's how you meaningfully will track higher scope. But be careful so your "cost" scope won't overfocus on this.
-    - Probably in excalidraw?
-  - [ ] Fix outliner plugin issues
-    - [ ] Css. Outline collapse indicators. Hide? Increase size of dots on hover.
-    - [ ] Remove movable points.
-  - [ ] Psychoanalysis would probably need separate folder. Not reflections though. Separate. Dream analysis included probably. To keep journals lean but with like easy links to go to these kind of things.
-    - Why? Feels bloated. And chances are, with proper practice, you would want to expand on dream analysis some days after initial attempt. Same with psychoanalysis "sessions". So they must be like separate things to research/review.
-      - Backlink to journal would be nice though, so you can see how session is integrated into the day (time log)
-  - [ ] Same hotkeys between two PC.
-    - Probably try to go native as much as you can, and then have some small ahk helper script for the rest
-  - [ ] Your budget is limited but sync is important. Maybe selfhost livesync?
-  - [ ] Mouse has 12 buttons. But actually customizable are like 3. Because 2 buttons for tv on/off to preserve organic diodes. And 3 for music control. 2 for back and forward. 1 for win menu. Not much left.
-    - And if I had a modifier. Either through shift(but check conflicts with ahk) or through mouse buttons. Like rmb (if it's possible), then on rmb you can place rarely used functions. And have more buttons for actively used ones
-  - [ ] **META** Figure out where to accumulate such secondary tasks and where you can prioritize them, because flat list is stupid and limiting.
-  - [ ] Ideally to go away from the minimal theme. It does add a lot of things that I don't use, and basically a deadweight. Like it's better to have 30 styles in CSS than like 2 plugins with 100 settings + a theme .
-  - [ ] flow to compress png into webp from screenshot, so it won't harm neither website nor size of the vault. But also figure out if deskflow can do it, because right now it's half-supported. (or don't do it through deskflow)
-    - priority because it adds another dimension to thinking + cognitive offload.
-  - [ ] Bring back screenshots of desktop. BUT ALSO add analysis routine. (not sure if it's good for the night, but you need to do it after you woke up? Or like after the first meal. So it influences the current day on top of extracting patterns/insights)
-  - [ ] 🔴[[plans/better-schedule-plan|better-schedule-plan]]
-- ### Completed
-  - [ ] copy\_from\_here
-  - \[ ]
-
----
-
-## REFLECTIONS
-
--
 
 ---
 
@@ -106,6 +75,9 @@ action:
   file: _static/scripts/meta-bind/journal-time-entry.js
 ```
 
+- ###### 00:45
+  - Like sometimes I get too sad and suicidal thoughts visit from that energy source. In this case - it's primarily a cold calculation. There's facts. There's experience. You can't get a 1000 from 2+2 equation.
+  - Without job/education/future in pure isolation - it leads me with the only ultimate path when living will get too harsh. And it will.
 - ###### 00:26
   - I just have to look straight in eyes of the dragon. I spent weeks with little to no progress. What do I expect? Like where this will bring me? Spend a year to have a project in the state of claude code at the end of 2025?
 - ###### 00:12

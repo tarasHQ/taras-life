@@ -630,15 +630,27 @@ export async function loadQuartzLayout(layoutOverrides?: {
 	// it beside the search input in the same flex row. The placement is passed to
 	// every buildLayoutForEntries call — page-type overrides rebuild `left` from
 	// scratch, so the default layout's copy would not survive them.
-	const ThemeToggleModule = await import("../../components/ThemeToggle")
+	const [ThemeToggleModule, ExplorerModule, ControlsModule] = await Promise.all([
+		import("../../components/ThemeToggle"),
+		import("../../components/Explorer"),
+		import("../../components/LeftSidebarControls"),
+	])
 	const themeToggle = ThemeToggleModule.default()
+	const explorer = ExplorerModule.default()
+	const controls = ControlsModule.default()
+	themeToggle.displayName = "ThemeToggle"
+	explorer.displayName = "Explorer"
+	controls.displayName = "LeftSidebarControls"
 	const coreComponents: CoreComponentPlacement[] = [
 		{
 			component: themeToggle,
 			position: "left",
 			priority: 30,
 			group: "toolbar",
+			leftSidebarRegion: "top",
 		},
+		{ component: explorer, position: "left", priority: 50 },
+		{ component: controls, position: "left", priority: 60, leftSidebarRegion: "panel-controls" },
 	]
 
 	// Build default layout for all page types
@@ -721,6 +733,7 @@ export type CoreComponentPlacement = {
 	position: keyof Pick<FullPageLayout, "header" | "left" | "right" | "beforeBody" | "afterBody" | "footer">
 	priority: number
 	group?: string
+	leftSidebarRegion?: QuartzComponent["leftSidebarRegion"]
 }
 
 /** @internal Exported for testing only. */
@@ -752,7 +765,10 @@ export function buildLayoutForEntries(
 		const posArray = positions[placement.position]
 		if (posArray) {
 			posArray.push({
-				component: placement.component,
+				component:
+					placement.position === "left"
+						? annotateSidebarRegion(placement.component, placement.leftSidebarRegion)
+						: placement.component,
 				priority: placement.priority,
 				group: placement.group,
 			})
@@ -812,6 +828,7 @@ export function buildLayoutForEntries(
 
 		const posArray = positions[layout.position]
 		if (posArray) {
+			if (layout.position === "left") component = annotateSidebarRegion(component, layout.leftSidebarRegion)
 			posArray.push({
 				component,
 				priority: layout.priority,
@@ -865,7 +882,7 @@ export function buildLayoutForEntries(
 	for (const [position, items] of Object.entries(positions)) {
 		items.sort((a, b) => a.priority - b.priority)
 
-		const resolved = resolveGroups(items, layoutConfig.groups ?? {})
+		const resolved = resolveGroups(items, layoutConfig.groups ?? {}, position === "left")
 		const key = position as keyof Pick<
 			FullPageLayout,
 			"header" | "left" | "right" | "beforeBody" | "afterBody" | "footer"
@@ -885,6 +902,7 @@ export function resolveGroups(
 		groupOptions?: PluginLayoutDeclaration["groupOptions"]
 	}[],
 	groups: Record<string, FlexGroupConfig>,
+	isLeft = false,
 ): QuartzComponent[] {
 	// Collect grouped components and track the effective priority for each group.
 	// Effective priority = explicit group config priority ?? first member's priority.
@@ -927,6 +945,10 @@ export function resolveGroups(
 			const members = groupedComponents.get(item.group)
 			if (!members) continue
 			const groupConfig = groups[item.group] ?? {}
+			const region = members[0].component.leftSidebarRegion
+			if (isLeft && members.some((member) => member.component.leftSidebarRegion !== region)) {
+				throw new Error(`Left sidebar group "${item.group}" mixes sidebar regions`)
+			}
 
 			const flexComponents = members.map((m) => ({
 				Component: m.component,
@@ -945,7 +967,10 @@ export function resolveGroups(
 				gap: groupConfig.gap ?? "1rem",
 			}) as QuartzComponent
 
-			entries.push({ priority: groupPriority.get(item.group) ?? 50, component: flexComponent })
+			entries.push({
+				priority: groupPriority.get(item.group) ?? 50,
+				component: isLeft ? annotateSidebarRegion(flexComponent, region) : flexComponent,
+			})
 		} else {
 			entries.push({ priority: item.priority, component: item.component })
 		}
@@ -955,6 +980,33 @@ export function resolveGroups(
 	entries.sort((a, b) => a.priority - b.priority)
 
 	return entries.map((e) => e.component)
+}
+
+/**
+ * Valid left-sidebar regions. Runtime-checked because the YAML config is not
+ * schema-validated at load time — an unknown value would otherwise slip through
+ * to DefaultFrame's region filters and silently render nowhere.
+ */
+const SIDEBAR_REGIONS = new Set(["top", "panel-controls"])
+
+function annotateSidebarRegion(
+	component: QuartzComponent,
+	region: QuartzComponent["leftSidebarRegion"],
+): QuartzComponent {
+	if (!region) return component
+	if (!SIDEBAR_REGIONS.has(region)) {
+		throw new Error(
+			`Invalid leftSidebarRegion "${String(region)}" on component "${component.displayName ?? "unnamed"}": ` +
+				`expected "top", the internal "panel-controls", or omission for panel content`,
+		)
+	}
+	const annotated: QuartzComponent = (props) => component(props)
+	annotated.displayName = component.displayName
+	annotated.leftSidebarRegion = region
+	annotated.css = component.css
+	annotated.beforeDOMLoaded = component.beforeDOMLoaded
+	annotated.afterDOMLoaded = component.afterDOMLoaded
+	return annotated
 }
 
 function applyDisplayWrapper(component: QuartzComponent, display: "mobile-only" | "desktop-only"): QuartzComponent {

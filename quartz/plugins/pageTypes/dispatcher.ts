@@ -84,6 +84,8 @@ async function emitPage(
 	// During local dev (--serve), the dev server strips baseDir itself and
 	// serves files from root, so the 404 page must use "/" to avoid requesting
 	// assets under a path prefix that the dev server doesn't serve.
+	// Components that build links on the 404 page (currently Explorer) mirror
+	// this rule — if it changes, both copies must change together.
 	const baseDir =
 		slug === "404"
 			? ((ctx.argv.serve ? "/" : new URL(`https://${cfg.baseUrl ?? "example.com"}`).pathname) as FullSlug)

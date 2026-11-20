@@ -48,6 +48,15 @@ describe("resolveLayout", () => {
 		assert.deepStrictEqual(result.footer, [])
 	})
 
+	test("byPageType override clears the left sidebar with []", () => {
+		const result = resolveLayout(
+			makePageType(),
+			{ head: StubHead, left: [StubA, StubB] },
+			{ content: { left: [] } },
+		)
+		assert.deepStrictEqual(result.left, [])
+	})
+
 	test("byPageType override clears header with []", () => {
 		const result = resolveLayout(makePageType(), { head: StubHead, header: [StubA] }, { content: { header: [] } })
 		assert.deepStrictEqual(result.header, [])

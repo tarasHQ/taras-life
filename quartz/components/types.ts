@@ -20,6 +20,8 @@ export type QuartzComponentProps = {
 
 export type QuartzComponent = ((props: QuartzComponentProps) => any) & {
 	displayName?: string
+	/** Classification for components placed in the default frame's left sidebar. */
+	leftSidebarRegion?: "top" | "panel-controls"
 	css?: StringResource
 	beforeDOMLoaded?: StringResource
 	afterDOMLoaded?: StringResource

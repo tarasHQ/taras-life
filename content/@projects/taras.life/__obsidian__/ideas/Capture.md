@@ -1,8 +1,18 @@
-## Meta-reflection about the format
+# META
 
-- Don't use strict order of headers. one-level features get h6, while 3 level features get h3. (+you have additional level of depth through **bold text headings**)
+## NOT TO DO
 
-## Inspiration
+- ###### ⛔Long Lists (Flat or Not) in Explorer&#x20;
+  - Explorer should contain only top-level things, because it's not suited to have like more than 50 entries.
+- ###### ⛔Long loading of pages&#x20;
+  - A lot of navigation is involved in these kind of websites. So pages should be light.
+  - Images probably should be loaded async + animation.
+- ###### ⛔Lots of 404s or "not implemented" pages&#x20;
+  - When I visiting such vault, it feels like the author doesn't care about my user experience of his website.
+- ###### ⛔Buggy on different scales/layouts&#x20;
+  - Some pages had table "getting out" from layout, other have awful reading experience on phones. Don't allow this on your website. Control and test.
+
+## INSPIRATION
 
 ![[@projects/taras.life/__obsidian__/ideas/_attachments/Pasted image 20261029220112.png|215]]![[@projects/taras.life/__obsidian__/ideas/_attachments/Pasted image 20261029220348.png|336]]
 
@@ -16,300 +26,93 @@
   - https://davidhurtado.ai/Home
   - [https://garden.sgenov.dev/](https://garden.sgenov.dev/How-Does-This-Blog-Work)
   - https://notes.dsebastien.net/50+Resources/55+Obsidian+Publish/README
+  - New ones
+    - [http://taurusxin.com/minecraft-mods/](https://www.taurusxin.com/artalk-comment/)
+    - https://blog.sobigrice.com/
 
-## To NOT Do
-
-- ###### ⛔Long Lists (Flat or Not) in Explorer
-  - Explorer should contain only top-level things, because it's not suited to have like more than 50 entries.
-- ###### ⛔Long loading of pages
-  - A lot of navigation is involved in these kind of websites. So pages should be light.
-  - Images probably should be loaded async + animation.
-- ###### ⛔Lots of 404s or "not implemented" pages
-  - When I visiting such vault, it feels like the author doesn't care about my user experience of his website.
-- ###### ⛔Buggy on different scales/layouts
-  - Some pages had table "getting out" from layout, other have awful reading experience on phones. Don't allow this on your website. Control and test.
-
-## General / Meta
+## TIPS
 
 - **Look at the website through the eyes of first-time visitor**
 - **Make home page attractable (to be used in "digital gardens" collections)**
+
+---
+
+---
+
+# UNPROCESSED
+
+- ## UX
+  - ###### \[NOT SURE] Sticky headings&#x20;
+    - VSCode like. It's nice to see structure on top of the page with heading/-s current content is below.
+    - But for longer pages it may be confusing. Or harder to implement. So not sure.
+    - For phones though?
+    - Like it's easy to prototype but hard to do it properly.
+  - ###### \[NOT SURE] Following Table of Contents&#x20;
+    - Experimental. May be distracting.
+    - Logic is that it's following Y coordinate of the cursor. To be like "near the mouse" to increase usability of it.
+  - ###### \[NOT SURE] Hide page load under fading animation&#x20;
+    - It may make website experience more smoother. But I have the feeling that it'll be hard to do properly.
+      - Why? - if webpage loads instantly, animation will actually make navigation slower. But if page loads slowly, then what? you slowly fade out into nothingness, wait anyway, and then fade in after page loaded?
+      - So it's kinda not clear whether it'll make subjective smoothness of navigation better or worse.
+    - I got this idea from some astro blogs, IIRC. There it was nice. Maybe I can find those and see how it's done in details?
+
+- ## Pages & Contents
+  - ##### Changelog&#x20;
+    - Paged (10-20 entries?) list of git commits to website?
+  - ##### Charts&#x20;
+    - Types
+      - Weight loss
+      - Subjective life progress
+        - to remember that setbacks happen on upward tendency
+        - to force into mindset "compare with yourself yesterday"
+    * Logic
+      - PIA. At best you have to make some transformer plugin that manually finds daily journals and parses it into SVG chart.
+      - Or you can use some lightweight charting library for minimal interactivity?
+  - ##### Created/Last updated/Commit&#x20;
+    - **Description**&#x20;
+      - show created/last updated times to know how how old note and whether it's outdated
+      - I would argue that it's worth to do at the obsidian stage. updated though would be a bit harder...
+    - **Opposition**&#x20;
+      - Drop both maybe? Or keep only last updated. That's what matters to make old notes more alive.
+    - ###### Git Sync&#x20;
+      - There was few websites with this. It was nice, where you can like see commit history on the note. The issue only is with the positioning. Like if you would need to restructure vault - then it may be PIA to preserve commits on the note. But maybe not. Just be aware of it.
+
+- ## Plugins
+  - ### Obsidian-quartz PRs&#x20;
+    - feat(compiler): publish assets linked from social image frontmatter properties
+      - https://github.com/saberzero1/quartz-syncer/pull/150
+    - feat: exclude private vault folders from publishing
+      - https://github.com/saberzero1/quartz-syncer/pull/147
+    - feat: add optional Obsidian comment preservation
+      - https://github.com/saberzero1/quartz-syncer/pull/153
+  - ### Quartz Plugins&#x20;
+    - https://github.com/tomoyanonymous/quartz-line-age - per-line git authoring. Can use it for example to have something much more minimalistic.
+      - ![[@projects/taras.life/__obsidian__/ideas/_attachments/image.webp|310]]
+
+---
+
+---
+
+# ARCHIVED
+
+- ## LLMs
+  - ###### LLMS.txt
+  - ###### Ability to serve raw .md webpages
 -
 
 ---
 
-## Comments
-
-- ###### Match website style
-- ###### Anon Login&#x20;
-  - To make it NOT less secure - you would have to read docs and do some additional work around this.
-  - But it's definitely worth it if those comments is what will give you fuel and meaning to go on.
-- ##### Notifications
-  - ###### Telegram channel&#x20;
-    - Comment comes in - bot writes it there. You notified. If people want to like follow social activity on the website (if there will be any), then they can subscribe to that telegram channel as well.
-  - ###### TG Bot&#x20;
-    - For channel AND user notifications (if latter is possible)
-  - ###### Email&#x20;
-    - That's a bit more complex. Having email subscription for replies could be huge. Much more easier to use than telegram. Statistically.
-    - But there's a lot of issues about WHO sends those emails, how to not get flagged as spam, how to store those securely, so even admins can't read them through website or something.
-- ###### Oauth&#x20;
-  - Add all other ones. Including Yandex (should work theoretically).
-- Read plugin's readme for more. (with some overlap)
-
 ---
 
-## Other
+# DISCARDED
 
-- ###### ~~`README.md`&#x20;
-  - What should be there? That's the question. You placed life-thing/reasoning on this.
-  - But what if it should send on SSOT page on website. And readme itself should contain technical github-related notes?
-  - For quartz - how to install and run.
-    - And how to set it up.
-  - For obsidian - the same probably, but it's just kinda plug-n-play though.
-
----
-
-## DEV
-
-- ###### Private config properties&#x20;
-  - Make your remark42 config url private. It's not a secret to see the address, and it's protected(rejected) but to just not confuse people? Though it may be PIA. Cuz you theoretically need to configure variables in github AND cloudflare. So it's like 2-3 sources of truth. On another hand, do you need those locally, since localhost origin banned as well, and also on github, since you just build to test/check that it builds.
-    - it's just unclear. If I will build locally and worker will only run it - then it's easier, I guess? I don't know.
-- ###### FetchPriority&#x20;
-  - Minor tweak on core stylesheets to have priority in download queue.
-
-## Refactor
-
-- ###### ~~SCSS - Remove it&#x20;
-  - I didn't really understood any good reason to use it
-- ###### ~~Theming Logic&#x20;
-  - Discuss its use, because it seems to me it's just redundant code since I'm not like want to use themes neither now nor later
-- ###### Remove CLI entirely&#x20;
-  - `bootstrap-cli.mjs` + `quartz/cli/*` → thin `scripts/build.mjs` (esbuild transpile + run `build.ts`)
-  - Kills: `create`/`upgrade`/`restore`/`sync`/`plugin *` commands, `cli/templates/*.yaml`, `plugin-git-handlers.js`, `plugin-data.js`
-  - Kills deps: `yargs`, `@clack/prompts`, `serve-handler`, `ws`, `ansi-truncate`, maybe `isomorphic-git`/`@napi-rs/simple-git` (check git-date source first)
-  - OPEN: keep `--serve` (port ~100 lines to `scripts/serve.mjs`) or drop preview entirely?
-- ###### Remove 30 unused i18n locales&#x20;
-  - Keep `en-US` + `definition.ts` only; external plugins don't import `quartz/i18n` (verified)
-- ###### Remove verified-dead code files&#x20;
-  - `quartz/util/emoji.ts` (og-image bundles its own emoji util)
-  - `quartz/components/PageList.tsx` (no importer; recent-notes has its own)
-  - `quartz/components/frames/FullWidthFrame.tsx` (only `minimal` + `default` used)
-- ###### Remove `emojimap.json` (15 MB)&#x20;
-  - ⚠️ `og-image` bundled code reads it by filesystem path — move file, build, verify OG images before deleting
-- ###### Optional: drop workerpool&#x20;
-  - `workerpool` + `bootstrap-worker.mjs` + worker transpile = parallelism overhead for a tiny content folder; parse inline instead
-- ###### Optional: drop `--watch`/serve deps&#x20;
-  - `chokidar` used by both CLI watch and `build.ts` incremental watcher — only removable if watch mode is abandoned too
-- ###### Remove unused/redundant styles&#x20;
-  - After SCSS→CSS migration: audit base/callouts/popover for styles of removed plugins (e.g. things tied to dropped features)
-- ###### ~~Google Fonts code removal&#x20;
-  - Font-loading logic in `componentResources.ts` (theme typography → generated CSS path) dies together with theming generation
-  - `fontOrigin: local`, `cdnCaching: false` config keys become meaningless — prune
-  - Keep `quartz/static/fonts/` woff2 files (self-hosted is correct); optionally prune Source Sans Pro if no Cyrillic content
-- ###### Theming generation removal&#x20;
-  - `cfg.colors` → generated theme CSS in `componentResources.ts` → Sass maps in `variables.scss`: break the chain
-  - Hardcode palette as CSS custom properties; keep dark/light toggle from `@quartz-community/darkmode` working
-  - Prune `theme:` block from `quartz.config.yaml`
-  - ⚠️ Only _design decision_ in the phase (rest is mechanical) — touches vendored emitter
-  - UPD. Half done. plugin still there (maybe there's some other stuff left)
-- ###### ~~Remove dead second sassPlugin instance&#x20;
-  - `filter: /\.inline\.scss$/` instance has no consumer even today
-  - Whole `esbuild-sass-plugin` dep goes with SCSS→CSS migration anyway
-  - ⚠️ Order: styles pass BEFORE CLI removal, so the lean esbuild config is what gets ported into `build.mjs`
-
----
-
-## UX
-
-- ###### \[NOT SURE] Sticky headings&#x20;
-  - VSCode like. It's nice to see structure on top of the page with heading/-s current content is below.
-  - But for longer pages it may be confusing. Or harder to implement. So not sure.
-  - For phones though?
-  - Like it's easy to prototype but hard to do it properly.
-- ###### \[DISCARDED] Breadcrumbs&#x20;
+- ###### Breadcrumbs&#x20;
   - on top of notes, but the issue is that it may get broken without index folders. So navigation would be either through explorer or the page itself?
 - ##### Buttons
-  - ###### Up/Down Floating Block&#x20;
-    - On bottom right. Scrolls up/down. Especially useful if you'll have that planned navigation on top of the page.
-  - ###### Download .md or .pdf + copy .md + get link to page&#x20;
-    - Why not? Compact. If I want to debug something - easy. Download a page to put into LLM - good too. So yeah. Wouldn't hurt for sure.
-    - Location. Either top near title, or bottom. Check examples, see what fits it more.
-  - ###### \[DISCARDED] Dim Website&#x20;
-    - Themes probably will be useless work. But to be able to dim website even further, for like reading before sleep - may be interesting. But is it. It's kinda intended on phones. Don't see much sense in it honestly.
-    - The issue is that it may involve theming logic, which will bloat code/styling. And there's little of cases where it's useful and can't be fixed by changing brightness. Maybe later worth to revisit.
   - ###### \[DISCARDED] Page on Github Link&#x20;
     - Few reasons. One is that link must be to obsidian vault, not website. Which makes it much more complex (theoretically)
     - Another reason is that I'm not sure how to feel about theoretical PRs by others? Like it's not a collaborative project. I mean markdown notes. Website code may be used as template, but for notes... doesn't make sense.
-- ###### Following Table of Contents&#x20;
-  - Experimental. May be distracting.
-  - Logic is that it's following Y coordinate of the cursor. To be like "near the mouse" to increase usability of it.
-- ##### Collapsible list and headings
-  - ###### `%% fold %%` Parsing&#x20;
-    - to preserve collapsed states and also to NOT have those markers
-  - ###### Folding logic&#x20;
-    - create one. there's none. Since the plugin you will use foldings a lot, which means without them - there will be huge walls of text on website. Which is suboptimal, obviously.
-- ###### \[NOT SURE] Hide page load under fading animation&#x20;
-  - It may make website experience more smoother. But I have the feeling that it'll be hard to do properly.
-    - Why? - if webpage loads instantly, animation will actually make navigation slower. But if page loads slowly, then what? you slowly fade out into nothingness, wait anyway, and then fade in after page loaded?
-    - So it's kinda not clear whether it'll make subjective smoothness of navigation better or worse.
-  - I got this idea from some astro blogs, IIRC. There it was nice. Maybe I can find those and see how it's done in details?
 
 ---
 
-## Pages & Contents&#x20;
-
-- ### Doing Now
-  - Why?
-    - To connect the website with living human being. You read all those other website and they felt like footprint of dead people. While this "doing now" logic will allow to kinda unconsciously give the website more meaning.
-  - ##### Spotify
-    - Sync Options
-      - `last.fm`
-      - `nowplaying.site`
-  - ##### TickTick Schedule
-    - ###### Cron on worker
-      - fetches once per 5 minutes, stores at `KV`(or right away to baking), does baked-in snippet as asset, so it can be read without limits?
-    - ###### Scheduling database? (LONG TERM)
-      - you had an idea to show on the side view ticktick schedule, during viewing journal entries.
-      - what if worker uses r2 or something, and saves each viewed day? so not only you can view "doing now", but also have cached data for all journaling entries?
-  - ##### 1-minute WebP/Gif Snippets
-    - Logic
-      - Use comments infrastructure.
-      - Python script that fetches last recording and with ffmpeg extracts like 1/10 keyframes. Then either single webp OR gif, to have the picture like moving a bit.
-      - Cached with ttl 1-2 minutes.
-      - Worker fetches. OR you do that through website, but not good though, unnecessary traffic. While worker will allow to centralize asset requests.
-- ##### Changelog
-  - Paged (10-20 entries?) list of git commits to website?
-- ##### Charts
-  - Types
-    - Weight loss
-    - Subjective life progress
-      - to remember that setbacks happen on upward tendency
-      - to force into mindset "compare with yourself yesterday"
-  * Logic
-    - PIA. At best you have to make some transformer plugin that manually finds daily journals and parses it into SVG chart.
-    - Or you can use some lightweight charting library for minimal interactivity?
-- ###### Decisions
-  - List of decisions and rationale
-  - For you to remember.
-  - Examples
-    - Why excalidraw over obsidian?
-    - Why this structure of other ones?
-    - Maybe it's worth to have it in system? So it's in one place?
-    - For readers to understand.
-- ##### Explorer
-  - ###### Limit depth of the explorer?
-    - Issue
-      - You will have pages with lots files. It's super inconvenient to explore them through "explorer". It's narrow and free space is limited.
-    - Solution?
-      - \#1 - 1-2 levels of depth + index pages.
-        - con is that index page would be a single page under that folder, so if you don't have 2 levels of depth - then it doesn't make sense to have 1 level.
-      - \#2 - use folder-pages
-        - makes sense with 1 level depth, looses sense with 2 and more levels.
-    - Discussion
-      - It's basically about how much you want to use indexes idea.
-      - Like if - a lot, then explorer could be supplemental, and then it's easier.
-      - if not much - then explorer is main navigation tool, and it's a bit complex.
-  - ###### Exclude folders & Files
-    - `@journals`
-      - Too much files and folders. No sense in having explorer navigation. At all.
-    - `@projects`
-      - Same reasoning?
-    - `README.md` - for github.
-- #### Index Pages
-  - Issues
-    - Explorer, navigation, ux.
-  - Solution
-    - Example. System index page. Has cards linking to each sub-system folder. you don't have to list collapse/unfold explorer. Everything is on the page to explore and explorer is basically like top-level navigation.
-      - I like this. Very much. Low friction. And fits into my need for reducing cognitive complexity of structures I use.
-- ##### Created/Last updated
-  - Description
-    - show created/last updated times to know how how old note and whether it's outdated
-    - I would argue that it's worth to do at the obsidian stage. updated though would be a bit harder...
-  - Opposition
-    - Drop both maybe? Or keep only last updated. That's what matters to make old notes more alive.
-  - ###### Git Sync
-    - There was few websites with this. It was nice, where you can like see commit history on the note. The issue only is with the positioning. Like if you would need to restructure vault - then it may be PIA to preserve commits on the note. But maybe not. Just be aware of it.
-- ###### Mermaid Diagrams
-  - I plan on using them. Later.
-  - `pele` package was recommended on one website (with ref link though).
-    - You need fast and lightweight one.
-    - You need to be able to zoom and pan
-  - OR you can consider SVG approach on build time. And cover under image viewer feature.
-
 ---
-
-## Styles
-
-- ##### Background
-  - ###### Gradient&#x20;
-    - dark at the bottom. lighter at the top.
-    - minimal changes but without banding though.
-  - ###### Grain&#x20;
-    - just curious, in visions it looks nice
-  - ###### Color&#x20;
-    - brown-ish, golden-ish, dark.
-- ###### Icons & Colors for Files & Folders&#x20;
-  - Kinda duplicate obsidian idea. The thing is - it allows to have a bit more complex structure without requiring additional cognitive processing of that structure. Like it's easier to abstract it out.
-- ###### Colorful Headings&#x20;
-  - Use colors from obsidian + extract those from "minimal's config" to separate css snippet
-  - https://turntrout.com/design#color-scheme
-- ###### Links&#x20;
-  - Underline. Never highlight whole link.
-- ###### Content Width&#x20;
-  - there was this rule... some amount of characters per line. Copy from obsidian theme.
-
----
-
-## LLMs
-
-- ###### LLMS.txt
-- ###### Ability to serve raw .md webpages
-
----
-
-## Optimization
-
-- ##### Caching
-  - ###### Cache static images&#x20;
-    - Like OG or favicon?
-    - I'm not sure about ALL images, but I can do 8bits of hash suffix to their name. They're unlikely to change too, especially with the same name. It's just if I overuse it - it may be hundreds of megabytes of cached data. On another hand, I don't really overuse images, and on top of webp compression - 100 images would take like 10 megabytes of cache, which is negligible.
-
-- #### Images
-  - ##### Favicon/OpenGraph/Logo
-    - ###### Favicon&#x20;
-      - Website-style colored \[T] icon? as first letter in url?
-    - ###### OpenGraph&#x20;
-      - No idea whatsoever.
-    - ###### Logo&#x20;
-      - Also not sure. Do website first, and then fit logo under styling
-      - You can use that Dore's painting + LLM to have some variations?
-  - ##### Image Viewer&#x20;
-    - Scroll to zoom in/out into mouse position on the image.
-  - ###### Convert to ~~webp~~ Avif&#x20;
-    - During build time
-      - What you see in obsidian is not what you get in website
-      - But this requires different building processes, to avoid conversion in worker/github.
-    - Obsidian workflow hygiene (RECOMMENDED)
-      - You establish low-friction workflows to insert processed images in obsidian, so building stays cheap. (100 images on high quality webp (lossless) can take minutes)
-      - You have apps like `squoosh.app` or others. Or you can write quick app in python/ahk based on clipboard buffer. You make a screenshot. Press hotkey. And get notification that clipboard was updated and you have optimized webp image in there.
-        - Another hotkey would do the same but with GUI sliders/preview.
-    - UPD.
-      - Tested things with `sqoosh.app`, avif is faster and better. Plain and simple. It has the same/better quality than webp in lossless at max effort and 100% loss of quality (to reduce size to comparable with avif)
-      - on text/simple images they're kinda similar, but on complex images avif just so much better that it's not even on the same level with webp.
-  - ##### Async loading
-    - ###### Loading&#x20;
-      - Notes
-        - Issue isn't as much about the size (until it's extreme, which it won't be), but about the response delays. Like current page with only 4 images for inspiration would probably be 200-300kb optimized. Which takes some time for cloudflare. I don't know how it works, but in my tests there's is significant difference.
-        - So I guess it's the way. Load text + baked in blur at first, and then separate request will update async images after.
-      - Logic
-        - transformer adds` loading="lazy"` + `decoding="async"` attributes.
-        - but also probably should be "smart". If image is likely to be in a viewport on load - then maybe it should load instantly unless it's like 100kb+ in size, then it's async too?
-        - Also transformer plugin would need to add height/width attributes, so loading won't shift layout.
-        - uses `img`'s `complete` to not run the whole flow for image that is already loaded.
-    - ###### Animating&#x20;
-      - **blurred** placeholder, extremely cheap, prevents image "pop up" out of nowhere&#x20;
-        - which means we would have to create that blurred image in the first place, maybe even bake into the page? Those can be like really small and cheap, so it won't be an issue at all.
-      - fade-in from blurred to original.
-
-- ##### SEO
-  - ###### Worth to research&#x20;
-    - Just placeholder. I need to have at least basics set up. Do proper research. And make sure it's all good.

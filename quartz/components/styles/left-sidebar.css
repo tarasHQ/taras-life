@@ -1,0 +1,131 @@
+.page[data-frame="default"] > #quartz-body > .sidebar.left > .left-sidebar-top,
+.page[data-frame="default"] > #quartz-body > .sidebar.left > .left-sidebar-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 1.2rem;
+	min-height: 0;
+}
+
+.page[data-frame="default"] > #quartz-body > .sidebar.left > .left-sidebar-panel {
+	flex: 1 1 auto;
+}
+
+.left-sidebar-backdrop,
+.left-sidebar-controls {
+	display: none;
+}
+
+/* 800px breakpoint: keep in sync with quartz/styles/base.css (mobile grid)
+ * and quartz/components/scripts/leftSidebar.ts (matchMedia). */
+@media all and (max-width: 800px) {
+	.page[data-frame="default"] > #quartz-body > .sidebar.left:not(:empty) {
+		--left-sidebar-transition-duration: 0s;
+		position: sticky;
+		top: 0;
+		height: auto;
+		margin-inline: -1rem;
+		padding: 0.25rem 1rem;
+		background: var(--bg-grad-bottom);
+		overflow: visible;
+		z-index: 10;
+	}
+
+	/* Enable motion through interaction, not through a desktop-to-mobile layout change. */
+	.page[data-frame="default"] > #quartz-body > .sidebar.left.has-mobile-transition {
+		--left-sidebar-transition-duration: 0.15s;
+	}
+
+	.page[data-frame="default"] > #quartz-body > .sidebar.left > .left-sidebar-top {
+		width: 100%;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+	}
+
+	/* Cancel Search focus scrolling; keep in sync with mobile html scroll padding in base.css. */
+	.left-sidebar-top .search > .search-button {
+		scroll-margin-top: -4rem;
+	}
+
+	.page[data-frame="default"] > #quartz-body > .sidebar.left > .left-sidebar-panel {
+		position: fixed;
+		inset: 0;
+		z-index: 20;
+		box-sizing: border-box;
+		width: 100%;
+		height: 100vh;
+		height: 100dvh;
+		padding: 1.5rem 1rem calc(5rem + env(safe-area-inset-bottom));
+		overflow-y: auto;
+		background: color-mix(in srgb, var(--bg-grad-bottom) 80%, transparent);
+		transform: translateX(100%);
+		visibility: hidden;
+		transition:
+			transform var(--left-sidebar-transition-duration) ease,
+			visibility 0s linear var(--left-sidebar-transition-duration);
+	}
+
+	.left-sidebar-panel > * {
+		flex-shrink: 0;
+	}
+	.page[data-frame="default"] > #quartz-body > .sidebar.left.is-mobile-open > .left-sidebar-panel {
+		transform: translateX(0);
+		visibility: visible;
+		transition-delay: 0s;
+	}
+
+	.left-sidebar-backdrop {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 19;
+		background: color-mix(in srgb, var(--bg-grad-bottom) 35%, transparent);
+		backdrop-filter: blur(6px);
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity var(--left-sidebar-transition-duration) ease,
+			visibility 0s linear var(--left-sidebar-transition-duration);
+	}
+	.is-mobile-open > .left-sidebar-backdrop {
+		opacity: 1;
+		visibility: visible;
+		transition-delay: 0s;
+	}
+	.left-sidebar-controls {
+		display: block;
+		position: fixed;
+		z-index: 21;
+		right: max(1rem, env(safe-area-inset-right));
+		bottom: max(1rem, env(safe-area-inset-bottom));
+	}
+	.left-sidebar-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		border: 1px solid var(--lightgray);
+		border-radius: 50%;
+		background: var(--light);
+		color: var(--dark);
+		cursor: pointer;
+	}
+	.left-sidebar-toggle svg {
+		width: 1.4rem;
+		height: 1.4rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.left-sidebar-close-icon,
+	.is-mobile-open .left-sidebar-menu-icon {
+		display: none;
+	}
+	.is-mobile-open .left-sidebar-close-icon {
+		display: block;
+	}
+}

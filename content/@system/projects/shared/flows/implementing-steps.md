@@ -10,11 +10,21 @@ Efficient and focused implementation of steps.
 ## Rules
 
 - **STAGE AWARENESS** - Every response to the user should have current stage letter, name and substage letter-number at the first line.
+- **IMPLEMENTATION EXPLANATIONS** - After each meaningful implementation batch, explain how the changed code works using the actual files and main functions/components. Connect the intended behavior to the concrete mechanism: what triggers it, what it reads, and what it changes or produces. Explain consequential design choices and non-obvious supporting code.
+  - Use direct, plain language without assuming framework knowledge. Introduce technical terms through their role in this code; avoid childish analogies, unexplained jargon, exhaustive line-by-line commentary, and merely restating the task. Use short code excerpts only when they help.
+  - Distinguish what was implemented, what was verified, and what remains uncertain. Keep explanations proportional to the change. Do not require user approval for routine details already covered by the agreed approach.
+  - A batch is one understandable piece of behavior, not necessarily every tool call or the entire step. Before a batch, briefly explain what will be changed and why; after it, explain the resulting code based on what was actually written.
+- **COMPLEXITY STOP** - If the approach needs substantially more machinery than agreed, its assumptions fail, or investigation repeatedly stalls without a viable route — stop. Don't silently expand scope or keep layering workarounds.
+  - Explain what changed, why the approach became costly, and reasonable alternatives with trade-offs.
+  - Wait for user approval, then update the affected step before continuing. Until resolved, the step isn't implementation-ready.
 - **99-end.md** can be used also to accumulate phase specific end-phase-task. Checks/evaluations/"things to come back to when the phase is done"/tests/end-of-phase-discussions/etc.
 - **EVERY WRITE INTO HIGH-LEVEL DOCS SHOULD CONSIDER ITS SCOPE** - you don't write about minute details into high-level plan or agents.md.
+- **HIGH-LEVEL DOCS CARRY NO CODE FACTS** — the plan never contains selectors, property names, values, component names, or mechanisms. It answers "what and why at phase level"; step files answer "how". A plan edit longer than ~5 sentences(of avg. length) for one step is a smell — put it in the step file instead.
 - **No mentioning steps/phases in the code or non-phase .md files** - like "this will be done in step X phase Y", or that is completed in step X. Don't pollute general documents with steps and phases. Even comments in the code should mention those only where they're meaningful.
 
 ---
+
+rizzing
 
 ## Stages
 
@@ -33,6 +43,7 @@ Efficient and focused implementation of steps.
     - If there's not open decisions/confusion - proceed to implementation.
   - [ ] **B2** - \[LLM]
     - Implementing the step.
+    - Explain each meaningful implementation batch according to **IMPLEMENTATION EXPLANATIONS**.
     - No autonomy to make decisions beyond what was agreed upon with the user.
     - Undiscussed actions are forbidden.
     - Making decisions on your own is forbidden.
@@ -72,4 +83,4 @@ Efficient and focused implementation of steps.
       - [ ] Structure of the file should be only `## Description` and `## Implementation Summary`
 
   - [ ] **C5** - \[LLM]
-    - [ ] Writing a prompt for user (inside markdown codeblock) to start implementation of the next step in a clean task without current context.
+    - [ ] Responding to the user with a prompt (inside markdown codeblock) to start implementation of the next step in a clean task without current context.
